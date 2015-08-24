@@ -1,0 +1,5 @@
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\bin\x64\Debug\CredUIInvokerNET.exe.config
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\bin\x64\Debug\CredUIInvokerNET.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\bin\x64\Debug\CredUIInvokerNET.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\obj\x64\Debug\CredUIInvokerNET.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\obj\x64\Debug\CredUIInvokerNET.pdb

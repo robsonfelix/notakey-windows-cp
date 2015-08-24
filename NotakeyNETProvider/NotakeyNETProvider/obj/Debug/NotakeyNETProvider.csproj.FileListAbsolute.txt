@@ -1,0 +1,6 @@
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyNETProvider\bin\Debug\NotakeyNETProvider.dll
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyNETProvider\bin\Debug\NotakeyNETProvider.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyNETProvider\obj\Debug\NotakeyNETProvider.dll
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyNETProvider\obj\Debug\NotakeyNETProvider.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyNETProvider\bin\Debug\NotakeyNETProvider.tlb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyNETProvider\obj\Debug\NotakeyNETProvider.csprojResolveAssemblyReference.cache
