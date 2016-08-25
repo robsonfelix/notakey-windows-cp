@@ -1,8 +1,0 @@
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\bin\Debug\NotakeyPublicAPIClient.dll.config
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\bin\Debug\NotakeyPublicAPIClient.dll
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\bin\Debug\NotakeyPublicAPIClient.pdb
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\bin\Debug\RestSharp.dll
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\bin\Debug\RestSharp.xml
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\obj\Debug\NotakeyPublicAPIClient.dll
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\obj\Debug\NotakeyPublicAPIClient.pdb
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyPublicAPIClient\obj\Debug\NotakeyPublicAPIClient.csprojResolveAssemblyReference.cache

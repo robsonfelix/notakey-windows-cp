@@ -1,6 +1,0 @@
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\test\bin\Debug\test.exe.config
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\test\bin\Debug\test.exe
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\test\bin\Debug\test.pdb
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\test\obj\Debug\test.exe
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\test\obj\Debug\test.pdb
-C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\test\obj\Debug\test.csprojResolveAssemblyReference.cache
