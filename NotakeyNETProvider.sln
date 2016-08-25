@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotakeyNETProvider", "NotakeyNETProvider\NotakeyNETProvider.csproj", "{0965660C-9106-4A71-97FC-42237ED97B08}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3698DBAF-3BCE-4125-AFDE-7D995061038B} = {3698DBAF-3BCE-4125-AFDE-7D995061038B}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB9EA721-9468-4937-8180-28E334C44D8F}"
+	ProjectSection(SolutionItems) = preProject
+		register.reg = register.reg
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CredUIInvokerNET", "CredUIInvokerNET\CredUIInvokerNET.csproj", "{B8FC1420-194E-46A8-A974-4FEDDA0BB895}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0965660C-9106-4A71-97FC-42237ED97B08} = {0965660C-9106-4A71-97FC-42237ED97B08}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotakeyBGService", "NotakeyBGService\NotakeyBGService.csproj", "{3698DBAF-3BCE-4125-AFDE-7D995061038B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotakeyBGServiceTestClient", "NotakeyBGServiceTestClient\NotakeyBGServiceTestClient.csproj", "{E022C912-EE1F-41F9-BB15-B7276247FBB8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3698DBAF-3BCE-4125-AFDE-7D995061038B} = {3698DBAF-3BCE-4125-AFDE-7D995061038B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{341EC79B-9DEA-4C27-80DF-6FD61D4EB7B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotakeyIPCLibrary", "NotakeyIPCLibrary\NotakeyIPCLibrary.csproj", "{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotakeyPublicAPIClient", "NotakeyPublicAPIClient\NotakeyPublicAPIClient.csproj", "{67B892BB-4483-4738-A63B-210481A8CD1C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0965660C-9106-4A71-97FC-42237ED97B08}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0965660C-9106-4A71-97FC-42237ED97B08}.Debug|Any CPU.Build.0 = Debug|x64
+		{0965660C-9106-4A71-97FC-42237ED97B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0965660C-9106-4A71-97FC-42237ED97B08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8FC1420-194E-46A8-A974-4FEDDA0BB895}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B8FC1420-194E-46A8-A974-4FEDDA0BB895}.Debug|Any CPU.Build.0 = Debug|x64
+		{B8FC1420-194E-46A8-A974-4FEDDA0BB895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8FC1420-194E-46A8-A974-4FEDDA0BB895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3698DBAF-3BCE-4125-AFDE-7D995061038B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3698DBAF-3BCE-4125-AFDE-7D995061038B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3698DBAF-3BCE-4125-AFDE-7D995061038B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3698DBAF-3BCE-4125-AFDE-7D995061038B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E022C912-EE1F-41F9-BB15-B7276247FBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E022C912-EE1F-41F9-BB15-B7276247FBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E022C912-EE1F-41F9-BB15-B7276247FBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E022C912-EE1F-41F9-BB15-B7276247FBB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{341EC79B-9DEA-4C27-80DF-6FD61D4EB7B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{341EC79B-9DEA-4C27-80DF-6FD61D4EB7B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{341EC79B-9DEA-4C27-80DF-6FD61D4EB7B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{341EC79B-9DEA-4C27-80DF-6FD61D4EB7B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67B892BB-4483-4738-A63B-210481A8CD1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67B892BB-4483-4738-A63B-210481A8CD1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67B892BB-4483-4738-A63B-210481A8CD1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67B892BB-4483-4738-A63B-210481A8CD1C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

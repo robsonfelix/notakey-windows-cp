@@ -1,0 +1,11 @@
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\bin\x86\Debug\NotakeyBGService.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\bin\x86\Debug\NotakeyBGService.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\bin\x86\Debug\NotakeyPublicAPIClient.dll
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\bin\x86\Debug\RestSharp.dll
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\bin\x86\Debug\NotakeyPublicAPIClient.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\bin\x86\Debug\RestSharp.xml
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\obj\x86\Debug\NotakeyBGService.ProjectInstaller.resources
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\obj\x86\Debug\NotakeyBGService.csproj.GenerateResource.Cache
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\obj\x86\Debug\NotakeyBGService.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\obj\x86\Debug\NotakeyBGService.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGService\obj\x86\Debug\NotakeyBGService.csprojResolveAssemblyReference.cache

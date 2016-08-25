@@ -1,0 +1,5 @@
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyIPCLibrary\bin\Debug\NotakeyIPCLibrary.dll
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyIPCLibrary\bin\Debug\NotakeyIPCLibrary.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyIPCLibrary\obj\Debug\NotakeyIPCLibrary.dll
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyIPCLibrary\obj\Debug\NotakeyIPCLibrary.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyIPCLibrary\obj\Debug\NotakeyIPCLibrary.csprojResolveAssemblyReference.cache

@@ -1,0 +1,8 @@
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\bin\Debug\NotakeyBGServiceTestClient.exe.config
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\bin\Debug\NotakeyBGServiceTestClient.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\bin\Debug\NotakeyBGServiceTestClient.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\bin\Debug\NotakeyIPCLibrary.dll
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\bin\Debug\NotakeyIPCLibrary.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\obj\Debug\NotakeyBGServiceTestClient.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\obj\Debug\NotakeyBGServiceTestClient.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\NotakeyBGServiceTestClient\obj\Debug\NotakeyBGServiceTestClient.csprojResolveAssemblyReference.cache

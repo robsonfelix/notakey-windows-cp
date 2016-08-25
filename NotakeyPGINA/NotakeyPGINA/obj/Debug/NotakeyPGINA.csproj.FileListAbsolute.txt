@@ -1,5 +1,0 @@
-c:\Program Files\pGina\Plugins\bin\NotakeyPGINA.dll
-c:\Program Files\pGina\Plugins\bin\NotakeyPGINA.pdb
-c:\users\notakey\Desktop\Projects\NotakeyPGINA\NotakeyPGINA\obj\Debug\NotakeyPGINA.csprojResolveAssemblyReference.cache
-c:\users\notakey\Desktop\Projects\NotakeyPGINA\NotakeyPGINA\obj\Debug\NotakeyPGINA.dll
-c:\users\notakey\Desktop\Projects\NotakeyPGINA\NotakeyPGINA\obj\Debug\NotakeyPGINA.pdb

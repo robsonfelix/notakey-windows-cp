@@ -1,0 +1,6 @@
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\bin\Debug\CredUIInvokerNET.exe.config
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\bin\Debug\CredUIInvokerNET.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\bin\Debug\CredUIInvokerNET.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\obj\Debug\CredUIInvokerNET.exe
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\obj\Debug\CredUIInvokerNET.pdb
+C:\Users\notakey\Desktop\Projects\NotakeyNETProvider\CredUIInvokerNET\obj\Debug\CredUIInvokerNET.csprojResolveAssemblyReference.cache

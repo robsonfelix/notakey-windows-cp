@@ -1,0 +1,3 @@
+[submodule "submodules/sdk-csharp"]
+	path = submodules/sdk-csharp
+	url = git@gitlab.com:notakey/sdk-csharp.git
