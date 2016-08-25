@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotakeyIPCLibrary", "Notake
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotakeyPublicAPIClient", "NotakeyPublicAPIClient\NotakeyPublicAPIClient.csproj", "{67B892BB-4483-4738-A63B-210481A8CD1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notakey.SDK", "submodules\sdk-csharp\Notakey.SDK\Notakey.SDK.csproj", "{40903D2E-6BE8-424E-9993-18DF58045115}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{67B892BB-4483-4738-A63B-210481A8CD1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67B892BB-4483-4738-A63B-210481A8CD1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67B892BB-4483-4738-A63B-210481A8CD1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40903D2E-6BE8-424E-9993-18DF58045115}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40903D2E-6BE8-424E-9993-18DF58045115}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40903D2E-6BE8-424E-9993-18DF58045115}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40903D2E-6BE8-424E-9993-18DF58045115}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
