@@ -49,7 +49,8 @@ namespace NotakeyBGServiceTestClient
                         Console.WriteLine("Health check for {0}: {1}", uuid, sr.ReadLine());
                     }, "STATUS_FOR_REQUEST", uuid);
 
-                
+
+                client.Execute(p => { Console.WriteLine("Sent DIE"); }, "DIE");
                 //Console.WriteLine("CMD3: {0}", client.Execute("CMD3"));
                 //Console.WriteLine("CMD4: {0}", client.Execute("CMD4"));
             }
@@ -57,6 +58,7 @@ namespace NotakeyBGServiceTestClient
             {
                 Console.WriteLine("Exception happened: {0}", e.ToString());
             }
+            Console.WriteLine("Client has finished. Press any key ...");
             Console.ReadKey();
         }
     }

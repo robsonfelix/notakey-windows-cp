@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<service>
+  <id>com.notakey.cp.bgs</id>
+  <name>Notakey BG Service</name>
+  <description>This service enables the Notakey login credential provider.</description>
+  <executable>NotakeyBGService.exe</executable>
+  <logmode>rotate</logmode>
+</service>

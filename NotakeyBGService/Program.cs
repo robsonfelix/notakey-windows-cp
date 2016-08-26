@@ -43,22 +43,11 @@ namespace test
         /// </summary>
         static void Main(string[] args)
         {
-            if (Environment.UserInteractive)
-            {
-                new NotakeyBGService.NotakeyBGService().StartAsApp();
-                
-                Console.WriteLine("Standalone NotakeyBGService... press any key to terminate.");
-                Console.ReadKey();
-            }
-            else
-            {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[] 
-                { 
-                    new NotakeyBGService.NotakeyBGService() 
-                };
-                ServiceBase.Run(ServicesToRun);
-            }
+            ManualResetEvent terminationEvent = new ManualResetEvent(false);
+            Console.WriteLine("Starting Notakey CP BG service...");
+
+            new NotakeyBGService.NotakeyBGService(terminationEvent).StartAsApp();
+            terminationEvent.WaitOne();
         }
     }
 }
