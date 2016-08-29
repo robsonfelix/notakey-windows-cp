@@ -1,53 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.ServiceProcess;
 using System.Text;
 using System.Threading;
+using NotakeyIPCLibrary;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.IO;
+using System.IO.Pipes;
 
-namespace test
+namespace NotakeyBGService
 {
     static class Program
     {
-        // P/Invoke required:
-        private const UInt32 StdOutputHandle = 0xFFFFFFF5;
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetStdHandle(UInt32 nStdHandle);
-        [DllImport("kernel32.dll")]
-        private static extern void SetStdHandle(UInt32 nStdHandle, IntPtr handle);
-        [DllImport("kernel32")]
-        static extern bool AllocConsole();
-
-        public static void CreateConsole()
-        {
-            AllocConsole();
-
-            // stdout's handle seems to always be equal to 7
-            IntPtr defaultStdout = new IntPtr(7);
-            IntPtr currentStdout = GetStdHandle(StdOutputHandle);
-
-            if (currentStdout != defaultStdout)
-                // reset stdout
-                SetStdHandle(StdOutputHandle, defaultStdout);
-
-            // reopen stdout
-            TextWriter writer = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
-            Console.SetOut(writer);
-        }
+        static ManualResetEvent terminationEvent = new ManualResetEvent(false);
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         static void Main(string[] args)
         {
-            ManualResetEvent terminationEvent = new ManualResetEvent(false);
-            Console.WriteLine("Starting Notakey CP BG service... ({0})", NotakeyIPCLibrary.NotakeyPipeServer.MasterPipeName);
+            Console.WriteLine("Starting Notakey CP BG service...");
 
-            new NotakeyBGService.NotakeyBGService(terminationEvent).StartAsApp();
+            var factory = new PipeServerFactory();
+            SpawnServer(factory);
+
             terminationEvent.WaitOne();
         }
+
+        private static void SpawnServer(PipeServerFactory factory)
+        {
+            factory
+                .GetConnectedServer()
+                .SubscribeOn(NewThreadScheduler.Default)
+                .ObserveOn(NewThreadScheduler.Default)
+                
+                // Spawn server before attempting to process messages (which may block)
+                .Do(_ => SpawnServer(factory))
+                
+                .Subscribe(
+                    OnChildServer,
+                    OnChildError
+                );
+        }
+
+        private static void OnChildError(Exception error)
+        {
+            Debug.WriteLine("Error spawning child server: " + error.ToString());
+        }
+
+        private static void OnChildServer(NotakeyPipeServer2 server)
+        {
+            // Make sure to stay on the same thread (or the pipes will fail)
+            server.Connect()
+                .Subscribe(OnServerMessage, OnServerError, OnCompleted);
+        }
+
+        private static void OnCompleted()
+        {
+            Console.WriteLine("Child server disconnected");
+        }
+
+        private static void OnServerError(Exception e)
+        {
+            Console.WriteLine("Child server error: " + e.ToString());
+        }
+
+        private static void OnServerMessage(PipeServerMessage obj)
+        {
+            try
+            {
+                Console.WriteLine("Received " + obj.FirstLine + " on thread " + Thread.CurrentThread.ManagedThreadId);
+                switch (obj.FirstLine)
+                {
+                    default:
+                        obj.Disconnect();
+                        Console.WriteLine("Unknown message. Terminating.");
+                        break;
+                }
+            } catch (IOException e)
+            {
+                Console.WriteLine("Socket IO exception in communication with client. Did client disconnect?");
+                Debug.WriteLine(e.ToString());
+            }
+        }
+
+
     }
 }

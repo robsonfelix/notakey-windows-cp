@@ -1,6 +1,7 @@
 ﻿using NotakeyIPCLibrary;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -13,12 +14,20 @@ namespace NotakeyBGServiceTestClient
     {
         static void Main(string[] args)
         {
+            var a = Task.Run(() => DoStuff());
+            var b = Task.Run(() => DoStuff());
+            Task.WaitAll(a, b);
+        }
+
+        static void DoStuff()
+        {
             try
             {
                 var client = new NotakeyPipeClient();
                 string result = null;
                 client.Execute((StreamReader sr) => {
                     result = sr.ReadLine();
+                    Debug.WriteLine("Received response");
                 }, "API_HEALTH_CHECK");
                 Console.WriteLine("STATUS_CHECK: {0}", result);
 

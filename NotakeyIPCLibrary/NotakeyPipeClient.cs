@@ -75,12 +75,12 @@ namespace NotakeyIPCLibrary
 
 		private string ReadPipeName()
 		{
-            Debug.WriteLine("Reading pipe name from master pipe " + NotakeyPipeServer.MasterPipeName);
+Debug.WriteLine("Reading pipe name from master pipe " + NotakeyPipeServer.MasterPipeName);
 
 			using (NamedPipeClientStream tmpPipeClient =
 				   new NamedPipeClientStream(".", NotakeyPipeServer.MasterPipeName, PipeDirection.In))
 			{
-				// Connect to the pipe or wait until the pipe is available.
+                // Connect to the pipe or wait until the pipe is available.
 				tmpPipeClient.Connect(TimeOutInMilliseconds);
 
 				using (StreamReader sr = new StreamReader(tmpPipeClient))
