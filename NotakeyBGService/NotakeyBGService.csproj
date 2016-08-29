@@ -124,6 +124,10 @@
       <Project>{40903d2e-6be8-424e-9993-18df58045115}</Project>
       <Name>Notakey.SDK</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NotakeyIPCLibrary\NotakeyIPCLibrary.csproj">
+      <Project>{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}</Project>
+      <Name>NotakeyIPCLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

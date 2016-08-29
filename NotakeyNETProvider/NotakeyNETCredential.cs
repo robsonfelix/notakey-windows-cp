@@ -156,7 +156,7 @@ namespace NotakeyNETProvider
                 // pcpcs must always be assigned, even if we do not return any valid information.
                 pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
 
-                var c = new NotakeyBGServerClient();
+                var c = new NotakeyPipeClient();
                 if (!("OK".Equals(c.StatusCheckMessage())))
                 {
                     ppszOptionalStatusText = "The service is not available. Please try again in a bit. If the problem persists, contact +371 20 208 714.";
@@ -373,7 +373,7 @@ namespace NotakeyNETProvider
                 {
                     try
                     {
-                        var c = new NotakeyBGServerClient();
+                        var c = new NotakeyPipeClient();
                         statusLabel = string.Format("Service Status: {0}", c.StatusCheckMessage());
                     }
                     catch (TimeoutException)

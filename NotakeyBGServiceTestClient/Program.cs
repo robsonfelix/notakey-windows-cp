@@ -15,7 +15,7 @@ namespace NotakeyBGServiceTestClient
         {
             try
             {
-                var client = new NotakeyBGServerClient();
+                var client = new NotakeyPipeClient();
                 string result = null;
                 client.Execute((StreamReader sr) => {
                     result = sr.ReadLine();
