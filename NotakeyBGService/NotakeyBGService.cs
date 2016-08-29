@@ -12,6 +12,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NotakeyIPCLibrary;
 
 namespace NotakeyBGService
 {
@@ -196,7 +197,7 @@ namespace NotakeyBGService
             // Allow 2 instances. One that' s still being processed, and another one (spawned right before
             // first one winds down)
             using (NamedPipeServerStream pipeServer =
-            new NamedPipeServerStream("lv.montadigital.notakey.pipenameserver", PipeDirection.Out, 2))
+            new NamedPipeServerStream(NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 2))
             {
                 try
                 {

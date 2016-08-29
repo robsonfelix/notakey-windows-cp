@@ -44,7 +44,7 @@ namespace test
         static void Main(string[] args)
         {
             ManualResetEvent terminationEvent = new ManualResetEvent(false);
-            Console.WriteLine("Starting Notakey CP BG service...");
+            Console.WriteLine("Starting Notakey CP BG service... ({0})", NotakeyIPCLibrary.NotakeyPipeServer.MasterPipeName);
 
             new NotakeyBGService.NotakeyBGService(terminationEvent).StartAsApp();
             terminationEvent.WaitOne();
