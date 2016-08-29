@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace NotakeyIPCLibrary
 {
-    class ServerErrorException : ApplicationException
-    {
-        private string p;
+	class ServerErrorException : ApplicationException
+	{
+		public ServerErrorException(string p)
+			: base(p)
+		{
 
-        public ServerErrorException(string p)
-            : base(p)
-        {
-            
-        }
-    }
+		}
+	}
 }
