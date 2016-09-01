@@ -78,7 +78,7 @@ namespace NotakeyBGService
 
                                     try
                                     {
-                                        var authReqChain = api.RequestApproval("demo", "Windows", "Desc yo");
+                                        var authReqChain = api.PerformFullVerification("demo", "Windows", "Desc yo");
                                         HandleChain(authReqChain, sw, asyncWaitEvent, OnRequestedAuth, OnRequestingAuthError);
                                         
                                         //sw.WriteLine("OK");
