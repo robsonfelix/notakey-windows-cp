@@ -8,44 +8,44 @@ using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Notakey.Utility;
 
 namespace NotakeyBGService
 {
     public class Application
     {
         SimpleApi api = new SimpleApi();
-        PipeServerFactory factory = new PipeServerFactory();
+        Logger logger = new Logger();
 
+        PipeServerFactory factory;
         ManualResetEvent terminationEvent;
         
         public Application(ManualResetEvent terminationEvent)
         {
             this.terminationEvent = terminationEvent;
+            this.factory = new PipeServerFactory(logger);
         }
 
         internal void Run()
         {
-            Log("Binding to Notakey API (" + ApiConfiguration.ApiEndpoint + "; " + ApiConfiguration.AccessId + ")");
+            logger.WriteHeader("Starting Notakey BG IPC service", ConsoleColor.White, ConsoleColor.DarkBlue);
+
+            logger.WriteMessage("Binding to Notakey API (" + ApiConfiguration.ApiEndpoint + "; " + ApiConfiguration.AccessId + ")");
             api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId)
                .Timeout(TimeSpan.FromSeconds(15))
                .Subscribe(
-                   p => Log("Wtf"),
+                   p => logger.WriteMessage("Bound to: " + p.ToString()),
                    error =>
                    {
-                       Log("Notakey API bind failure: " + error.ToString());
+                       logger.ErrorLine("Notakey API bind failure", error);
                        terminationEvent.Set();
                    },
                    SpawnServer);   
         }
 
-        void Log(string msg)
-        {
-            Console.WriteLine("[{0}] => {1}", Thread.CurrentThread.ManagedThreadId, msg);
-        }
-
         void SpawnServer()
         {
-            Log("Spawning main listener");
+            logger.WriteMessage("Spawning main listener");
 
             factory
                 .GetConnectedServer()
@@ -63,12 +63,12 @@ namespace NotakeyBGService
 
         private void OnClientSpawningError(Exception error)
         {
-            Log("Error spawning child server: " + error.ToString());
+            logger.ErrorLine("Error spawning child server: " + error.ToString());
         }
 
         private void OnClientPipeCreated(NotakeyPipeServer2 server)
         {
-            Log("Created client pipe. Connecting ...");
+            logger.WriteMessage("Created client pipe. Connecting ...");
 
             // Make sure to stay on the same thread (or the pipes will fail)
             server.Connect()
@@ -77,38 +77,44 @@ namespace NotakeyBGService
 
         private void OnCompleted()
         {
-            Log("Client disconnected");
+            logger.WriteMessage("Client disconnected");
         }
 
         private void OnServerError(Exception e)
         {
-            Log("Client communication error: " + e.ToString());
+            logger.ErrorLine("Client communication error: " + e.ToString());
         }
 
         private void OnServerMessage(PipeServerMessage obj)
         {
-            // This is on a dedicated thread - don't do async operations
-            ManualResetEvent mre = new ManualResetEvent(false);
-
-            Log("Received " + obj.FirstLine);
-
-            switch (obj.FirstLine)
+            try
             {
-                case "API_HEALTH_CHECK":
-                    throw new NotImplementedException();
-                    break;
-                case "REQUEST_AUTH":
-                    throw new NotImplementedException();
-                    break;
-                case "STATUS_FOR_REQUEST":
-                    throw new NotImplementedException();
-                    break;
-                default:
-                    obj.Disconnect();
-                    Console.WriteLine("Unknown message. Terminating.");
-                    break;
+                // This is on a dedicated thread - don't do async operations
+                ManualResetEvent mre = new ManualResetEvent(false);
+
+                logger.WriteMessage("Received " + obj.FirstLine);
+
+                switch (obj.FirstLine)
+                {
+                    case "API_HEALTH_CHECK":
+                        throw new NotImplementedException();
+                        break;
+                    case "REQUEST_AUTH":
+                        throw new NotImplementedException();
+                        break;
+                    case "STATUS_FOR_REQUEST":
+                        throw new NotImplementedException();
+                        break;
+                    default:
+                        obj.Disconnect();
+                        logger.ErrorLine("Unknown message. Terminating.");
+                        break;
+                }
             }
-            
+            catch (Exception e)
+            {
+                logger.ErrorLine("Failure while processing message from client", e);
+            }
         }
     }
 }

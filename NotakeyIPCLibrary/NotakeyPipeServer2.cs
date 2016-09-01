@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Notakey.Utility;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -30,6 +31,15 @@ namespace NotakeyIPCLibrary
 
     public class PipeServerFactory
     {
+        Logger parentLogger;
+        Logger logger;
+
+        public PipeServerFactory(Logger parentLogger)
+        {
+            this.parentLogger = parentLogger;
+            this.logger = new Logger("Connection Factory", parentLogger);
+        }
+
         public IObservable<NotakeyPipeServer2> GetConnectedServer()
         {
             return Observable.Defer(() => _CreateDeferred());
@@ -41,11 +51,12 @@ namespace NotakeyIPCLibrary
             {
                 using (NamedPipeServerStream bootstrapServer = new NamedPipeServerStream(NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 1))
                 {
-                    Console.WriteLine("=> Factory waiting on thread " + Thread.CurrentThread.ManagedThreadId);
+                    logger.WriteMessage("Waiting for connection");
                     bootstrapServer.WaitForConnection();
 
                     string clientPipe = string.Format("{0}.{1}", NotakeyPipeServer.MasterPipeName, Guid.NewGuid().ToString());
-                    Debug.WriteLine("Got client on master pipe. Generated client pipe name: {0}", clientPipe);
+
+                    logger.LineWithEmphasis("Connected. Generated name", clientPipe, ConsoleColor.White);
 
                     // This will communicate the child pipe to the client, so it can connect
                     using (var sw = new StreamWriter(bootstrapServer, System.Text.Encoding.UTF8, 4096, true))
@@ -53,10 +64,8 @@ namespace NotakeyIPCLibrary
                         sw.WriteLine(clientPipe);
                     }
 
-                    Debug.WriteLine("Sent back pipe name. Creating server for it.");
-
                     // Now wait for the client to connect
-                    var client = new NotakeyPipeServer2(clientPipe);
+                    var client = new NotakeyPipeServer2(clientPipe, parentLogger);
                     o.OnNext(client);
                 }
                 o.OnCompleted();
@@ -68,10 +77,12 @@ namespace NotakeyIPCLibrary
     public class NotakeyPipeServer2
     {
         string pipeName;
+        Logger logger;
 
-        internal NotakeyPipeServer2(string pipeName)
+        internal NotakeyPipeServer2(string pipeName, Logger parentLogger)
         {
             this.pipeName = pipeName;
+            this.logger = new Logger(pipeName, parentLogger);
         }
 
         public IObservable<PipeServerMessage> Connect()
@@ -85,7 +96,7 @@ namespace NotakeyIPCLibrary
             {
                 using (NamedPipeServerStream stream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough))
                 {
-                    Console.WriteLine("Waiting on connection on thread " + Thread.CurrentThread.ManagedThreadId);
+                    logger.WriteMessage("Waiting on connection");
                     stream.WaitForConnection();
 
                     // Don't wrap these in using(), otherwise there will be a "Pipe is broken" error when
@@ -93,14 +104,17 @@ namespace NotakeyIPCLibrary
                     StreamReader sr = new StreamReader(stream, Encoding.UTF8, true, 4096, true);
                     StreamWriter sw = new StreamWriter(stream, Encoding.UTF8, 4096, true);
 
-                    Console.WriteLine("Opening pipe");
+                    logger.WriteMessage("Connected. Reading message...");
 
                     while (stream.IsConnected && !sr.EndOfStream)
                     {
                         var msgStr = sr.ReadLine();
 
+                        logger.LineWithEmphasis("Received", msgStr, ConsoleColor.Magenta);
+
                         if (msgStr.Equals("DIE"))
                         {
+                            logger.WriteMessage("Disconnecting pipe as requested");
                             stream.Disconnect();
                         }
                         else
@@ -116,7 +130,7 @@ namespace NotakeyIPCLibrary
                         }
                     }
 
-                    Console.WriteLine("Closed pipe");
+                    logger.WriteMessage("Terminating instance");
 
                     o.OnCompleted();
                 }

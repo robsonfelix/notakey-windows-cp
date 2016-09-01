@@ -14,9 +14,15 @@ namespace NotakeyBGServiceTestClient
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Press any key to start the test in two threads...");
+            Console.ReadKey();
+
             var a = Task.Run(() => DoStuff());
             var b = Task.Run(() => DoStuff());
             Task.WaitAll(a, b);
+
+            Console.WriteLine("Finished. Press any key to quit ...");
+            Console.ReadKey();
         }
 
         static void DoStuff()
@@ -67,8 +73,6 @@ namespace NotakeyBGServiceTestClient
             {
                 Console.WriteLine("Exception happened: {0}", e.ToString());
             }
-            Console.WriteLine("Client has finished. Press any key ...");
-            Console.ReadKey();
         }
     }
 }

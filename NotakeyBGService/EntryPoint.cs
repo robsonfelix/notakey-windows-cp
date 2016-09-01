@@ -22,7 +22,6 @@ namespace NotakeyBGService
         /// </summary>
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting Notakey CP BG service...");
             var app = new Application(terminationEvent);
             app.Run();
 

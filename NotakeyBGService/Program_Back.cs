@@ -43,11 +43,11 @@ namespace test
         /// </summary>
         static void Main_Old(string[] args)
         {
-            ManualResetEvent terminationEvent = new ManualResetEvent(false);
-            Console.WriteLine("Starting Notakey CP BG service... ({0})", NotakeyIPCLibrary.NotakeyPipeServer.MasterPipeName);
+            //ManualResetEvent terminationEvent = new ManualResetEvent(false);
+            //Console.WriteLine("Starting Notakey CP BG service... ({0})", NotakeyIPCLibrary.NotakeyPipeServer.MasterPipeName);
 
-            new NotakeyBGService.NotakeyBGService(terminationEvent).StartAsApp();
-            terminationEvent.WaitOne();
+            //new NotakeyBGService.NotakeyBGService(terminationEvent, logger).StartAsApp();
+            //terminationEvent.WaitOne();
         }
     }
 }

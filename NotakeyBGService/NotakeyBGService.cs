@@ -12,21 +12,24 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Notakey.Utility;
 
 namespace NotakeyBGService
 {
-    partial class NotakeyBGService 
+    class NotakeyBGService 
     {
         ManualResetEvent terminationEvent;
         SimpleApi api;
+        Logger logger;
 
         const int ConnectTimeout = 5000;
 
-        public NotakeyBGService(ManualResetEvent terminationEvent)
+        public NotakeyBGService(ManualResetEvent terminationEvent, Logger parentLogger)
         {
             this.terminationEvent = terminationEvent;
 
-            api = new SimpleApi();       
+            api = new SimpleApi();
+            logger = new Logger("Service", parentLogger);
         }
 
         public void StartAsApp()
@@ -36,7 +39,7 @@ namespace NotakeyBGService
                 p => { },
                 error =>
                 {
-                    Debug.WriteLine("BIND failure: " + error.ToString());
+                    logger.Debug("BIND failure: " + error.ToString());
                     terminationEvent.Set();
                 },
                 SpawnPipeNameServerListenerThread);   
@@ -124,7 +127,7 @@ namespace NotakeyBGService
 
                             if (!server.IsConnected)
                             {
-                                Debug.WriteLine("Not flushing. BaseStream already null");
+                                logger.Debug("Not flushing. BaseStream already null");
                             }
                             else
                             {
@@ -133,8 +136,8 @@ namespace NotakeyBGService
                         }
                         catch (IOException e)
                         {
-                            Console.WriteLine("IOException. Disconnecting serving pipe for this connection");
-                            Debug.WriteLine(e.ToString());
+                            logger.ErrorLine("IOException. Disconnecting serving pipe for this connection");
+                            logger.Debug(e.ToString());
                             if (server.IsConnected)
                             {
                                 server.Disconnect();
@@ -152,7 +155,7 @@ namespace NotakeyBGService
 
         private void OnRequestingAuthError(StreamWriter sw, Exception arg2)
         {
-            Debug.WriteLine("OnRequestingAuthError: " + arg2.ToString());
+            logger.Debug("OnRequestingAuthError: " + arg2.ToString());
             sw.WriteLine("NOK");
             sw.WriteLine(arg2.Message);
         }
@@ -165,7 +168,7 @@ namespace NotakeyBGService
 
         private void OnHealthCheckError(StreamWriter sw, Exception obj)
         {
-            Debug.WriteLine("Health check failed: " + obj.ToString());
+            logger.Debug("Health check failed: " + obj.ToString());
             sw.WriteLine(obj.Message);
         }
 
@@ -203,7 +206,7 @@ namespace NotakeyBGService
                     pipeServer.WaitForConnection();
 
                     string clientPipe = string.Format("lv.montadigital.notakey.client.{0}", Guid.NewGuid().ToString());
-                    Console.WriteLine("Generated pipe name for client: {0}", clientPipe);
+                    logger.WriteMessage(string.Format("Generated pipe name for client: {0}", clientPipe));
                     SpawnSpecificClientListenerThread(clientPipe);
 
                     using (var sw = new StreamWriter(pipeServer))
@@ -214,7 +217,8 @@ namespace NotakeyBGService
                 }
                 catch (IOException e)
                 {
-                    Console.WriteLine("ERROR: {0}", e.Message);
+                    logger.Debug(e.ToString());
+                    logger.ErrorLine(e.Message);
                 }
             }
         }
