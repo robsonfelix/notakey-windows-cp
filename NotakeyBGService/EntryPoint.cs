@@ -10,6 +10,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.IO;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 
 namespace NotakeyBGService
 {
@@ -22,7 +23,7 @@ namespace NotakeyBGService
         /// </summary>
         static void Main(string[] args)
         {
-            var app = new Application(terminationEvent);
+            var app = new Application(terminationEvent, args.Contains("/unattended"));
             app.Run();
 
             terminationEvent.WaitOne();

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
+using System.IO;
 
 namespace Notakey.Utility
 {
@@ -9,9 +10,12 @@ namespace Notakey.Utility
     {
         static readonly object ThreadLock = new object();
 
+        protected TextWriter output;
+
         public Logger(string name = "", Logger parentLogger = null)
         {
             this.Name = name;
+            this.output = Console.Out;
             this.Parent = parentLogger;
         }
 
@@ -42,12 +46,17 @@ namespace Notakey.Utility
                 WriteFullLine_WhileLocked("", fore, bg);
                 WriteFullLine_WhileLocked("", fore, bg);
 
-                int leftPad = ((Console.WindowWidth - 1) - text.Length) / 2;
-                WriteFullLine_WhileLocked(text.PadLeft(text.Length + leftPad, ' '), fore, bg);
+                WriteFullLine_WhileLocked(CenterTextWithLeftPad(text), fore, bg);
             
                 WriteFullLine_WhileLocked("", fore, bg);
                 WriteFullLine_WhileLocked("", fore, bg);
             }
+        }
+
+        protected virtual string CenterTextWithLeftPad(string text)
+        {
+            int leftPad = ((Console.WindowWidth - 1) - text.Length) / 2;
+            return text.PadLeft(text.Length + leftPad, ' ');
         }
 
         public void LineWithEmphasis(string firstPart, string emPart, ConsoleColor emColor)
@@ -60,10 +69,11 @@ namespace Notakey.Utility
             }
         }
 
-        public void ErrorLine(string message, Exception e = null)
+        public virtual void ErrorLine(string message, Exception e = null)
         {
             lock (ThreadLock) 
             {
+                output = Console.Error;
                 _WriteMessage_WhileLocked("ERROR", true, ConsoleColor.White, ConsoleColor.Red, true, false);
                 _WriteMessage_WhileLocked(": ", true, ConsoleColor.White, ConsoleColor.Black, false, false);
                 _WriteMessage_WhileLocked(message, true, ConsoleColor.White, ConsoleColor.Black, false, true);
@@ -71,6 +81,7 @@ namespace Notakey.Utility
                 {
                      _WriteMessage_WhileLocked(e.ToString(), true, ConsoleColor.White, ConsoleColor.DarkRed);
                 }
+                output = Console.Out;
             }
         }
 
@@ -81,7 +92,7 @@ namespace Notakey.Utility
             }
         }
 
-        private void _WriteMessage_WhileLocked(string message, bool useColor = true,
+        protected virtual void _WriteMessage_WhileLocked(string message, bool useColor = true,
             ConsoleColor fgColor = ConsoleColor.White,
             ConsoleColor bgColor = ConsoleColor.Black,
             bool includeNames = true, bool terminateLine = true, List<string> childNames = null)
@@ -108,23 +119,23 @@ namespace Notakey.Utility
                     string threadPrefix = string.Format("[thread {0}] => ", Thread.CurrentThread.ManagedThreadId);
                     leftPadding += threadPrefix.Length;
 
-                    Console.Write(threadPrefix);
+                    output.Write(threadPrefix);
                 }
 
                 if (includeNames && childNames.Any())
                 {
                     childNames.ForEach(name =>
                     {
-                        Console.Write("[");
+                        output.Write("[");
 
                         // Always use color for names, if they are included
                         WriteColorAndReset_WhileLocked(name, ConsoleColor.Yellow, ConsoleColor.Black);
-                        Console.Write("]");
+                        output.Write("]");
 
                         leftPadding += (2 + name.Length);
                     });
 
-                    Console.Write(": ");
+                    output.Write(": ");
                     leftPadding += 2;
                 }
 
@@ -139,44 +150,52 @@ namespace Notakey.Utility
                     }
                     else
                     {
-                        Console.Write(line);
+                        output.Write(line);
                     }
 
                     if (line != lines.Last())
                     {
-                        Console.WriteLine();
-                        Console.Write(" ".PadLeft(leftPadding));
+                        output.WriteLine();
+                        output.Write(" ".PadLeft(leftPadding));
                     }
                 }
 
                 if (terminateLine)
                 {
-                    Console.WriteLine();
+                    output.WriteLine();
                 }
             }
         }
 
-        private void WriteFullLine_WhileLocked(string text, ConsoleColor fore, ConsoleColor bg)
+        protected virtual void WriteFullLine_WhileLocked(string text, ConsoleColor fore, ConsoleColor bg)
         { 
             // NOTE: do not lock here, call from a locked context !
-
-            Console.BackgroundColor = bg;
-            Console.ForegroundColor = fore;
-            Console.Write(text.PadRight(Console.WindowWidth)); 
-	        Console.ResetColor();
+            SetColors(fore, bg);
+            output.Write(text.PadRight(Console.WindowWidth));
+            ResetColors();
         }
 
-        private void WriteColorAndReset_WhileLocked(string name, ConsoleColor fgColor, ConsoleColor bgColor)
+        protected virtual void ResetColors()
         {
-            // NOTE: do not lock here, call from a locked context !
-
-            Console.ForegroundColor = fgColor;
-            Console.BackgroundColor = bgColor;
-            Console.Write(name);
             Console.ResetColor();
         }
 
-        public void WarningLine(string msg)
+        protected virtual void SetColors(ConsoleColor fore, ConsoleColor bg)
+        {
+            Console.BackgroundColor = bg;
+            Console.ForegroundColor = fore;
+        }
+
+        protected virtual void WriteColorAndReset_WhileLocked(string name, ConsoleColor fgColor, ConsoleColor bgColor)
+        {
+            // NOTE: do not lock here, call from a locked context !
+
+            SetColors(fgColor, bgColor);
+            output.Write(name);
+            ResetColors();
+        }
+
+        public virtual void WarningLine(string msg)
         {
             WriteColorMessage(msg, ConsoleColor.White, ConsoleColor.DarkYellow);
         }

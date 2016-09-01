@@ -26,20 +26,54 @@ namespace NotakeyBGService
         public static readonly string ApiEndpoint = "https://demo.notakey.com/api/v2/";
     }
 
+    public class UnattendedLogger : Logger
+    {
+        protected override void SetColors(ConsoleColor fore, ConsoleColor bg)
+        {
+            
+        }
+
+        protected override void ResetColors()
+        {
+            
+        }
+
+        protected override void WriteFullLine_WhileLocked(string text, ConsoleColor fore, ConsoleColor bg)
+        {
+            output.WriteLine(text);
+        }
+
+        protected override string CenterTextWithLeftPad(string text)
+        {
+            return text;
+        }
+    }
+
     public class Application
     {
         Random random = new Random();
 
         SimpleApi api = new SimpleApi();
-        Logger logger = new Logger();
+        Logger logger;
 
         PipeServerFactory factory;
         ManualResetEvent terminationEvent;
 
         List<IDisposable> disposableSubscriptions = new List<IDisposable>();
 
-        public Application(ManualResetEvent terminationEvent)
+        public Application(ManualResetEvent terminationEvent, bool unattended)
         {
+            Console.Out.WriteLine("Starting service. Unattended: " + Convert.ToString(unattended));
+
+            if (!unattended)
+            {
+                 logger = new Logger();
+            }
+            else
+            {
+                 logger = new UnattendedLogger();
+            }
+
             this.terminationEvent = terminationEvent;
             this.factory = new PipeServerFactory(logger);
         }

@@ -5,4 +5,6 @@
   <description>This service enables the Notakey login credential provider.</description>
   <executable>NotakeyBGService.exe</executable>
   <logmode>rotate</logmode>
+
+  <argument>/unattended</argument>
 </service>
