@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Notakey.Utility;
 using System.Windows.Threading;
+using System.IO;
 
 namespace NotakeyBGService
 {
@@ -34,11 +35,27 @@ namespace NotakeyBGService
 
         PipeServerFactory factory;
         ManualResetEvent terminationEvent;
-        
+
+        List<IDisposable> disposableSubscriptions = new List<IDisposable>();
+
         public Application(ManualResetEvent terminationEvent)
         {
             this.terminationEvent = terminationEvent;
             this.factory = new PipeServerFactory(logger);
+        }
+
+        internal void Cleanup()
+        {
+            logger.WriteMessage("Cleaning up...");
+            while (disposableSubscriptions.Any())
+            {
+                var disposable = disposableSubscriptions.First();
+                disposableSubscriptions.Remove(disposable);
+
+                logger.WriteMessage("  disposing " + disposable.ToString());
+                disposable.Dispose();
+            }
+            disposableSubscriptions = null;
         }
 
         internal void Run()
@@ -60,25 +77,30 @@ namespace NotakeyBGService
 
         void SpawnServer()
         {
+            bool status = terminationEvent.WaitOne(0);
             logger.WriteMessage("Spawning main listener");
 
-            factory
+            IDisposable masterPipeListener = null;
+            masterPipeListener = factory
                 .GetConnectedServer()
                 .SubscribeOn(NewThreadScheduler.Default)
                 .ObserveOn(NewThreadScheduler.Default)
 
                 // Spawn server before attempting to process messages (which may block)
                 .Do(_ => SpawnServer())
-
+                .Finally(() => disposableSubscriptions.Remove(masterPipeListener))
+                
                 .Subscribe(
                     OnClientPipeCreated,
                     OnClientSpawningError
                 );
+            disposableSubscriptions.Add(masterPipeListener);
         }
 
         private void OnClientSpawningError(Exception error)
         {
             logger.ErrorLine("Error spawning child server: " + error.ToString());
+            terminationEvent.Set();
         }
 
         private void OnClientPipeCreated(NotakeyPipeServer2 server)
@@ -86,8 +108,11 @@ namespace NotakeyBGService
             logger.WriteMessage("Created client pipe. Connecting ...");
 
             // Make sure to stay on the same thread (or the pipes will fail)
-            server.Connect()
+            IDisposable clientSubscription = null;
+            clientSubscription = server.Connect()
+                .Finally(() => disposableSubscriptions.Remove(clientSubscription))
                 .Subscribe(OnServerMessage, OnServerError, OnCompleted);
+            disposableSubscriptions.Add(clientSubscription);
         }
 
         private void OnCompleted()
@@ -110,9 +135,14 @@ namespace NotakeyBGService
                 logger.LineWithEmphasis("Processing message", obj.FirstLine, ConsoleColor.Magenta);
                 
                 int opId = random.Next();
+                bool shouldTerminate = false;
                 
                 switch (obj.FirstLine)
                 {
+                    case "DIE":
+                        shouldTerminate = true;
+                        mre.Set();
+                        break;
                     case "API_HEALTH_CHECK":
                         logger.LineWithEmphasis("Performing health check. Operation", opId.ToString(), ConsoleColor.White);
                         // TODO: invoke /api/health and and check NOTAKEY_STATUS ?
@@ -180,7 +210,21 @@ namespace NotakeyBGService
                 }
 
                 mre.WaitOne();
-                obj.Writer.Flush();
+                try
+                {
+                    obj.Writer.Flush();
+                }
+                catch (IOException)
+                {
+                    // Ungraceful shutdown by client ...
+                    // ...
+                }
+
+                if (shouldTerminate)
+                {
+                    logger.WriteHeader("Quitting (received DIE)...", ConsoleColor.White, ConsoleColor.Red);
+                    terminationEvent.Set();
+                }
             }
             catch (Exception e)
             {

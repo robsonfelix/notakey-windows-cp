@@ -26,6 +26,8 @@ namespace NotakeyBGService
             app.Run();
 
             terminationEvent.WaitOne();
+            Console.WriteLine("Received termination event. Quitting ...");
+            app.Cleanup();
         }
     }
 }

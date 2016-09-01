@@ -32,9 +32,15 @@ namespace NotakeyBGServiceTestClient
 
         static void DoStuff()
         {
+            NotakeyPipeClient client = null;
             try
             {
-                var client = new NotakeyPipeClient();
+                string goodUuid = null;
+
+                client = new NotakeyPipeClient();
+
+                return; // trigger DIE
+
                 string result = null;
                 client.Execute((StreamReader sr) => {
                     result = sr.ReadLine();
@@ -42,12 +48,18 @@ namespace NotakeyBGServiceTestClient
                 }, "API_HEALTH_CHECK");
                 Console.WriteLine("STATUS_CHECK: {0}", result);
 
+                
+
                 client.Execute(
                     (StreamReader sr) =>
                     {
                         bool status = ("OK".Equals(sr.ReadLine()));
                         string msg = sr.ReadLine();
 
+                        if (status)
+                        {
+                            goodUuid = msg;
+                        }
                         Console.WriteLine("Requested auth. Success: {0}. Message: {1}", status, msg);
                     },
                     "REQUEST_AUTH", "jkirsteins", "My OK Action", "My OK Description");
@@ -62,21 +74,40 @@ namespace NotakeyBGServiceTestClient
                     },
                     "REQUEST_AUTH", "jkirsteins_which_does_not_exist", "My NOK Action", "My NOK Description");
 
-                string uuid = "7f098073-afc2-45e2-8fef-9e33bfd81690";
+                string uuid = goodUuid ?? "7f098073-afc2-45e2-8fef-9e33bfd81690";
+
                 client.Execute(
                     (StreamReader sr) =>
                     {
-                        Console.WriteLine("Health check for {0}: {1}", uuid, sr.ReadLine());
+                        Console.WriteLine("Status for request {0}: {1}", uuid, sr.ReadLine());
                     }, "STATUS_FOR_REQUEST", uuid);
 
+                client.Execute(
+                    (StreamReader sr) =>
+                    {
+                        bool status = ("OK".Equals(sr.ReadLine()));
+                       
+                        Console.WriteLine("Sync'ed status for request {0}: {1}", uuid, status);
+                        if (!status)
+                        {
+                            Console.WriteLine("  message: {0}", sr.ReadLine());
+                        }
+                    }, "SYNC_REQUEST_STATUS", uuid);
 
-                client.Execute(p => { Console.WriteLine("Sent DIE"); }, "DIE");
+
                 //Console.WriteLine("CMD3: {0}", client.Execute("CMD3"));
                 //Console.WriteLine("CMD4: {0}", client.Execute("CMD4"));
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception happened: {0}", e.ToString());
+            }
+            finally
+            {
+                if (client != null)
+                {
+                    client.Execute(p => { Console.WriteLine("Sent DIE"); }, "DIE");
+                }
             }
         }
     }

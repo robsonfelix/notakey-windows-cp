@@ -175,5 +175,10 @@ namespace Notakey.Utility
             Console.Write(name);
             Console.ResetColor();
         }
+
+        public void WarningLine(string msg)
+        {
+            WriteColorMessage(msg, ConsoleColor.White, ConsoleColor.DarkYellow);
+        }
     }
 }

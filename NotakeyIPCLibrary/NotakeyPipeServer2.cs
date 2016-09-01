@@ -33,7 +33,7 @@ namespace NotakeyIPCLibrary
     {
         Logger parentLogger;
         Logger logger;
-
+        
         public PipeServerFactory(Logger parentLogger)
         {
             this.parentLogger = parentLogger;
@@ -49,7 +49,7 @@ namespace NotakeyIPCLibrary
         {
             return Observable.Create<NotakeyPipeServer2>(o =>
             {
-                using (NamedPipeServerStream bootstrapServer = new NamedPipeServerStream(NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 1))
+                using (NamedPipeServerStream bootstrapServer = new NamedPipeServerStream(NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 1, PipeTransmissionMode.Message))
                 {
                     logger.WriteMessage("Waiting for connection");
                     bootstrapServer.WaitForConnection();
@@ -112,22 +112,15 @@ namespace NotakeyIPCLibrary
 
                         logger.LineWithEmphasis("Received", msgStr, ConsoleColor.Magenta);
 
-                        if (msgStr.Equals("DIE"))
+                        
+                        var msg = new PipeServerMessage
                         {
-                            logger.WriteMessage("Disconnecting pipe as requested");
-                            stream.Disconnect();
-                        }
-                        else
-                        {
-                            var msg = new PipeServerMessage
-                            {
-                                FirstLine = msgStr,
-                                Writer = sw,
-                                Reader = sr,
-                                Stream = stream
-                            };
-                            o.OnNext(msg);
-                        }
+                            FirstLine = msgStr,
+                            Writer = sw,
+                            Reader = sr,
+                            Stream = stream
+                        };
+                        o.OnNext(msg);
                     }
 
                     logger.WriteMessage("Terminating instance");

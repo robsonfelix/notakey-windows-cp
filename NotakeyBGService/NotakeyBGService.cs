@@ -51,6 +51,7 @@ namespace NotakeyBGService
             bool shouldTerminateService = false;
 
             using (NamedPipeServerStream server = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.WriteThrough)) {
+                
                 server.WaitForConnection();
 
                 using (var sr = new StreamReader(server, Encoding.UTF8, true, 4096, true))
