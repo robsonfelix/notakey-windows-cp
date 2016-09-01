@@ -234,15 +234,4 @@ namespace NotakeyBGService
             new Task(ListenThenCommunicatePipeNames).Start();
         }
     }
-
-    public static class BGServiceConfiguration
-    {
-        public static readonly TimeSpan AsyncTimeout = TimeSpan.FromSeconds(30);
-    }
-
-    public static class ApiConfiguration
-    {
-        public static readonly string AccessId = "84c328f2-4ff2-4980-8db6-3ecabf55bff1";
-        public static readonly string ApiEndpoint = "https://demo.notakey.com/api/v2/";
-    }
 }
