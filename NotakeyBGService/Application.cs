@@ -104,23 +104,37 @@ namespace NotakeyBGService
                 // This is on a dedicated thread - don't do async operations
                 ManualResetEvent mre = new ManualResetEvent(false);
 
-                logger.WriteMessage("Received " + obj.FirstLine);
-
+                logger.LineWithEmphasis("Processing message", obj.FirstLine, ConsoleColor.Magenta);
+                
                 switch (obj.FirstLine)
                 {
                     case "API_HEALTH_CHECK":
-                        throw new NotImplementedException();
+                        // TODO: invoke /api/health and and check NOTAKEY_STATUS ?
+                        obj.Writer.WriteLine("OK");
+                        mre.Set();
                         break;
                     case "REQUEST_AUTH":
-                        throw new NotImplementedException();
+                        string username = obj.Reader.ReadLine();
+                        string password = obj.Reader.ReadLine();
+
+                        obj.Writer.WriteLine("NOK");
+                        obj.Writer.WriteLine("NOT_IMPLEMENTED");
+                        mre.Set();
                         break;
                     case "STATUS_FOR_REQUEST":
-                        throw new NotImplementedException();
+                        string uuid = obj.Reader.ReadLine();
+
+                        obj.Writer.WriteLine("NOK");
+                        obj.Writer.WriteLine("NOT_IMPLEMENTED");
+                        mre.Set();
                         break;
                     default:
                         throw new InvalidOperationException("Unknown message " + obj.FirstLine);
                         break;
                 }
+
+                mre.WaitOne();
+                obj.Writer.Flush();
             }
             catch (Exception e)
             {

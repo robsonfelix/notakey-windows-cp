@@ -107,7 +107,6 @@
     <Compile Include="Application.cs" />
     <Compile Include="NotakeyBGService.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="Program_Back.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
