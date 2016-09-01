@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Notakey.Utility;
+using System.Windows.Threading;
 
 namespace NotakeyBGService
 {
@@ -26,6 +27,8 @@ namespace NotakeyBGService
 
     public class Application
     {
+        Random random = new Random();
+
         SimpleApi api = new SimpleApi();
         Logger logger = new Logger();
 
@@ -106,23 +109,66 @@ namespace NotakeyBGService
 
                 logger.LineWithEmphasis("Processing message", obj.FirstLine, ConsoleColor.Magenta);
                 
+                int opId = random.Next();
+                
                 switch (obj.FirstLine)
                 {
                     case "API_HEALTH_CHECK":
+                        logger.LineWithEmphasis("Performing health check. Operation", opId.ToString(), ConsoleColor.White);
                         // TODO: invoke /api/health and and check NOTAKEY_STATUS ?
                         obj.Writer.WriteLine("OK");
                         mre.Set();
                         break;
                     case "REQUEST_AUTH":
-                        string username = obj.Reader.ReadLine();
-                        string password = obj.Reader.ReadLine();
+                        logger.LineWithEmphasis("Requesting authentication. Operation", opId.ToString(), ConsoleColor.White);
 
-                        obj.Writer.WriteLine("NOK");
-                        obj.Writer.WriteLine("NOT_IMPLEMENTED");
+                        string username = obj.Reader.ReadLine();
+                        string action= obj.Reader.ReadLine();
+                        string description = obj.Reader.ReadLine();
+
+                        var sb = new StringBuilder();
+                        sb.AppendLine("Authentication request parameters:");
+                        sb.Append("  username: "); sb.AppendLine(username);
+                        sb.Append("  action: "); sb.AppendLine(action);
+                        sb.Append("  description: "); sb.AppendLine(description);
+                        logger.WriteMessage(sb.ToString());
+
+                        var authReqTerminationEvent = new ManualResetEvent(false);
+                        string authReqUuid = null;
+                        Exception authReqException = null;
+
+                        api
+                            .CreateAuthRequest(username, action, description)
+                            .SubscribeOn(NewThreadScheduler.Default)
+                            .ObserveOn(Scheduler.Immediate)
+
+                            .Finally(() => {
+                                logger.LineWithEmphasis("Finished operation", opId.ToString(), ConsoleColor.White);
+                                authReqTerminationEvent.Set();
+                            })
+                            
+                            .Timeout(TimeSpan.FromSeconds(10))
+                            
+                            .Subscribe(
+                                uuid => authReqUuid = uuid,
+                                error => authReqException = error);
+                        
+                        authReqTerminationEvent.WaitOne();
+                        if (authReqException == null)
+                        {
+                            logger.LineWithEmphasis("Created auth request", authReqUuid, ConsoleColor.White);
+                            obj.Writer.WriteLine("OK");
+                            obj.Writer.WriteLine(authReqUuid);
+                        } else {
+                            logger.ErrorLine("Failed to create auth request", authReqException);
+                            obj.Writer.WriteLine("NOK");
+                            obj.Writer.WriteLine(authReqException.Message);
+                            obj.Writer.WriteLine(authReqException.ToString());
+                        }
                         mre.Set();
                         break;
                     case "STATUS_FOR_REQUEST":
-                        string uuid = obj.Reader.ReadLine();
+                        string reqUuid = obj.Reader.ReadLine();
 
                         obj.Writer.WriteLine("NOK");
                         obj.Writer.WriteLine("NOT_IMPLEMENTED");

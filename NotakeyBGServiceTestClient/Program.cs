@@ -14,12 +14,17 @@ namespace NotakeyBGServiceTestClient
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Press any key to start the test in two threads...");
+            int threadC = 1;
+            Console.WriteLine("Press any key to start the test in {0} thread(s)...", threadC);
             Console.ReadKey();
 
-            var a = Task.Run(() => DoStuff());
-            var b = Task.Run(() => DoStuff());
-            Task.WaitAll(a, b);
+            var tasks = new List<Task>();
+            for (int i = 0; i < threadC; ++i)
+            {
+                tasks.Add(Task.Run(() => DoStuff()));
+            }
+            
+            Task.WaitAll(tasks.ToArray());
 
             Console.WriteLine("Finished. Press any key to quit ...");
             Console.ReadKey();
@@ -45,7 +50,7 @@ namespace NotakeyBGServiceTestClient
 
                         Console.WriteLine("Requested auth. Success: {0}. Message: {1}", status, msg);
                     },
-                    "REQUEST_AUTH", "20208714", "nAda52Ed");
+                    "REQUEST_AUTH", "jkirsteins", "My OK Action", "My OK Description");
 
                 client.Execute(
                     (StreamReader sr) =>
@@ -55,7 +60,7 @@ namespace NotakeyBGServiceTestClient
 
                         Console.WriteLine("Requested auth 2. Success: {0}. Message: {1}", status, msg);
                     },
-                    "REQUEST_AUTH", "20208715", "nAda52Ed");
+                    "REQUEST_AUTH", "jkirsteins_which_does_not_exist", "My NOK Action", "My NOK Description");
 
                 string uuid = "7f098073-afc2-45e2-8fef-9e33bfd81690";
                 client.Execute(
