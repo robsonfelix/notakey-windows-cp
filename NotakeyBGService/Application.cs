@@ -55,7 +55,6 @@ namespace NotakeyBGService
                 logger.WriteMessage("  disposing " + disposable.ToString());
                 disposable.Dispose();
             }
-            disposableSubscriptions = null;
         }
 
         internal void Run()
@@ -137,6 +136,8 @@ namespace NotakeyBGService
                 int opId = random.Next();
                 bool shouldTerminate = false;
                 
+                StringBuilder sb;
+                
                 switch (obj.FirstLine)
                 {
                     case "DIE":
@@ -149,6 +150,51 @@ namespace NotakeyBGService
                         obj.Writer.WriteLine("OK");
                         mre.Set();
                         break;
+                    case "SYNC_REQUEST_STATUS":
+                        logger.LineWithEmphasis("Checking auth request status (until completion). Operation", opId.ToString(), ConsoleColor.White);
+
+                        string checkUuid = obj.Reader.ReadLine();
+
+                        sb = new StringBuilder();
+                        sb.AppendLine("Response check parameters:");
+                        sb.Append("  uuid: "); sb.AppendLine(checkUuid);
+                        logger.WriteMessage(sb.ToString());
+
+                        var authCheckTerminationEvent = new ManualResetEvent(false);
+
+                        ApprovalRequestResponse authCheckResponse = null;
+                        Exception authCheckException = null;
+
+                        api
+                            .Poll(checkUuid)
+                            .SubscribeOn(NewThreadScheduler.Default)
+                            .ObserveOn(Scheduler.Immediate)
+
+                            .Finally(() => {
+                                logger.LineWithEmphasis("Finished operation", opId.ToString(), ConsoleColor.White);
+                                authCheckTerminationEvent.Set();
+                            })
+                            
+                            .Timeout(TimeSpan.FromSeconds(30))
+                            
+                            .Subscribe(
+                                response => authCheckResponse = response,
+                                error => authCheckException = error);
+
+                        authCheckTerminationEvent.WaitOne();
+                        if (authCheckException == null)
+                        {
+                            logger.LineWithEmphasis("Received response", authCheckResponse.ApprovalGranted.ToString(), ConsoleColor.White);
+                            obj.Writer.WriteLine("OK");
+                            obj.Writer.WriteLine(authCheckResponse.ApprovalGranted ? "TRUE" : "FALSE");
+                        } else {
+                            logger.ErrorLine("Failed to create auth request", authCheckException);
+                            obj.Writer.WriteLine("NOK");
+                            obj.Writer.WriteLine(authCheckException.Message);
+                            obj.Writer.WriteLine(authCheckException.ToString());
+                        }
+                        mre.Set();
+                        break;
                     case "REQUEST_AUTH":
                         logger.LineWithEmphasis("Requesting authentication. Operation", opId.ToString(), ConsoleColor.White);
 
@@ -156,7 +202,7 @@ namespace NotakeyBGService
                         string action= obj.Reader.ReadLine();
                         string description = obj.Reader.ReadLine();
 
-                        var sb = new StringBuilder();
+                        sb = new StringBuilder();
                         sb.AppendLine("Authentication request parameters:");
                         sb.Append("  username: "); sb.AppendLine(username);
                         sb.Append("  action: "); sb.AppendLine(action);

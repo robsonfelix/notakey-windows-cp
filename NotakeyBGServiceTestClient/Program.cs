@@ -39,16 +39,12 @@ namespace NotakeyBGServiceTestClient
 
                 client = new NotakeyPipeClient();
 
-                return; // trigger DIE
-
                 string result = null;
                 client.Execute((StreamReader sr) => {
                     result = sr.ReadLine();
                     Debug.WriteLine("Received response");
                 }, "API_HEALTH_CHECK");
                 Console.WriteLine("STATUS_CHECK: {0}", result);
-
-                
 
                 client.Execute(
                     (StreamReader sr) =>
@@ -62,36 +58,16 @@ namespace NotakeyBGServiceTestClient
                         }
                         Console.WriteLine("Requested auth. Success: {0}. Message: {1}", status, msg);
                     },
-                    "REQUEST_AUTH", "jkirsteins", "My OK Action", "My OK Description");
-
-                client.Execute(
-                    (StreamReader sr) =>
-                    {
-                        bool status = ("OK".Equals(sr.ReadLine()));
-                        string msg = sr.ReadLine();
-
-                        Console.WriteLine("Requested auth 2. Success: {0}. Message: {1}", status, msg);
-                    },
-                    "REQUEST_AUTH", "jkirsteins_which_does_not_exist", "My NOK Action", "My NOK Description");
+                    "REQUEST_AUTH", "demo", "My OK Action", "My OK Description");
 
                 string uuid = goodUuid ?? "7f098073-afc2-45e2-8fef-9e33bfd81690";
 
                 client.Execute(
                     (StreamReader sr) =>
                     {
-                        Console.WriteLine("Status for request {0}: {1}", uuid, sr.ReadLine());
-                    }, "STATUS_FOR_REQUEST", uuid);
-
-                client.Execute(
-                    (StreamReader sr) =>
-                    {
                         bool status = ("OK".Equals(sr.ReadLine()));
                        
-                        Console.WriteLine("Sync'ed status for request {0}: {1}", uuid, status);
-                        if (!status)
-                        {
-                            Console.WriteLine("  message: {0}", sr.ReadLine());
-                        }
+                        Console.WriteLine("Sync'ed status for request {0}: {1}: {2}", uuid, status, sr.ReadLine());
                     }, "SYNC_REQUEST_STATUS", uuid);
 
 
