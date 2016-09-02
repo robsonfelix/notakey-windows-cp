@@ -231,17 +231,15 @@ namespace NotakeyBGService
                         break;
                     case "REQUEST_AUTH":
                         logger.LineWithEmphasis("Requesting authentication. Operation", opId.ToString(), ConsoleColor.White);
-
+                        
                         string username = obj.Reader.ReadLine();
+                        logger.LineWithEmphasis("Requested username", username, ConsoleColor.White);
+                        
                         string action= obj.Reader.ReadLine();
+                        logger.LineWithEmphasis("Requested action", action, ConsoleColor.White);
+                        
                         string description = obj.Reader.ReadLine();
-
-                        sb = new StringBuilder();
-                        sb.AppendLine("Authentication request parameters:");
-                        sb.Append("  username: "); sb.AppendLine(username);
-                        sb.Append("  action: "); sb.AppendLine(action);
-                        sb.Append("  description: "); sb.AppendLine(description);
-                        logger.WriteMessage(sb.ToString());
+                        logger.LineWithEmphasis("Requested description", description, ConsoleColor.White);
 
                         var authReqTerminationEvent = new ManualResetEvent(false);
                         string authReqUuid = null;
@@ -286,7 +284,6 @@ namespace NotakeyBGService
                         break;
                     default:
                         throw new InvalidOperationException("Unknown message " + obj.FirstLine);
-                        break;
                 }
 
                 mre.WaitOne();
