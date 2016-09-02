@@ -165,7 +165,7 @@ namespace NotakeyNETProvider
                     return;
                 }
 
-                string computerName = "WIN-1235";
+                string computerName = System.Environment.MachineName;
                 string description = string.Format("Do you wish to authenticate user '{0}' on computer '{1}'", Username, computerName);
 
                 string uuid = null;
