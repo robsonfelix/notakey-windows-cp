@@ -30,7 +30,7 @@ namespace NotakeyNETProvider
     public class NotakeyNETCredential: ICredentialProviderCredential2
     {
         private ICredentialProviderCredentialEvents Events = null;
-        static string InstructionsText = "You will have to authorize the request using notaKey on your smartphone.";
+        static string InstructionsText = "You will have to authorize the request using Notakey Authenticator on your smartphone.";
 
         /// <summary>
         /// Placeholder for lazy-loaded service status text
@@ -38,7 +38,7 @@ namespace NotakeyNETProvider
         static string statusLabel = "Determining Status…";
         private CancellationTokenSource statusCheckTokenSource = null;
 
-        public string PhoneNumber = "";
+        public string Username = "";
         public string Password = "";
 
         public void Advise(ICredentialProviderCredentialEvents pcpce)
@@ -99,7 +99,7 @@ namespace NotakeyNETProvider
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_DESELECTED_TILE;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_READONLY;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PHONE_INPUT)
+            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_FOCUSED;
@@ -134,14 +134,14 @@ namespace NotakeyNETProvider
         {
             Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, "Please wait ...");
             Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PHONE_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
         }
 
         private void ConfigureUIForEditing()
         {
             Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, InstructionsText);
             Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PHONE_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
         }
         
         public void GetSerialization(out _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE pcpgsr, 
@@ -165,6 +165,9 @@ namespace NotakeyNETProvider
                     return;
                 }
 
+                string computerName = "WIN-1235";
+                string description = string.Format("Do you wish to authenticate user '{0}' on computer '{1}'", Username, computerName);
+
                 string uuid = null;
                 bool failed = false;
                 c.Execute((StreamReader sr) =>
@@ -178,56 +181,45 @@ namespace NotakeyNETProvider
                     {
                         failed = true;
                     }
-                }, "REQUEST_AUTH", PhoneNumber, Password);
+                }, "REQUEST_AUTH", Username, "Windows Login", description);
 
                 if (failed /* REQUEST_AUTH */)
                 {
-                    ppszOptionalStatusText = "The specified phone number / password combination is not valid.";
+                    ppszOptionalStatusText = "The specified username / password combination is not valid.";
                     pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
                     pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_ERROR;
                     return;
                 }
 
                 bool status = false;
-                while (true)
-                {
-                    bool pending = true;
-                    c.Execute(
-                        (StreamReader sr) =>
+                string errorMessage = null;
+                
+                c.Execute(
+                    (StreamReader sr) =>
+                    {
+                        string res = sr.ReadLine();
+                        if (res == "OK")
                         {
-                            string res = sr.ReadLine();
-                            Console.WriteLine("Status: {0}", res);
-                            pending = "WAIT".Equals(res);
-                            if (!pending)
-                            {
-                                status = "OK".Equals(res);
-                            }
-                        }, "STATUS_FOR_REQUEST", uuid);
+                            status = (sr.ReadLine() == "TRUE");
+                        }
+                        else
+                        {
+                            errorMessage = sr.ReadLine();
+                        }
+                    }, "SYNC_REQUEST_STATUS", uuid);
 
-                    if (!pending) break;
-                    Thread.Sleep(1500);
-                }
-
-                string local_user = "gints";
-                string local_password = "gints";
                 if (!status)
                 {
-                    ppszOptionalStatusText = "The authorization request was denied or expired.";
+                    ppszOptionalStatusText = errorMessage ?? "The authorization request could not be processed.";
                     pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
                     pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_WARNING;
                     return;
                 }
 
-                if (PhoneNumber.Equals("20208714"))
-                {
-                    local_user = "notakey";
-                    local_password = "notakey";
-                }
-
                 int inCredSize = 1024;
                 IntPtr inCredBuffer = Marshal.AllocCoTaskMem(inCredSize);
 
-                if (!LsaWrapper.CredPackAuthenticationBuffer(0, local_user, local_password,
+                if (!LsaWrapper.CredPackAuthenticationBuffer(0, Username, Password,
                     inCredBuffer, ref inCredSize))
                 {
                     throw new Win32Exception(Marshal.GetLastWin32Error());
@@ -263,7 +255,7 @@ namespace NotakeyNETProvider
 
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.TITLE)
             {
-                ppsz = "Authorize with notaKey";
+                ppsz = "Authorize with Notakey Authenticator";
             }
             else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL)
             {
@@ -279,9 +271,9 @@ namespace NotakeyNETProvider
             {
                 ppsz = Password;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PHONE_INPUT)
+            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
             {
-                ppsz = PhoneNumber;
+                ppsz = Username;
             }
             
             if (dwFieldID >= (uint)NotakeyNETProvider.FIELDS.TOTAL_COUNT)
@@ -345,9 +337,9 @@ namespace NotakeyNETProvider
 
         public void SetStringValue(uint dwFieldID, string psz)
         {
-            if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PHONE_INPUT)
+            if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
             {
-                PhoneNumber = psz;
+                Username = psz;
             } else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PASS_INPUT)
             {
                 Password = psz;
@@ -392,14 +384,21 @@ namespace NotakeyNETProvider
                     }
 
                     await Task.Delay(5000, cancellationToken);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
                 }
             }, cancellationToken);
         }
 
         private void StopStatusPolling()
         {
-            statusCheckTokenSource.Cancel();
-            statusCheckTokenSource = null;
+            if (statusCheckTokenSource != null)
+            {
+                statusCheckTokenSource.Cancel();
+                statusCheckTokenSource = null;
+            }
         }
 
         private uint RetrieveMSV10PackageId(string name = "MICROSOFT_AUTHENTICATION_PACKAGE_V1_0")

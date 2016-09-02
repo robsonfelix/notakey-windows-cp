@@ -28,7 +28,7 @@ namespace NotakeyNETProvider
             TITLE,
             STATUS_LABEL,
 
-            PHONE_INPUT,
+            USERNAME_INPUT,
             PASS_INPUT, 
             INSTRUCTION_LABEL,
             
@@ -74,7 +74,7 @@ namespace NotakeyNETProvider
                 {
                     result.cpft = _CREDENTIAL_PROVIDER_FIELD_TYPE.CPFT_TILE_IMAGE;
                     result.dwFieldID = dwIndex;
-                    result.pszLabel = "notaKey";
+                    result.pszLabel = "Notakey";
                     result.guidFieldType = BITMAP_GUID;
                 }
                 else if (dwIndex == (uint)FIELDS.TITLE)
@@ -100,11 +100,11 @@ namespace NotakeyNETProvider
                     result.pszLabel = "Server status";
                     result.guidFieldType = STATUS_LABEL_GUID;
                 }
-                else if (dwIndex == (uint)FIELDS.PHONE_INPUT)
+                else if (dwIndex == (uint)FIELDS.USERNAME_INPUT)
                 {
                     result.cpft = _CREDENTIAL_PROVIDER_FIELD_TYPE.CPFT_EDIT_TEXT;
                     result.dwFieldID = dwIndex;
-                    result.pszLabel = "Phone Number";
+                    result.pszLabel = "Username";
                     result.guidFieldType = PHONE_NUMBER_GUID;
                 }
                 else if (dwIndex == (uint)FIELDS.SUBMIT_BUTTON)
