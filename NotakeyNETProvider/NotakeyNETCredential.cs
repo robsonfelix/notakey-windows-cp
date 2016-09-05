@@ -12,6 +12,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Pipes;
 
 namespace NotakeyNETProvider
 {
@@ -159,7 +160,7 @@ namespace NotakeyNETProvider
                 var c = new NotakeyPipeClient();
                 if (!("OK".Equals(c.StatusCheckMessage())))
                 {
-                    ppszOptionalStatusText = "The service is not available. Please try again in a bit. If the problem persists, contact +371 20 208 714.";
+                    ppszOptionalStatusText = "The service is not available. Please try again in a bit.";
                     pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
                     pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_WARNING;
                     return;
@@ -363,14 +364,15 @@ namespace NotakeyNETProvider
             {
                 while (true)
                 {
+                    NotakeyPipeClient c;
                     try
                     {
-                        var c = new NotakeyPipeClient();
+                        c = new NotakeyPipeClient();
                         statusLabel = string.Format("Service Status: {0}", c.StatusCheckMessage());
                     }
                     catch (TimeoutException)
                     {
-                        statusLabel = "Service Status: network request timed out";
+                        statusLabel = "Service Status: health-check request timed out. Is the service running and bound?";
                     }
                     catch (Exception e)
                     {

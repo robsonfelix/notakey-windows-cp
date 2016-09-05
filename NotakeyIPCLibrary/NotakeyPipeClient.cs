@@ -90,13 +90,13 @@ namespace NotakeyIPCLibrary
 			}
 		}
 
-		public string StatusCheckMessage()
+		public string StatusCheckMessage(int timeoutSeconds = 7)
 		{
 			var msg = "";
 			Execute((StreamReader sr) =>
 			{
 				msg = sr.ReadLine();
-			}, "API_HEALTH_CHECK");
+            }, "API_HEALTH_CHECK", timeoutSeconds.ToString());
 			return msg;
 		}
 	}

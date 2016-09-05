@@ -23,7 +23,7 @@ namespace NotakeyBGService
     public static class ApiConfiguration
     {
         public static readonly string AccessId = "84c328f2-4ff2-4980-8db6-3ecabf55bff1";
-        public static readonly string ApiEndpoint = "https://demo.notakey.com/api/v2/";
+        public static readonly string ApiEndpoint = "https://demo.notakey.com/api/";
     }
 
     public class UnattendedLogger : Logger
@@ -95,17 +95,24 @@ namespace NotakeyBGService
         {
             logger.WriteHeader("Starting Notakey BG IPC service", ConsoleColor.White, ConsoleColor.DarkBlue);
 
-            logger.WriteMessage("Binding to Notakey API (" + ApiConfiguration.ApiEndpoint + "; " + ApiConfiguration.AccessId + ")");
-            api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId)
-               .Timeout(TimeSpan.FromSeconds(15))
-               .Subscribe(
-                   p => logger.WriteMessage("Bound to: " + p.ToString()),
-                   error =>
-                   {
-                       logger.ErrorLine("Notakey API bind failure", error);
-                       terminationEvent.Set();
-                   },
-                   SpawnServer);   
+            logger.WriteMessage("Trying to bind to Notakey API (" + ApiConfiguration.ApiEndpoint + "; " + ApiConfiguration.AccessId + ")");
+            logger.LineWithEmphasis("Retry strategy", "ExponentialBackoff", ConsoleColor.White);
+            
+            Observable.Defer(() => api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId))
+                .Timeout(TimeSpan.FromSeconds(1))
+                .RetryWithBackoffStrategy(
+                    retryCount: 0,
+                    retryOnError: e => { logger.ErrorLine("Bind attempt failed", e); return true; },
+                    strategy: RetryWithBackoffStrategy_ObservableExtensions.ExponentialBackoff
+                )
+                .Subscribe(
+                    p => logger.LineWithReverseEmphasis("SUCCESS", "Bound to: " + p.ToString(), ConsoleColor.Green),
+                    error =>
+                    {
+                        logger.ErrorLine("Could not bind to the Notakey API", error);
+                        terminationEvent.Set();
+                    },
+                    SpawnServer);  
         }
 
         void SpawnServer()
@@ -180,8 +187,56 @@ namespace NotakeyBGService
                         break;
                     case "API_HEALTH_CHECK":
                         logger.LineWithEmphasis("Performing health check. Operation", opId.ToString(), ConsoleColor.White);
-                        // TODO: invoke /api/health and and check NOTAKEY_STATUS ?
-                        obj.Writer.WriteLine("OK");
+
+                        TimeSpan checkTimeout = TimeSpan.FromSeconds(int.Parse(obj.Reader.ReadLine()));
+                        logger.LineWithEmphasis("Health check timeout (sec)", checkTimeout.TotalSeconds.ToString(), ConsoleColor.White);
+                        
+                        var healthCheckEvent = new ManualResetEvent(false);
+
+                        Dictionary<string,string> healthStatus = null;
+                        Exception healthException = null;
+
+                        api
+                            .PerformHealthCheck()
+                            .SubscribeOn(NewThreadScheduler.Default)
+                            .ObserveOn(Scheduler.Immediate)
+
+                            .Finally(() => {
+                                logger.LineWithEmphasis("Finished operation", opId.ToString(), ConsoleColor.White);
+                                healthCheckEvent.Set();
+                            })
+                            
+                            .Timeout(checkTimeout)
+                            
+                            .Subscribe(
+                                response => healthStatus = response,
+                                error => healthException = error);
+
+                        healthCheckEvent.WaitOne();
+                        if (healthException == null)
+                        {
+                            var strResponse = String.Join(", ", healthStatus.Select(kvp =>
+                                  String.Format("{0} {1}", kvp.Key, kvp.Value)));
+                            logger.LineWithEmphasis("Received response", strResponse, ConsoleColor.White);
+                            try
+                            {
+                                obj.Writer.WriteLine(healthStatus["NOTAKEY_STATUS"]);
+                            }
+                            catch (KeyNotFoundException)
+                            {
+                                obj.Writer.WriteLine("Server is reachable but not reporting overall status.");
+                            }
+                        } else {
+                            logger.ErrorLine("Health check failed", healthException);
+                            if (healthException is TimeoutException)
+                            {
+                                obj.Writer.WriteLine("API call timed out.");
+                            }
+                            else
+                            {
+                                obj.Writer.WriteLine(healthException.Message);
+                            }
+                        }
                         mre.Set();
                         break;
                     case "SYNC_REQUEST_STATUS":

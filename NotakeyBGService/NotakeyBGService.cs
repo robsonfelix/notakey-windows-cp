@@ -34,15 +34,19 @@ namespace NotakeyBGService
 
         public void StartAsApp()
         {
-            api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId)
+            Observable.Defer(() => api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId))
+                .RetryWithBackoffStrategy(
+                    retryCount: 0,
+                    strategy: RetryWithBackoffStrategy_ObservableExtensions.ExponentialBackoff
+                )
                 .Subscribe(
-                p => { },
-                error =>
-                {
-                    logger.Debug("BIND failure: " + error.ToString());
-                    terminationEvent.Set();
-                },
-                SpawnPipeNameServerListenerThread);   
+                    p => { },
+                    error =>
+                    {
+                        logger.Debug("BIND failure: " + error.ToString());
+                        logger.LineWithEmphasis("Trying again in a bit using. Strategy", "Exponential Backoff", ConsoleColor.White);
+                    },
+                    SpawnPipeNameServerListenerThread);   
         }
 
         private void ListenThenCommunicateWithSpecificClient(string pipeName)
