@@ -69,6 +69,16 @@ namespace Notakey.Utility
             }
         }
 
+        public void LineWithReverseEmphasis(string emPart, string lastPart, ConsoleColor emColor)
+        {
+            lock (ThreadLock)
+            {
+                _WriteMessage_WhileLocked(emPart, true, emColor, ConsoleColor.Black, true, false);
+                _WriteMessage_WhileLocked(": ", false, ConsoleColor.White, ConsoleColor.Black, false, false);
+                _WriteMessage_WhileLocked(lastPart, false, ConsoleColor.White, ConsoleColor.Black, false, true);
+            }
+        }
+
         public virtual void ErrorLine(string message, Exception e = null)
         {
             lock (ThreadLock) 
