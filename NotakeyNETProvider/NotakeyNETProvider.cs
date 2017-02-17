@@ -38,7 +38,7 @@ namespace NotakeyNETProvider
 
         private ICredentialProviderEvents Events { get; set; }
         
-        public void Advise(ICredentialProviderEvents pcpe, uint upAdviseContext)
+        public void Advise(ICredentialProviderEvents pcpe, ulong upAdviseContext)
         {
             Events = pcpe;
         }

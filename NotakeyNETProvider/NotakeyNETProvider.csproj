@@ -62,8 +62,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CredentialProviders">
-      <HintPath>..\..\..\CredentialProviders.dll</HintPath>
+    <Reference Include="credentialprovider_x64">
+      <HintPath>..\credentialprovider_x64.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
