@@ -30,5 +30,18 @@ Facilitates communication between BG service and login plugin.
 
 Actual credential provider (Login screen plugin)
 
+To build this, you need:
+
+- Windows SDK (which should install credentialprovider.idl)
+- generate a DLL (for the appropriate architecture) from the idl file (see
+  gen.bat under generate\_CP\_dll\_from\_idl\\)
+- after you build the NotakeyNETProvider.dll, it needs to be registered as a COM
+  provider assembly (see register.bat step 1).
+
+  NOTE: the /codebase param is required, if the assembly is not in GAC
+- when the assembly is registered as a COM provider, see register.reg to
+  register it as a CredentialProvider
+
+At this point, the CredUIInvokerNET application should display Notakey as an option
 
 
