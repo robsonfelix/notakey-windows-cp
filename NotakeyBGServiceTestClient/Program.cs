@@ -23,7 +23,8 @@ namespace NotakeyBGServiceTestClient
             {
                 tasks.Add(Task.Run(() => DoStuff()));
             }
-            
+
+            Console.WriteLine("Waiting ...");
             Task.WaitAll(tasks.ToArray());
 
             Console.WriteLine("Finished. Press any key to quit ...");
@@ -39,13 +40,13 @@ namespace NotakeyBGServiceTestClient
 
                 client = new NotakeyPipeClient();
 
-                string result = null;
+                /*string result = null;
                 client.Execute((StreamReader sr) => {
                     result = sr.ReadLine();
                     Debug.WriteLine("Received response");
                 }, "API_HEALTH_CHECK");
                 Console.WriteLine("STATUS_CHECK: {0}", result);
-
+                */
                 client.Execute(
                     (StreamReader sr) =>
                     {
@@ -58,7 +59,7 @@ namespace NotakeyBGServiceTestClient
                         }
                         Console.WriteLine("Requested auth. Success: {0}. Message: {1}", status, msg);
                     },
-                    "REQUEST_AUTH", "demo", "My OK Action", "My OK Description");
+                    "REQUEST_AUTH", "gints", "Test action", "Test description");
 
                 string uuid = goodUuid ?? "7f098073-afc2-45e2-8fef-9e33bfd81690";
 

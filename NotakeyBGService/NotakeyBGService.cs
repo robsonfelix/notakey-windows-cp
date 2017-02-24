@@ -65,6 +65,7 @@ namespace NotakeyBGService
                         try
                         {
                             string cmd = sr.ReadLine().ToUpperInvariant();
+                            logger.WriteMessage($"Received {cmd}");
 
                             switch (cmd)
                             {
@@ -79,11 +80,12 @@ namespace NotakeyBGService
                                     break;
                                 case "REQUEST_AUTH":
                                     string username = sr.ReadLine();
-                                    string password = sr.ReadLine();
+                                    string action = sr.ReadLine();
+                                    string description = sr.ReadLine();
 
                                     try
                                     {
-                                        var authReqChain = api.PerformFullVerification("demo", "Windows", "Desc yo");
+                                        var authReqChain = api.PerformFullVerification(username, action, description);
                                         HandleChain(authReqChain, sw, asyncWaitEvent, OnRequestedAuth, OnRequestingAuthError);
                                         
                                         //sw.WriteLine("OK");

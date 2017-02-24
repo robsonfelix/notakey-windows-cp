@@ -22,8 +22,8 @@ namespace NotakeyBGService
 
     public static class ApiConfiguration
     {
-        public static readonly string AccessId = "84c328f2-4ff2-4980-8db6-3ecabf55bff1";
-        public static readonly string ApiEndpoint = "https://demo.notakey.com/api/";
+        public static string AccessId = "<UNSET: pass as 2nd cli parameter>";
+        public static string ApiEndpoint = "<UNSET: pass as 1st cli parameter>";
     }
 
     public class UnattendedLogger : Logger
@@ -73,6 +73,9 @@ namespace NotakeyBGService
             {
                  logger = new UnattendedLogger();
             }
+
+            logger.WriteMessage($"Using API endpoint: {ApiConfiguration.ApiEndpoint}");
+            logger.WriteMessage($"Using API access id: {ApiConfiguration.AccessId}");
 
             this.terminationEvent = terminationEvent;
             this.factory = new PipeServerFactory(logger);
@@ -220,7 +223,7 @@ namespace NotakeyBGService
                             logger.LineWithEmphasis("Received response", strResponse, ConsoleColor.White);
                             try
                             {
-                                obj.Writer.WriteLine(healthStatus["NOTAKEY_STATUS"]);
+                                obj.Writer.WriteLine(healthStatus["STATUS"] == "LIVE" ? "OK" : "NOK");
                             }
                             catch (KeyNotFoundException)
                             {

@@ -3,8 +3,10 @@
   <id>com.notakey.cp.bgs</id>
   <name>Notakey BG Service</name>
   <description>This service enables the Notakey login credential provider.</description>
-  <executable>NotakeyBGService.exe</executable>
+  <executable>bin\Debug\NotakeyBGService.exe</executable>
   <logmode>rotate</logmode>
 
+  <argument>https://demo.notakey.com/api/</argument>
+  <argument>84c328f2-4ff2-4980-8db6-3ecabf55bff1</argument>
   <argument>/unattended</argument>
 </service>
