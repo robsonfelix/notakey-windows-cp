@@ -2,3 +2,5 @@ before_build:
   - nuget restore
 install:
   - git submodule update --init --recursive
+build:
+  project: NotakeyNETProvider.sln
