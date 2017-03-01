@@ -35,7 +35,15 @@ namespace NotakeyIPCLibrary
 			string pipeName;
 			try
 			{
-				pipeName = ReadPipeName();
+				try
+				{
+					pipeName = ReadPipeName();
+				}
+				catch (Exception e)
+				{
+					Debug.WriteLine($"EXCEPTION: failed to read pipe name: {e.ToString()}");
+					throw;
+				}
 			}
 			catch (IOException e)
 			{
@@ -50,9 +58,11 @@ namespace NotakeyIPCLibrary
 
 			if (pipeName == null)
 			{
+				Debug.WriteLine("Pipe client has pipeName null. Invalid situation - throwing.");
 				throw new ServerErrorException("Server returned null pipe name");
 			}
 
+			Debug.WriteLine($"Connecting to pipe {pipeName}");
 			using (var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
 			{
 				pipeClient.Connect(TimeOutInMilliseconds);
@@ -80,12 +90,16 @@ namespace NotakeyIPCLibrary
 			using (NamedPipeClientStream tmpPipeClient =
 				   new NamedPipeClientStream(".", NotakeyPipeServer.MasterPipeName, PipeDirection.In))
 			{
+				Debug.WriteLine("... connecting");
                 // Connect to the pipe or wait until the pipe is available.
 				tmpPipeClient.Connect(TimeOutInMilliseconds);
 
+				Debug.WriteLine("... reading");
 				using (StreamReader sr = new StreamReader(tmpPipeClient))
 				{
-					return sr.ReadLine();
+					var name = sr.ReadLine();
+					Debug.WriteLine($"... got pipe name {name}. Returning.");
+					return name;
 				}
 			}
 		}
@@ -95,7 +109,9 @@ namespace NotakeyIPCLibrary
 			var msg = "";
 			Execute((StreamReader sr) =>
 			{
+				Debug.WriteLine($"Status check - waiting for readLine...");
 				msg = sr.ReadLine();
+				Debug.WriteLine($"Status check - got {msg}");
             }, "API_HEALTH_CHECK", timeoutSeconds.ToString());
 			return msg;
 		}

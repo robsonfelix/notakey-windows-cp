@@ -150,21 +150,29 @@ namespace NotakeyNETProvider
             out string ppszOptionalStatusText, 
             out _CREDENTIAL_PROVIDER_STATUS_ICON pcpsiOptionalStatusIcon)
         {
+			Debug.WriteLine("Entering GetSerialization. Configuring UI...");
             ConfigureUIForWaiting();
+			Debug.WriteLine("... configured UI");
                 
             try
             {
                 // pcpcs must always be assigned, even if we do not return any valid information.
                 pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
 
-                var c = new NotakeyPipeClient();
-                if (!("OK".Equals(c.StatusCheckMessage())))
+				var c = new NotakeyPipeClient();
+				Debug.WriteLine("... created client");
+
+				var statusCheck = c.StatusCheckMessage();
+                if (!("OK".Equals(statusCheck)))
                 {
+					Debug.WriteLine($"... status check not OK: {statusCheck}");
                     ppszOptionalStatusText = "The service is not available. Please try again in a bit.";
                     pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
                     pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_WARNING;
                     return;
                 }
+
+				Debug.WriteLine("... status check OK");
 
                 string computerName = System.Environment.MachineName;
                 string description = string.Format("Do you wish to authenticate user '{0}' on computer '{1}'", Username, computerName);
@@ -358,8 +366,11 @@ namespace NotakeyNETProvider
 
         private void BeginStatusPolling()
         {
+			Debug.WriteLine($"Entered BeginStatusPolling");
+
             statusCheckTokenSource = new CancellationTokenSource();
             var cancellationToken = statusCheckTokenSource.Token;
+
             Task.Factory.StartNew(async () =>
             {
                 while (true)
@@ -367,7 +378,9 @@ namespace NotakeyNETProvider
                     NotakeyPipeClient c;
                     try
                     {
+						Debug.WriteLine($"BeginStatusPolling - creating client");
                         c = new NotakeyPipeClient();
+						Debug.WriteLine($"BeginStatusPolling - created client. Verifying status ...");
                         statusLabel = string.Format("Service Status: {0}", c.StatusCheckMessage());
                     }
                     catch (TimeoutException)

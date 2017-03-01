@@ -105,6 +105,7 @@ namespace NotakeyBGService
                                     break;
                                 case "STATUS_FOR_REQUEST":
                                     string uuid_to_check = sr.ReadLine();
+									Debug.WriteLine($"STATUS_FOR_REQUEST {uuid_to_check} - not implemented");
 
                                     try
                                     {

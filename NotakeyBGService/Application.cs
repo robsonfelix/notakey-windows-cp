@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Notakey.Utility;
 using System.Windows.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace NotakeyBGService
 {
@@ -120,7 +121,7 @@ namespace NotakeyBGService
 
         void SpawnServer()
         {
-            bool status = terminationEvent.WaitOne(0);
+            terminationEvent.WaitOne(0);
             logger.WriteMessage("Spawning main listener");
 
             IDisposable masterPipeListener = null;
@@ -335,6 +336,7 @@ namespace NotakeyBGService
                         break;
                     case "STATUS_FOR_REQUEST":
                         string reqUuid = obj.Reader.ReadLine();
+						Debug.WriteLine($"STATUS_FOR_REQUEST {reqUuid}");
 
                         obj.Writer.WriteLine("NOK");
                         obj.Writer.WriteLine("NOT_IMPLEMENTED");
