@@ -52,7 +52,7 @@ namespace CredUIInvokerNET
         static void Main(string[] args)
         {
             bool save = false;
-
+             
             uint authPackage = 10;
 
             var credUiInfo = new CREDUI_INFO();

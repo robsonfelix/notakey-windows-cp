@@ -96,27 +96,32 @@ namespace NotakeyBGService
         }
 
         internal void Run()
-        {
+        { 
             logger.WriteHeader("Starting Notakey BG IPC service", ConsoleColor.White, ConsoleColor.DarkBlue);
 
             logger.WriteMessage("Trying to bind to Notakey API (" + ApiConfiguration.ApiEndpoint + "; " + ApiConfiguration.AccessId + ")");
             logger.LineWithEmphasis("Retry strategy", "ExponentialBackoff", ConsoleColor.White);
-            
-            Observable.Defer(() => api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId))
-                .Timeout(TimeSpan.FromSeconds(1))
-                .RetryWithBackoffStrategy(
-                    retryCount: 0,
-                    retryOnError: e => { logger.ErrorLine("Bind attempt failed", e); return true; },
-                    strategy: RetryWithBackoffStrategy_ObservableExtensions.ExponentialBackoff
-                )
-                .Subscribe(
-                    p => logger.LineWithReverseEmphasis("SUCCESS", "Bound to: " + p.ToString(), ConsoleColor.Green),
-                    error =>
-                    {
-                        logger.ErrorLine("Could not bind to the Notakey API", error);
-                        terminationEvent.Set();
-                    },
-                    SpawnServer);  
+
+            Task.Run(() =>
+            {
+                // Keep attempting to bind to API in the background
+                // Failure with this should NOT cause termination or block the IPC
+                // pipe server from starting up, because its a valid situation where
+                // e.g. network is down but the Credential Provider still needs
+                // to query for status (e.g. is service running even if API down?)
+                api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId)
+                    .Timeout(TimeSpan.FromSeconds(1))
+                    .RetryWithBackoffStrategy(
+                        retryCount: 0,
+                        retryOnError: e => { logger.ErrorLine("Bind attempt failed", e); return true; },
+                        strategy: RetryWithBackoffStrategy_ObservableExtensions.ExponentialBackoff
+                    )
+                    .Subscribe(
+                        p => logger.LineWithReverseEmphasis("SUCCESS", "Bound to: " + p.ToString(), ConsoleColor.Green),
+                        error => logger.ErrorLine("Could not bind to the Notakey API", error)
+                    );
+            });
+            SpawnServer();
         }
 
         void SpawnServer()
@@ -235,6 +240,10 @@ namespace NotakeyBGService
                             if (healthException is TimeoutException)
                             {
                                 obj.Writer.WriteLine("API call timed out.");
+                            }
+                            else if (healthException is ApiNotBoundException)
+                            {
+                                obj.Writer.WriteLine(healthException.Message);
                             }
                             else
                             {

@@ -24,7 +24,7 @@ namespace NotakeyBGService
         static void Main(string[] args)
         {
             if (args.Length < 2)
-            {
+            { 
                 Console.WriteLine("Need at least 2 arguments - 1. ApiEndpoint and 2. AccessId");
                 return;
             }

@@ -43,7 +43,7 @@ namespace NotakeyIPCLibrary
         public IObservable<NotakeyPipeServer2> GetConnectedServer()
         {
             return Observable.Defer(() => _CreateDeferred());
-        }
+        } 
 
         private IObservable<NotakeyPipeServer2> _CreateDeferred()
         {
