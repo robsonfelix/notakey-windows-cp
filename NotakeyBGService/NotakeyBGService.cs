@@ -54,7 +54,13 @@ namespace NotakeyBGService
             AutoResetEvent asyncWaitEvent = new AutoResetEvent(false);
             bool shouldTerminateService = false;
 
-            using (NamedPipeServerStream server = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.WriteThrough)) {
+            var ps = new PipeSecurity();
+            var sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
+            var par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+            ps.AddAccessRule(par);
+
+            using (NamedPipeServerStream server = new NamedPipeServerStream(pipeName, 
+                PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.WriteThrough, 0, 0, ps)) {
                 
                 server.WaitForConnection();
 
@@ -203,31 +209,7 @@ namespace NotakeyBGService
 
         private void ListenThenCommunicatePipeNames()
         {
-            // Allow 2 instances. One that' s still being processed, and another one (spawned right before
-            // first one winds down)
-            using (NamedPipeServerStream pipeServer =
-            new NamedPipeServerStream(NotakeyIPCLibrary.NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 2))
-            {
-                try
-                {
-                    pipeServer.WaitForConnection();
-
-                    string clientPipe = string.Format("lv.montadigital.notakey.client.{0}", Guid.NewGuid().ToString());
-                    logger.WriteMessage(string.Format("Generated pipe name for client: {0}", clientPipe));
-                    SpawnSpecificClientListenerThread(clientPipe);
-
-                    using (var sw = new StreamWriter(pipeServer))
-                    {
-                        sw.WriteLine(clientPipe);
-                    }
-                    SpawnPipeNameServerListenerThread(); 
-                }
-                catch (IOException e)
-                {
-                    logger.Debug(e.ToString());
-                    logger.ErrorLine(e.Message);
-                }
-            }
+            throw new NotImplementedException();
         }
 
         private void SpawnSpecificClientListenerThread(string pipeName)

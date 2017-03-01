@@ -49,7 +49,13 @@ namespace NotakeyIPCLibrary
         {
             return Observable.Create<NotakeyPipeServer2>(o =>
             {
-                using (NamedPipeServerStream bootstrapServer = new NamedPipeServerStream(NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 1, PipeTransmissionMode.Message))
+                var ps = new PipeSecurity();
+                var sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
+                var par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                ps.AddAccessRule(par);
+
+
+                using (NamedPipeServerStream bootstrapServer = new NamedPipeServerStream(NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough, 0, 0, ps))
                 {
                     logger.WriteMessage("Waiting for connection");
                     bootstrapServer.WaitForConnection();
@@ -94,7 +100,12 @@ namespace NotakeyIPCLibrary
         {
             return Observable.Create<PipeServerMessage>(o =>
             {
-                using (NamedPipeServerStream stream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough))
+                var ps = new PipeSecurity();
+                var sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
+                var par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                ps.AddAccessRule(par);
+
+                using (NamedPipeServerStream stream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough, 0, 0, ps))
                 {
                     logger.WriteMessage("Waiting on connection");
                     stream.WaitForConnection();
