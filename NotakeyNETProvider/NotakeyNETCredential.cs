@@ -50,8 +50,8 @@ namespace NotakeyNETProvider
 
         public void UnAdvise()
         {
-            this.Events = null;
-            StopStatusPolling();
+			StopStatusPolling();
+			this.Events = null;
         }
 
         public void CommandLinkClicked(uint dwFieldID)
@@ -392,7 +392,6 @@ namespace NotakeyNETProvider
                         statusLabel = string.Format("Service Status: error ({0})", e.Message);
                     }
 
-                    Debug.Assert(Events != null);
                     if (Events != null)
                     {
                         Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL, statusLabel);
