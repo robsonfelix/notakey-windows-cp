@@ -50,8 +50,11 @@ namespace NotakeyNETProvider
 
         public void UnAdvise()
         {
-			StopStatusPolling();
-			this.Events = null;
+            StopStatusPolling();
+
+            // Do not set Events to null before stopping status polling,
+            // as status poll callbacks might want to use it.
+            this.Events = null;
         }
 
         public void CommandLinkClicked(uint dwFieldID)
@@ -382,7 +385,7 @@ namespace NotakeyNETProvider
                         c = new NotakeyPipeClient();
 						Debug.WriteLine($"BeginStatusPolling - created client. Verifying status ...");
                         statusLabel = string.Format("Service Status: {0}", c.StatusCheckMessage());
-                    } 
+                    }
                     catch (TimeoutException)
                     {
                         statusLabel = "Service Status: health-check request timed out. Is the background service running?";

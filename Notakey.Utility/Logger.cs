@@ -130,6 +130,16 @@ namespace Notakey.Utility
                     leftPadding += threadPrefix.Length;
 
                     output.Write(threadPrefix);
+
+					string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzz");
+
+					leftPadding += (3 + dateTimeNow.Length);
+
+					output.Write("[");
+					output.Write(dateTimeNow);
+					output.Write("] ");
+
+
                 }
 
                 if (includeNames && childNames.Any())

@@ -1,0 +1,124 @@
+# AnyCPU will produce x64 for NotakeyNETProvider,
+# which is the only project that has a bit-dependency
+# (due to the version of credentialprovider_*.dll reference)
+platform: Any CPU
+configuration: Debug
+
+init:
+  - git config --global core.autocrlf true
+install:
+  # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
+  - ps: >-
+      $globalAssemblyFile = "GlobalAssemblyInfo.cs"
+
+      $globalAssemblyVersion = Get-Content .\$globalAssemblyFile
+
+      $hasAssemblyVersion = "'"+$globalAssemblyVersion+"'" -match 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
+
+      if (!$hasAssemblyVersion)
+      {
+        Add-AppveyorMessage -Message "No AssemblyVersion found, using 1.0.0.0 instead."
+
+        $major=1
+        $minor=0
+        $build=0
+        $revision=0
+      }
+      else
+      {
+        $assemblyVersionFormattedCorrectly = $matches[0] -match "(?<major>[0-9]+)\.(?<minor>[0-9])+(\.(?<build>([0-9])))?(\.(?<revision>([0-9])))?"
+
+        if (!$assemblyVersionFormattedCorrectly)
+        {
+          Add-AppveyorMessage -Message "The Global Assembly Version is not formatted correctly."
+          return;
+        }
+
+        $major=$matches['major'] -as [int]
+        $minor=$matches['minor'] -as [int]
+        $build=$matches['build'] -as [int]
+        $revision=$matches['revision'] -as [int]
+      }
+
+      $AssemblyVersion = "$major.$minor.$build.$revision"
+
+      Add-AppveyorMessage -Message "Global Assembly Version: $AssemblyVersion ."
+
+      $AssemblyFileVersion = "$major.$minor.$env:APPVEYOR_BUILD_NUMBER"
+
+      $AssemblyInformationalVersion = "$AssemblyFileVersion-$env:APPVEYOR_REPO_SCM" + ($env:APPVEYOR_REPO_COMMIT).Substring(0, 8)
+
+      Add-AppveyorMessage -Message "Patched File Version: $AssemblyFileVersion"
+
+      Add-AppveyorMessage -Message "Patched Informational Version: $AssemblyInformationalVersion"
+
+      Update-AppveyorBuild -Version "$AssemblyFileVersion"
+
+      $fileVersion = 'AssemblyFileVersion("' + $AssemblyFileVersion + '")';
+      $informationalVersion = 'AssemblyInformationalVersion("' + $AssemblyInformationalVersion + '")';
+
+      $foundFiles = get-childitem .\*AssemblyInfo.cs -recurse
+
+      foreach( $file in $foundFiles )
+      {
+        if ($file.Name -eq $globalAssemblyFile)
+        {
+          #Don't patch the global info.
+          continue;
+        }
+
+        $content = Get-Content "$file"
+
+        Add-AppveyorMessage -Message "Patching $file"
+
+        $env:afv = $fileVersion
+        $env:aiv = $informationalVersion
+
+        $hasFileAssemblyVersion = "'"+$content+"'" -match 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
+
+        if ($hasFileAssemblyVersion)
+        {
+          $assemblyVersionFormattedCorrectly = $matches[0] -match "(?<major>[0-9]+)\.(?<minor>[0-9])+(\.(?<build>([0-9])))?(\.(?<revision>([0-9])))?"
+
+          if ($assemblyVersionFormattedCorrectly)
+          {
+            $fileMajor=$matches['major'] -as [int]
+            $fileMinor=$matches['minor'] -as [int]
+            $fileBuild=$matches['build'] -as [int]
+            $fileRevision=$matches['revision'] -as [int]
+
+
+            $env:afv = "$fileMajor.$fileMinor.$env:APPVEYOR_BUILD_NUMBER"
+            $env:aiv = "$env:afv-$env:APPVEYOR_REPO_SCM" + ($env:APPVEYOR_REPO_COMMIT).Substring(0, 8)
+
+            Add-AppveyorMessage -Message "• Specific AssemblyVersion found, using that instead: $fileMajor.$fileMinor.$fileBuild.$fileRevision ."
+            Add-AppveyorMessage -Message "  ○ Patched File Version: $env:afv"
+            Add-AppveyorMessage -Message "  ○ Patched Informational Version: $env:aiv"
+          }
+          else
+          {
+            Add-AppveyorMessage -Message "• Specific AssemblyVersion found, but it's not formatted correctly, skipping."
+          }
+        }
+      }
+before_build:
+  - nuget restore
+build:
+  project: NotakeyNETProvider.sln
+artifacts:
+  - path: 'register*.bat'
+  - path: 'unregister*.bat'
+  - path: '**\*.reg'
+  - path: NotakeyNETProvider\bin\x64\$(configuration)
+    name: 'NotakeyNETProvider'
+  - path: NotakeyBGService\bin\$(configuration)
+    name: 'NotakeyBGService'
+  - path: CredUIInvokerNET\bin\$(configuration)
+    name: 'CredUIInvokerNET'
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: $(afv)
+  assembly_file_version: $(afv)
+  assembly_informational_version: $(aiv)
+

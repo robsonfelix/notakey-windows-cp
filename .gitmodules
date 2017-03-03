@@ -1,3 +1,0 @@
-[submodule "submodules/sdk-csharp"]
-	path = submodules/sdk-csharp
-	url = git@github.com:notakey/sdk-csharp.git
