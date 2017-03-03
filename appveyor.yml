@@ -1,3 +1,5 @@
+platform: Any CPU
+# configuration: Release
 before_build:
   - nuget restore
 install:
@@ -7,9 +9,9 @@ build:
 artifacts:
   - path: '**\*.bat'
   - path: '**\*.reg'
-  - path: 'NotakeyNETProvider\bin\$(configuration)'
+  - path: NotakeyNETProvider\bin\$(configuration)
     name: 'NotakeyNETProvider'
-  - path: 'NotakeyBGService\bin\$(configuration)'
+  - path: NotakeyBGService\bin\$(configuration)
     name: 'NotakeyBGService'
-  - path: 'CredUIInvokerNET\bin\$(configuration)'
+  - path: CredUIInvokerNET\bin\$(configuration)
     name: 'CredUIInvokerNET'
