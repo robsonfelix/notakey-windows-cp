@@ -4,3 +4,12 @@ install:
   - git submodule update --init --recursive
 build:
   project: NotakeyNETProvider.sln
+artifacts:
+  - path: '**\*.bat'
+  - path: '**\*.reg'
+  - path: 'NotakeyNETProvider\bin\$(configuration)'
+    name: 'NotakeyNETProvider'
+  - path: 'NotakeyBGService\bin\$(configuration)'
+    name: 'NotakeyBGService'
+  - path: 'CredUIInvokerNET\bin\$(configuration)'
+    name: 'CredUIInvokerNET'
