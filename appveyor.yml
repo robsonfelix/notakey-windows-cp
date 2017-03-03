@@ -15,3 +15,10 @@ artifacts:
     name: 'NotakeyBGService'
   - path: CredUIInvokerNET\bin\$(configuration)
     name: 'CredUIInvokerNET'
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
