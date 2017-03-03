@@ -75,6 +75,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Notakey.SDK, Version=1.0.1.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Notakey.SDK.1.0.1.7\lib\net45\Notakey.SDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
@@ -133,10 +137,6 @@
     <ProjectReference Include="..\submodules\sdk-csharp\Notakey.SDK\Notakey.SDK.csproj">
       <Project>{40903d2e-6be8-424e-9993-18df58045115}</Project>
       <Name>Notakey.SDK</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NotakeyIPCLibrary\NotakeyIPCLibrary.csproj">
-      <Project>{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}</Project>
-      <Name>NotakeyIPCLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
