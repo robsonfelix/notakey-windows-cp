@@ -113,7 +113,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="NotakeyBGService.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -134,9 +133,9 @@
       <Project>{ebfa4f50-813e-415c-91c8-4948e66eeb0a}</Project>
       <Name>Notakey.Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\submodules\sdk-csharp\Notakey.SDK\Notakey.SDK.csproj">
-      <Project>{40903d2e-6be8-424e-9993-18df58045115}</Project>
-      <Name>Notakey.SDK</Name>
+    <ProjectReference Include="..\NotakeyIPCLibrary\NotakeyIPCLibrary.csproj">
+      <Project>{37964CB4-B0C5-4AAF-A50A-CBCA25B116AD}</Project>
+      <Name>NotakeyIPCLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
