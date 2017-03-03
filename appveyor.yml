@@ -52,6 +52,8 @@ install:
 
       Add-AppveyorMessage -Message "Patched Informational Version: $AssemblyInformationalVersion"
 
+      Update-AppveyorBuild -Version "$AssemblyFileVersion"
+
       $fileVersion = 'AssemblyFileVersion("' + $AssemblyFileVersion + '")';
       $informationalVersion = 'AssemblyInformationalVersion("' + $AssemblyInformationalVersion + '")';
 
@@ -89,16 +91,9 @@ install:
             $env:afv = "$fileMajor.$fileMinor.$env:APPVEYOR_BUILD_NUMBER"
             $env:aiv = "$env:afv-$env:APPVEYOR_REPO_SCM" + ($env:APPVEYOR_REPO_COMMIT).Substring(0, 8)
 
-            if ($env:APPVEYOR_REPO_TAG -ne "true")
-            {
-              $env:aiv = "$env:aiv-prerelease"
-            }
-
             Add-AppveyorMessage -Message "• Specific AssemblyVersion found, using that instead: $fileMajor.$fileMinor.$fileBuild.$fileRevision ."
             Add-AppveyorMessage -Message "  ○ Patched File Version: $env:afv"
             Add-AppveyorMessage -Message "  ○ Patched Informational Version: $env:aiv"
-
-            Update-AppveyorBuild -Version "$env:afv"
           }
           else
           {
