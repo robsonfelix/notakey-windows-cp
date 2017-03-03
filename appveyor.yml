@@ -1,5 +1,9 @@
+# AnyCPU will produce x64 for NotakeyNETProvider,
+# which is the only project that has a bit-dependency
+# (due to the version of credentialprovider_*.dll reference)
 platform: Any CPU
-# configuration: Release
+configuration: Debug
+
 before_build:
   - nuget restore
 install:
@@ -7,9 +11,10 @@ install:
 build:
   project: NotakeyNETProvider.sln
 artifacts:
-  - path: '**\*.bat'
+  - path: 'register*.bat'
+  - path: 'unregister*.bat'
   - path: '**\*.reg'
-  - path: NotakeyNETProvider\bin\$(configuration)
+  - path: NotakeyNETProvider\bin\x64\$(configuration)
     name: 'NotakeyNETProvider'
   - path: NotakeyBGService\bin\$(configuration)
     name: 'NotakeyBGService'
