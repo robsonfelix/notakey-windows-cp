@@ -1,5 +1,10 @@
 # Notakey Windows Credential Provider
 
+[![Branch status](https://ci.appveyor.com/api/projects/status/0o4qpa3idgl6y7ya?svg=true)](https://ci.appveyor.com/project/kirsis/notakey-windows-cp)
+
+[![Master status](https://ci.appveyor.com/api/projects/status/0o4qpa3idgl6y7ya/branch/master?svg=true)](https://ci.appveyor.com/project/kirsis/notakey-windows-cp/branch/master)
+
+
 ## CredUIInvokerNET
 
 Invokes the Windows privilege escalation UI (for testing)
