@@ -51,14 +51,15 @@ namespace NotakeyIPCLibrary
             {
                 var ps = new PipeSecurity();
                 var sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
-                var par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                var par = new PipeAccessRule(sid, PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow);
                 ps.AddAccessRule(par);
 
-
+        
                 using (NamedPipeServerStream bootstrapServer = new NamedPipeServerStream(NotakeyPipeServer.MasterPipeName, PipeDirection.Out, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough, 0, 0, ps))
                 {
                     logger.WriteMessage("Waiting for connection");
                     bootstrapServer.WaitForConnection();
+                    logger.WriteMessage("Connection acquired");
 
                     string clientPipe = string.Format("{0}.{1}", NotakeyPipeServer.MasterPipeName, Guid.NewGuid().ToString());
 
@@ -74,6 +75,7 @@ namespace NotakeyIPCLibrary
                     var client = new NotakeyPipeServer2(clientPipe, parentLogger);
                     o.OnNext(client);
                 }
+
                 o.OnCompleted();
                 return Disposable.Empty;
             }).SubscribeOn(NewThreadScheduler.Default);
@@ -102,13 +104,15 @@ namespace NotakeyIPCLibrary
             {
                 var ps = new PipeSecurity();
                 var sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
-                var par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                var par = new PipeAccessRule(sid, PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow);
                 ps.AddAccessRule(par);
 
                 using (NamedPipeServerStream stream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough, 0, 0, ps))
                 {
                     logger.WriteMessage("Waiting on connection");
                     stream.WaitForConnection();
+                    logger.WriteMessage("Connection acquired");
+
 
                     // Don't wrap these in using(), otherwise there will be a "Pipe is broken" error when
                     // the client has disconnected

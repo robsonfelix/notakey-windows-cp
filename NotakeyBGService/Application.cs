@@ -137,8 +137,22 @@ namespace NotakeyBGService
 
                 // Spawn server before attempting to process messages (which may block)
                 .Do(_ => SpawnServer())
-                .Finally(() => disposableSubscriptions.Remove(masterPipeListener))
-                
+
+                // On some windows versions (for example, 2012R2 server) new main named pipe is being initialized before
+                // previous one is fully disposed and exception is throws that all pipes are busy. As only 1 is alowed with
+                // specific name.
+                .RetryWithBackoffStrategy(retryCount: 3,
+                                            retryOnError: (Exception arg) =>
+                {
+                    if (arg is System.IO.IOException)
+                    {
+                        logger.WriteMessage("Retry to spawn server. ERROR: " + arg.ToString());
+                        return true;
+                    }
+                    logger.WriteMessage("Do not retry to spawn server. ERROR: " + arg.ToString());
+                    return false;
+                })
+                .Finally(() => disposableSubscriptions.Remove(masterPipeListener))   
                 .Subscribe(
                     OnClientPipeCreated,
                     OnClientSpawningError
