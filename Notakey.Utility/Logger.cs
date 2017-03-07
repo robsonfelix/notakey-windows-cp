@@ -131,7 +131,7 @@ namespace Notakey.Utility
 
                     output.Write(threadPrefix);
 
-					string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzz");
+					string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss:fff zzz");
 
 					leftPadding += (3 + dateTimeNow.Length);
 
