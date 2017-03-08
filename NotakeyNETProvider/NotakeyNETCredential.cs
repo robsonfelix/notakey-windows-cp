@@ -178,7 +178,7 @@ namespace NotakeyNETProvider
 				Debug.WriteLine("... status check OK");
 
                 string computerName = System.Environment.MachineName;
-                string description = string.Format("Do you wish to authenticate user '{0}' on computer '{1}'", Username, computerName);
+                string description = string.Format("Do you wish to authenticate user '{0}' on computer '{1}'?", Username, computerName);
 
                 string uuid = null;
                 bool failed = false;
