@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="date" content="<%= Time.now.strftime("%Y-%m-%dT%H:%M:%S%Z") %>">
+    <title><%= current_page.data.title %> v.<%= current_page.data.version %></title>
+    <meta name="pdfkit-footer_right" content="Page [page] of [topage]">
+    <meta name="pdfkit-footer_left" content="[title] | <%= Time.new.strftime("%Y-%m-%d") %>">
+    <meta name="pdfkit-footer_font_size" content="8">
+    <%= stylesheet_link_tag :print, media: :all %>
+
+</head>
+
+<body class="<%= page_classes %>">
+
+<section class="titlePage">
+    <% if current_page.data.home_url %>
+        <a href="<%= current_page.data.home_url %>"><%= image_tag "logo.png" %></a>
+    <% else %>
+        <%= image_tag "logo.png" %>
+    <% end %>
+
+    <h1><%= current_page.data.title %></h1>
+
+    <footer>
+        <div>Version  <%= current_page.data.version %></div>
+        <div>Date: <%= Time.new.strftime("%Y-%m-%d") %></div>
+    </footer>
+</section>
+<section class="content">
+    <%= yield %>
+    <% current_page.data.includes && current_page.data.includes.each do |include| %>
+        <%= partial "includes/#{include}" %>
+    <% end %>
+</section>
+</body>
+</html>
+
