@@ -105,9 +105,9 @@ install:
       }
   - cd docs
   - cd manual
-  - bundle install
-  - choco install wkhtmltopdf --version 0.12.4 -ia "'/D=C:\wkhtmltopdf'"
-  - bundle exec middleman build
+  - rem bundle install
+  - rem choco install wkhtmltopdf --version 0.12.4 -ia "'/D=C:\wkhtmltopdf'"
+  - rem bundle exec middleman build --verbose
   - cd ..
   - cd ..
 before_build:
