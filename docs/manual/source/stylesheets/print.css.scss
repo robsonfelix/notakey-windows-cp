@@ -1,0 +1,101 @@
+@charset "utf-8";
+@import 'normalize';
+@import 'variables';
+@import 'icon-font';
+
+@font-face {
+  font-family: 'proximanova';
+  src:font-url('ProximaNova-Reg.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'proximanova';
+  src:font-url('ProximaNova-Bold.otf');
+  font-weight: bold;
+  font-style: normal;
+}
+
+footer {page-break-after: always;}
+/*section {page-break-after: always;}*/
+
+body { margin:0; padding:0; font-family: proximanova; }
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #1A70BE;
+}
+
+h1, h2 {
+    page-break-after: avoid;
+    break-after: avoid-page;
+}
+
+section {
+    page-break-inside: avoid;
+}
+
+.titlePage {
+  background:white;
+  position:relative;
+  height:246.2mm;
+  margin:0;
+}
+
+.titlePage .content {
+  /*margin:2.54cm;*/
+}
+
+.invisible-in-pdf { display:none; }
+
+.titlePage p.serial,
+.titlePage p.date,
+.titlePage p.version
+{
+  color: #666565;
+}
+
+.titlePage h1.title
+{
+  margin-bottom:0;
+}
+
+section {
+  /* The actual margin is set in makepdf.rb */
+  margin:0;
+}
+
+img {
+  width:100%;
+}
+
+.titlePage h2.subtitle
+{
+  margin-top:0;
+  color: #FC5546;
+  font-weight:normal;
+}
+
+/*.titlePage h1 {page-break-before: auto !important;}
+h1 {page-break-before: always;}*/
+
+.titlePage footer {
+  /*margin:0 2.54cm 1.27cm 2.54cm;*/
+  bottom:0;
+  left:0;
+  right:0;
+  position:absolute;
+  border-top:2px solid #9F9F9F;
+}
+
+.titlePage .heroHand {
+  width:100%;
+  display:block;
+}
+
+
+

@@ -7,6 +7,8 @@ configuration: Debug
 init:
   - git config --global core.autocrlf true
 install:
+  - set PATH=C:\Ruby23-x64\bin;%PATH%
+  - set "PATH=C:\Program Files\wkhtmltopdf\bin;%PATH%"
   # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
   - ps: >-
       $globalAssemblyFile = "GlobalAssemblyInfo.cs"
@@ -101,6 +103,13 @@ install:
           }
         }
       }
+  - cd docs
+  - cd manual
+  - rem bundle install
+  - rem choco install wkhtmltopdf --version 0.12.4 -ia "'/D=C:\wkhtmltopdf'"
+  - rem bundle exec middleman build --verbose
+  - cd ..
+  - cd ..
 before_build:
   - nuget restore
 build:
@@ -109,6 +118,7 @@ artifacts:
   - path: 'register*.bat'
   - path: 'unregister*.bat'
   - path: '**\*.reg'
+  - path: '**\*.pdf'
   - path: NotakeyNETProvider\bin\x64\$(configuration)
     name: 'NotakeyNETProvider'
   - path: NotakeyBGService\bin\$(configuration)
