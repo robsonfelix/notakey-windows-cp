@@ -104,7 +104,7 @@ install:
           }
         }
       }
-  - cd docs\manual; bundle install; bundle exec middleman build; cd ../..
+  - cd docs\manual; bundle install; bundle exec middleman build; cd ..\..
 before_build:
   - nuget restore
 build:
