@@ -11,11 +11,8 @@ class PdfMaker < Middleman::Extension
 
       if Gem.win_platform?
         PDFKit.configure do |config|
-          # Full path is C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe
-          # but the space trips up PDFKit. Set path here only if
-          # there are no spaces (also - can't set just the exe here, and expect
-          # PDFKit to find it in PATH)
-          # config.wkhtmltopdf = 'C:\wkhtmltopdf\bin\wkhtmltopdf.exe'
+          # This path must be absolute and contain no spaces
+          config.wkhtmltopdf = 'C:\wkhtmltopdf\bin\wkhtmltopdf.exe'
         end
       end
 
