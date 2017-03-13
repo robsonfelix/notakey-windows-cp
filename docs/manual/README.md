@@ -6,5 +6,8 @@ The PDF plugin requires wkhtmltopdf.
 
 To build the HTML and PDF output:
 
-    bundle exec middleman build
+    ./build.sh
+
+The build script will take the version number from the
+GlobalAssemblyInfo.cs file
 
