@@ -5,7 +5,11 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="date" content="<%= Time.now.strftime("%Y-%m-%dT%H:%M:%S%Z") %>">
-    <title><%= current_page.data.title %> v.<%= current_page.data.version %></title>
+
+    <% # The aiv variable is set on appveyor, when building/setting assembly versions   %>
+    <% # (see appveyor.yml) %>
+    <title><%= current_page.data.title %> v.<%= ENV['aiv'] %></title>
+
     <meta name="pdfkit-footer_right" content="Page [page] of [topage]">
     <meta name="pdfkit-footer_left" content="[title] | <%= Time.new.strftime("%Y-%m-%d") %>">
     <meta name="pdfkit-footer_font_size" content="8">
@@ -16,19 +20,33 @@
 <body class="<%= page_classes %>">
 
 <section class="titlePage">
-    <% if current_page.data.home_url %>
-        <a href="<%= current_page.data.home_url %>"><%= image_tag "logo.png" %></a>
-    <% else %>
-        <%= image_tag "logo.png" %>
-    <% end %>
+    <%= image_tag "hero_hand.png", class: "heroHand" %>
 
-    <h1><%= current_page.data.title %></h1>
+    <div class="content">
+        <h1 class="title"><%= current_page.data.title %></h1>
+        <h2 class="subtitle"><%= current_page.data.subtitle %></h2>
+        <p class="serial">Serial: <%= current_page.data.document_serial %></p>
+        <p class="date">Date: <%= Time.new.strftime("%Y-%m-%d") %></p>
+
+        <% # The aiv variable is set on appveyor, when building/setting assembly versions   %>
+        <% # (see appveyor.yml) %>
+        <p class="version">Version: <%= ENV['aiv'] %></p>
+    </div>
 
     <footer>
-        <div>Version  <%= current_page.data.version %></div>
-        <div>Date: <%= Time.new.strftime("%Y-%m-%d") %></div>
+        <p>
+            <strong>Headquarters</strong><br/>
+            Notakey Latvia SIA<br/>
+            Ganu iela 3 - 12, LV-1010, Riga, Latvia<br/>
+            <a href="https://www.notakey.com">https://www.notakey.com</a><br/>
+            Tel.: +371 20 208 714<br/>
+        </p>
+
+        <p><strong>Confidential</strong> - For Internal and Partner Use Only</p>
+        <p>&copy; <%= Time.new.strftime("%Y") %> Notakey Latvia SIA. All Rights Reserved.</p>
     </footer>
 </section>
+
 <section class="content">
     <%= yield %>
     <% current_page.data.includes && current_page.data.includes.each do |include| %>

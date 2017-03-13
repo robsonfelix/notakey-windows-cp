@@ -7,14 +7,17 @@ class PdfMaker < Middleman::Extension
     begin
       require 'pdfkit'
 
+      margin_top = margin_bottom = margin_left = margin_right = '2.54cm'
+
+      # dpi must be 300, and disable_smart_shrinking must be true,
+      # for the A4 size to actually be set
       kit = PDFKit.new(File.new('build/pdf.html'),
                        :page_size => 'A4',
-                       :margin_top => 10,
-                       :margin_bottom => 10,
-                       :margin_left => 10,
-                       :margin_right => 10,
-                       :disable_smart_shrinking => false,
-                       :print_media_type => true,
+                       :margin_top => margin_top,
+                       :margin_bottom => margin_bottom,
+                       :margin_left => margin_left,
+                       :disable_smart_shrinking => true,
+                       :margin_right => margin_right,
                        :dpi => 300
       )
 

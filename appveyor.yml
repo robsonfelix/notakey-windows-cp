@@ -6,7 +6,11 @@ configuration: Debug
 
 init:
   - git config --global core.autocrlf true
+before_test:
+  - bundle -v
 install:
+  - set PATH=C:\Ruby23-x64\bin;%PATH%
+  - bundle install
   # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
   - ps: >-
       $globalAssemblyFile = "GlobalAssemblyInfo.cs"
@@ -101,6 +105,7 @@ install:
           }
         }
       }
+  - $ "cd docs\manual; bundle exec middleman build"
 before_build:
   - nuget restore
 build:
@@ -109,6 +114,7 @@ artifacts:
   - path: 'register*.bat'
   - path: 'unregister*.bat'
   - path: '**\*.reg'
+  - path: '**\*.pdf'
   - path: NotakeyNETProvider\bin\x64\$(configuration)
     name: 'NotakeyNETProvider'
   - path: NotakeyBGService\bin\$(configuration)
