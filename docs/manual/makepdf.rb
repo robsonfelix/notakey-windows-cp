@@ -11,7 +11,7 @@ class PdfMaker < Middleman::Extension
 
       if Gem.win_platform?
         PDFKit.configure do |config|
-          config.wkhtmltopdf = 'C:\Program Files\wkhtmltopdf\wkhtmltopdf.exe'
+          config.wkhtmltopdf = 'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
         end
       end
 
