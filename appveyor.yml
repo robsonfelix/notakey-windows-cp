@@ -107,7 +107,8 @@ install:
   - cd docs
   - cd manual
   - bundle install
-  - bundle exec middleman build
+  - rem To successfully build, you need wkhtmltopdf binary
+  - rem bundle exec middleman build
   - cd ..
   - cd ..
 before_build:
