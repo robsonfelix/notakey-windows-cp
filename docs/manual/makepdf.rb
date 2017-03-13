@@ -11,7 +11,10 @@ class PdfMaker < Middleman::Extension
 
       if Gem.win_platform?
         PDFKit.configure do |config|
-          config.wkhtmltopdf = 'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+          # Full path is C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe
+          # but the space trips up PDFKit. Rely on the bin folder being
+          # in the path
+          config.wkhtmltopdf = 'wkhtmltopdf.exe'
         end
       end
 
