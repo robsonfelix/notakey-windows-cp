@@ -9,6 +9,12 @@ class PdfMaker < Middleman::Extension
 
       margin_top = margin_bottom = margin_left = margin_right = '2.54cm'
 
+      if Gem.win_platform?
+        PDFKit.configure do |config|
+          config.wkhtmltopdf = 'C:\Program Files\wkhtmltopdf\wkhtmltopdf.exe'
+        end
+      end
+
       # dpi must be 300, and disable_smart_shrinking must be true,
       # for the A4 size to actually be set
       kit = PDFKit.new(File.new('build/pdf.html'),
