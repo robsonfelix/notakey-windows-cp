@@ -6,14 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="date" content="<%= Time.now.strftime("%Y-%m-%dT%H:%M:%S%Z") %>">
 
-    <% # The aiv variable is set on appveyor, when building/setting assembly versions   %>
-    <% # (see appveyor.yml) %>
-    <title><%= current_page.data.title %> v.<%= ENV['aiv'] %></title>
+    <title><%= current_page.data.title %> v.<%= ENV['VERSION'] || 'Draft' %></title>
 
     <meta name="pdfkit-footer_right" content="Page [page] of [topage]">
     <meta name="pdfkit-footer_left" content="[title] | <%= Time.new.strftime("%Y-%m-%d") %>">
     <meta name="pdfkit-footer_font_size" content="8">
-    <%= stylesheet_link_tag :print, media: :all %>
+    <%= stylesheet_link_tag :pdf, media: :all %>
+
+    <style>
+      <%= Rouge::Themes::MonokaiSublime.render(:scope => '.highlight') %>
+      .highlight .gp {
+        color: #f8f8f2;
+      }
+    </style>
+
+    <% if current_page.data.search %>
+      <%= javascript_include_tag  "all" %>
+    <% else %>
+      <%= javascript_include_tag  "all_nosearch" %>
+    <% end %>
 
 </head>
 
@@ -30,7 +41,7 @@
 
         <% # The aiv variable is set on appveyor, when building/setting assembly versions   %>
         <% # (see appveyor.yml) %>
-        <p class="version">Version: <%= ENV['aiv'] %></p>
+        <p class="version">Version: <%= ENV['VERSION'] || 'Draft' %></p>
     </div>
 
     <footer>
