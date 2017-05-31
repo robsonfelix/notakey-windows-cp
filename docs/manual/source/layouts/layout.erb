@@ -24,9 +24,15 @@ under the License.
 
     <style>
       <%= Rouge::Themes::MonokaiSublime.render(:scope => '.highlight') %>
+      .highlight .gp {
+        color: #f8f8f2;
+      }
     </style>
     <%= stylesheet_link_tag :screen, media: :screen %>
-    <%= stylesheet_link_tag :print, media: :print %>
+    <% if current_page.data.inline_examples %>
+      <%= stylesheet_link_tag :screen_inline_override, media: :screen %>
+    <% end %>
+
     <% if current_page.data.search %>
       <%= javascript_include_tag  "all" %>
     <% else %>
@@ -34,51 +40,34 @@ under the License.
     <% end %>
   </head>
 
-  <body class="<%= page_classes %>" data-languages="<%=h language_tabs.map{ |lang| lang.is_a?(Hash) ? lang.keys.first : lang }.to_json %>">
+  <body class="<%= page_classes %> api api_v2 api_v2_index api-reference" data-languages="<%=h language_tabs.map{ |lang| lang.is_a?(Hash) ? lang.keys.first : lang }.to_json %>">
+
+    <div class="navbar-container">
+      <nav class="navbar">
+      <a class="logo-container" href="/"><div class="logo"></div></a>
+      <ul>
+      <li>
+      <select name="language">
+      <optgroup label="Select your language:">
+      </optgroup>
+      </select>
+      </li>
+      <!-- <li><a href="/how-it-works">How it Works</a></li>
+      <li><a href="/support">Support</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/contacts">Contacts</a></li> -->
+      </ul>
+      </nav>
+    </div>
+
     <a href="#" id="nav-button">
       <span>
         NAV
         <%= image_tag('navbar.png') %>
       </span>
     </a>
-    <div class="tocify-wrapper">
-      <%= image_tag "logo.png" %>
-      <% if language_tabs.any? %>
-        <div class="lang-selector">
-          <% language_tabs.each do |lang| %>
-            <% if lang.is_a? Hash %>
-              <a href="#" data-language-name="<%= lang.keys.first %>"><%= lang.values.first %></a>
-            <% else %>
-              <a href="#" data-language-name="<%= lang %>"><%= lang %></a>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-      <% if current_page.data.search %>
-        <div class="search">
-          <input type="text" class="search" id="input-search" placeholder="Search">
-        </div>
-        <ul class="search-results"></ul>
-      <% end %>
-      <div id="toc">
-      </div>
-      <% if current_page.data.toc_footers %>
-        <ul class="toc-footer">
-          <% current_page.data.toc_footers.each do |footer| %>
-            <li><%= footer %></li>
-          <% end %>
-        </ul>
-      <% end %>
-    </div>
     <div class="page-wrapper">
-      <div class="dark-box"></div>
-      <div class="content">
-        <%= yield %>
-        <% current_page.data.includes && current_page.data.includes.each do |include| %>
-          <%= partial "includes/#{include}" %>
-        <% end %>
-      </div>
-      <div class="dark-box">
+      <div class="tocify-wrapper">
         <% if language_tabs.any? %>
           <div class="lang-selector">
             <% language_tabs.each do |lang| %>
@@ -90,6 +79,47 @@ under the License.
             <% end %>
           </div>
         <% end %>
+        <% if current_page.data.search %>
+          <div class="search">
+            <input type="text" class="search" id="input-search" placeholder="Search">
+          </div>
+        <% end %>
+        <ul class="search-results"></ul>
+
+        <div id="toc">
+        </div>
+
+        <ul class="toc-footer">
+          <% if current_page.data.toc_footers %>
+            <% current_page.data.toc_footers.each do |footer| %>
+              <li><%= footer %></li>
+            <% end %>
+          <% end %>
+
+          <li class="document_version">Version: <%= ENV['VERSION'] || 'unknown' %></li>
+        </ul>
+      </div>
+      <div class="content_body">
+        <div class="dark-box"></div>
+        <div class="content">
+          <%= yield %>
+          <% current_page.data.includes && current_page.data.includes.each do |include| %>
+            <%= partial "includes/#{include}" %>
+          <% end %>
+        </div>
+        <div class="dark-box">
+          <% if language_tabs.any? %>
+            <div class="lang-selector">
+              <% language_tabs.each do |lang| %>
+                <% if lang.is_a? Hash %>
+                  <a href="#" data-language-name="<%= lang.keys.first %>"><%= lang.values.first %></a>
+                <% else %>
+                  <a href="#" data-language-name="<%= lang %>"><%= lang %></a>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
   </body>

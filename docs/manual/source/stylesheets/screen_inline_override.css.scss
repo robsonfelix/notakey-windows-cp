@@ -1,0 +1,53 @@
+@charset "utf-8";
+
+.dark-box {
+display: none;
+}
+
+.content pre,
+.content blockquote {
+    float: none;
+    width:auto;
+    margin-left:0;
+    margin-right:0;
+}
+
+.content blockquote>p {
+    padding-bottom: 10px;
+    padding-left:28px;
+    padding-right:28px;
+    margin:0;
+    color: #1b3a52;
+    font-weight: bold;
+}
+
+.content>h1,
+.content>h2,
+.content>h3,
+.content>h4,
+.content>h5,
+.content>h6,
+.content>p,
+.content>table,
+.content>ul,
+.content>ol,
+.content>aside,
+.content>dl,
+.content>h1,
+.content pre,
+.content>h2 {
+    margin-right: 0%;
+}
+
+.content pre {
+    margin-right: 28px;
+    margin-left:28px;
+    width: auto;
+    display:block !important;
+}
+
+img {
+  width: 75%;
+  display:block;
+  margin: 0 auto;
+}
