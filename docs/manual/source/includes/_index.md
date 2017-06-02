@@ -34,6 +34,16 @@ If the user approves the logon attempt, then the provided username and password 
 they would normally. If the entered password is incorrect, then the logon attempt will
 fail with a message.
 
+# System Requirements
+
+The credential provider requires .NET v4.5, and
+a supported version of the Windows operating system.
+
+| OS Type    | Minimum Version     |
+|------------|---------------------|
+| Client     | Windows 8           |
+| Server     | Windows Server 2012 |
+
 # Installation Instructions (*.zip)
 
 ```shell
