@@ -79,7 +79,7 @@ code,
 kbd,
 pre,
 samp {
-    font-family: monospace, serif;
+    font-family: 'source-code-pro', monospace, serif;
     font-size: 1em;
 }
 
@@ -204,8 +204,7 @@ table {
 .content h6,
 html,
 body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .content h1,
@@ -218,8 +217,8 @@ body {
 }
 
 .content pre {
-    font-family: Consolas, Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
-    font-size: 12px;
+    font-family: 'source-code-pro', Consolas, Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
+    font-size: 90%;
     line-height: 1.5;
 }
 
@@ -298,7 +297,7 @@ nav li {
     list-style: none!important;
     color: #FFF;
     padding: 10px;
-    font-size: 12px;
+    font-size: 90%;
     letter-spacing: 1px;
     font-family: 'proxima-nova';
     font-weight: bold;
@@ -403,7 +402,7 @@ nav ul li ul li a {
     text-transform: none;
     letter-spacing: 0;
     color: #3e4552;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 500;
 }
 
@@ -617,6 +616,7 @@ pre {
 }
 
 img[src*="hero.png"] {
+  display:none;
   margin-top: 80px!important;
   margin-bottom: -80px !important;
   width: auto;
@@ -670,7 +670,6 @@ a {
     left: 0;
     bottom: 0;
     width: 300px;
-    font-size: 13px;
     border-right: 1px solid rgba(221, 221, 221, 0.5);
     background-color: #f8f8f8;
     z-index: 5000;
@@ -688,7 +687,6 @@ a {
 
 .tocify-wrapper .title {
     padding-left: 15px;
-    font-size: 13px;
 }
 
 .tocify-wrapper .lang-selector {
@@ -841,7 +839,7 @@ a {
 
 .tocify-wrapper .tocify-subheader .tocify-item>a {
     padding-left: 25px;
-    font-size: 12px;
+    font-size: 90%;
 }
 
 .tocify-wrapper .tocify-subheader>li:last-child {
@@ -1012,7 +1010,6 @@ a {
 }
 
 .content h1 {
-    font-size: 30px;
     padding-top: 0.5em;
     padding-bottom: 0.3em;
     border-bottom: 1px solid rgba(204, 204, 204, 0.6);
@@ -1027,7 +1024,6 @@ a {
 }
 
 .content h2 {
-    font-size: 18px;
     margin-top: 4em;
     margin-bottom: 0;
     border-top: 1px solid rgba(204, 204, 204, 0.6);
@@ -1045,7 +1041,6 @@ a {
 .content h4,
 .content h5,
 .content h6 {
-    font-size: 12px;
     margin-top: 2.5em;
     margin-bottom: 0.8em;
     text-transform: uppercase;
@@ -1054,7 +1049,6 @@ a {
 .content h4,
 .content h5,
 .content h6 {
-    font-size: 10px;
 }
 
 .content hr {
@@ -1159,7 +1153,6 @@ a {
 .content aside:before {
     vertical-align: middle;
     padding-right: 0.5em;
-    font-size: 14px;
 }
 
 .content .search-highlight {
@@ -1220,7 +1213,7 @@ a {
 
 .content pre .shell,
 .content blockquote .shell {
-    font-size: 20px;
+
 }
 
 .content blockquote {
