@@ -38,18 +38,33 @@ namespace NotakeyNETProvider
         /// </summary>
         static string statusLabel = "Determining Status…";
         private CancellationTokenSource statusCheckTokenSource = null;
+        private ICredentialProviderCredential2 wrappedCredential;
 
         public string Username = "";
         public string Password = "";
 
+        public NotakeyNETCredential()
+        {
+
+        }
+
+        public NotakeyNETCredential(ICredentialProviderCredential2 wrapped)
+        {
+            this.wrappedCredential = wrapped;
+        }
+
         public void Advise(ICredentialProviderCredentialEvents pcpce)
         {
+            if (this.wrappedCredential != null) { this.wrappedCredential.Advise(pcpce); }
+
             this.Events = pcpce;
-            BeginStatusPolling();
+            //BeginStatusPolling();
         }
 
         public void UnAdvise()
         {
+            if (this.wrappedCredential != null) { this.wrappedCredential.UnAdvise(); }
+
             StopStatusPolling();
 
             // Do not set Events to null before stopping status polling,
@@ -59,11 +74,24 @@ namespace NotakeyNETProvider
 
         public void CommandLinkClicked(uint dwFieldID)
         {
-            throw new NotImplementedException();
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.CommandLinkClicked(dwFieldID);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void GetBitmapValue(uint dwFieldID, IntPtr phbmp)
         {
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.GetBitmapValue(dwFieldID, phbmp);
+                return;
+            }
+
             if (dwFieldID != 0)
             {
                 throw new ArgumentException();
@@ -78,21 +106,44 @@ namespace NotakeyNETProvider
 
         public void GetCheckboxValue(uint dwFieldID, out int pbChecked, out string ppszLabel)
         {
-            throw new NotImplementedException();
+            if (this.wrappedCredential != null) { this.wrappedCredential.GetCheckboxValue(dwFieldID, out pbChecked, out ppszLabel); }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void GetComboBoxValueAt(uint dwFieldID, uint dwItem, out string ppszItem)
         {
-            throw new NotImplementedException();
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.GetComboBoxValueAt(dwFieldID, dwItem, out ppszItem);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void GetComboBoxValueCount(uint dwFieldID, out uint pcItems, out uint pdwSelectedItem)
         {
-            throw new NotImplementedException();
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.GetComboBoxValueCount(dwFieldID, out pcItems, out pdwSelectedItem);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void GetFieldState(uint dwFieldID, out _CREDENTIAL_PROVIDER_FIELD_STATE pcpfs, out _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE pcpfis)
         {
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.GetFieldState(dwFieldID, out pcpfs, out pcpfis);
+                return;
+            }
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.BITMAP)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_BOTH;
@@ -153,6 +204,12 @@ namespace NotakeyNETProvider
             out string ppszOptionalStatusText, 
             out _CREDENTIAL_PROVIDER_STATUS_ICON pcpsiOptionalStatusIcon)
         {
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.GetSerialization(out pcpgsr, out pcpcs, out ppszOptionalStatusText, out pcpsiOptionalStatusIcon);
+                return;
+            }
+
 			Debug.WriteLine("Entering GetSerialization. Configuring UI...");
             ConfigureUIForWaiting();
 			Debug.WriteLine("... configured UI");
@@ -263,6 +320,11 @@ namespace NotakeyNETProvider
 
         public void GetStringValue(uint dwFieldID, out string ppsz)
         {
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.GetStringValue(dwFieldID, out ppsz);
+                return;
+            }
             ppsz = "";
 
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.TITLE)
@@ -296,6 +358,12 @@ namespace NotakeyNETProvider
 
         public void GetSubmitButtonValue(uint dwFieldID, out uint pdwAdjacentTo)
         {
+            if (this.wrappedCredential != null)
+            {
+                this.wrappedCredential.GetSubmitButtonValue(dwFieldID, out pdwAdjacentTo);
+                return;
+            }
+
             if (dwFieldID != (uint)NotakeyNETProvider.FIELDS.SUBMIT_BUTTON)
             {
                 throw new ArgumentException();
@@ -325,19 +393,34 @@ namespace NotakeyNETProvider
 
         public void SetCheckboxValue(uint dwFieldID, int bChecked)
         {
-            throw new NotImplementedException();
+            if (wrappedCredential != null)
+            {
+                wrappedCredential.SetCheckboxValue(dwFieldID, bChecked);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void SetComboBoxSelectedValue(uint dwFieldID, uint dwSelectedItem)
         {
-            throw new NotImplementedException();
+            if (wrappedCredential != null)
+            {
+                wrappedCredential.SetComboBoxSelectedValue(dwFieldID, dwSelectedItem);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void SetDeselected()
         {
+            if (wrappedCredential != null) { wrappedCredential.SetDeselected(); }
            // throw new NotImplementedException();
-            // TODO: remove
-            StopStatusPolling();
+           // TODO: remove
+                StopStatusPolling();
             
         }
 
@@ -349,6 +432,11 @@ namespace NotakeyNETProvider
 
         public void SetStringValue(uint dwFieldID, string psz)
         {
+            if (wrappedCredential != null)
+            {
+                wrappedCredential.SetStringValue(dwFieldID, psz);
+                return;
+            }
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
             {
                 Username = psz;
@@ -364,6 +452,11 @@ namespace NotakeyNETProvider
 
         public void GetUserSid(out string ppsz)
         {
+            if (wrappedCredential != null)
+            {
+                wrappedCredential.GetUserSid(out ppsz);
+                return;
+            }
             ppsz = "ThisIsTempUserSID";
         }
 

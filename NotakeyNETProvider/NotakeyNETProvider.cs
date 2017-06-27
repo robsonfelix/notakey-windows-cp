@@ -36,37 +36,90 @@ namespace NotakeyNETProvider
             TOTAL_COUNT
         };
 
+        private ICredentialProvider parentProvider = null;
+
         private ICredentialProviderEvents Events { get; set; }
         
         public void Advise(ICredentialProviderEvents pcpe, ulong upAdviseContext)
         {
+            if (parentProvider == null)
+            {
+                throw new InvalidOperationException();
+            }
+            // may throw NotImplemented in certain usage cases (e.g. PasswordProvider + CredUI case)
+            try
+            {
+                parentProvider.Advise(pcpe, upAdviseContext);
+            } catch (NotImplementedException)
+            {
+
+            }
+
             Events = pcpe;
         }
 
         public void UnAdvise()
         {
+            if (parentProvider == null)
+            {
+                throw new InvalidOperationException();
+            }
+            try
+            {
+                parentProvider.UnAdvise();
+            } catch (NotImplementedException)
+            {
+
+            }
+
             Events = null;
         }
 
         public void GetCredentialAt(uint dwIndex, out ICredentialProviderCredential ppcpc)
         {
-            if (dwIndex != 0)
+            if (parentProvider == null)
+            {
+                throw new InvalidOperationException();
+            }
+            parentProvider.GetCredentialAt(dwIndex, out ppcpc);
+            var v2 = ppcpc as ICredentialProviderCredential2;
+            if (v2 != null)
+            {
+                ppcpc = new NotakeyNETCredential(v2);
+            } else
+            {
+                throw new InvalidOperationException();
+            }
+            /*if (dwIndex != 0)
             {
                 throw new ArgumentException();
             }
-            ppcpc = new NotakeyNETCredential();
+            ppcpc = new NotakeyNETCredential();*/
         }
 
         public void GetCredentialCount(out uint pdwCount, out uint pdwDefault, out int pbAutoLogonWithDefault)
         {
-            pdwCount = 1;
-            pdwDefault = 0;
-            pbAutoLogonWithDefault = 0;
+            if (parentProvider == null)
+            {
+                throw new InvalidOperationException();
+            }
+            parentProvider.GetCredentialCount(out pdwCount, out pdwDefault, out pbAutoLogonWithDefault);
+            return;
+            //pdwCount = 1;
+            //pdwDefault = 0;
+            //pbAutoLogonWithDefault = 0;
         }
 
         public void GetFieldDescriptorAt(uint dwIndex, IntPtr ppcpfd)
         {
-            if (dwIndex < (uint)FIELDS.TOTAL_COUNT && ppcpfd != IntPtr.Zero)
+            if (parentProvider == null)
+            {
+                throw new InvalidOperationException();
+            }
+            parentProvider.GetFieldDescriptorAt(dwIndex, ppcpfd);
+            return;
+
+            /*if (dwIndex < (uint)FIELDS.TOTAL_COUNT && ppcpfd != IntPtr.Zero)
             {
                 var result = new _CREDENTIAL_PROVIDER_FIELD_DESCRIPTOR();
                 
@@ -130,29 +183,50 @@ namespace NotakeyNETProvider
             else
             {
                 throw new ArgumentException();
-            }
+            }*/
         }
 
         public void GetFieldDescriptorCount(out uint pdwCount)
         {
-            pdwCount = (uint)FIELDS.TOTAL_COUNT;
+            if (parentProvider == null)
+            {
+                throw new InvalidOperationException();
+            }
+            parentProvider.GetFieldDescriptorCount(out pdwCount);
+            //pdwCount = (uint)FIELDS.TOTAL_COUNT;
         }
 
         public void SetSerialization(ref _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION pcpcs)
         {
-            throw new NotImplementedException();
+            if (parentProvider == null)
+            {
+                throw new InvalidOperationException();
+            }
+            parentProvider.SetSerialization(ref pcpcs);
         }
 
         public void SetUsageScenario(_CREDENTIAL_PROVIDER_USAGE_SCENARIO cpus, uint dwFlags)
         {
-            switch (cpus)
-            {
-                case _CREDENTIAL_PROVIDER_USAGE_SCENARIO.CPUS_CREDUI:
-                case _CREDENTIAL_PROVIDER_USAGE_SCENARIO.CPUS_LOGON:
-                case _CREDENTIAL_PROVIDER_USAGE_SCENARIO.CPUS_UNLOCK_WORKSTATION:
-                    return;
-            }
-            throw new NotImplementedException();
+            string CLSID_AsRequired = "60b78e88-ead8-445c-9cfd-0b87f74ea6cd";
+            
+            Type comType = Type.GetTypeFromCLSID(new Guid(CLSID_AsRequired));
+            var instance = Activator.CreateInstance(comType);
+            parentProvider = (ICredentialProvider)instance;
+
+            /**
+             * NOTE: to get a non-default provider by CLSID, do the following:
+             * 
+             *   string CLSID_AsRequired = "F8A0B131-5F68-486c-8040-7E8FC3C85BB6";
+             * 
+             *   Type comType = Type.GetTypeFromCLSID(new Guid(CLSID_AsRequired));
+             *   var instance = Activator.CreateInstance(comType);
+             *   ICredentialProvider casti = (ICredentialProvider) instance;
+             * 
+             * DO NOTE that the casting will FAIL if performed in a regular application. It
+             * must be done in the CP context.
+             */
+
+            parentProvider.SetUsageScenario(cpus, dwFlags);
         }
     }
 }
