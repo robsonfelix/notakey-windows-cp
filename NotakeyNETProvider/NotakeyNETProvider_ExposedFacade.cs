@@ -122,13 +122,13 @@ namespace NotakeyNETProvider
 
         public void SetUsageScenario(_CREDENTIAL_PROVIDER_USAGE_SCENARIO cpus, uint dwFlags)
         {
-			string CLSID_AsRequired = "60b78e88-ead8-445c-9cfd-0b87f74ea6cd";
+            string CLSID_AsRequired = "60b78e88-ead8-445c-9cfd-0b87f74ea6cd";
 
 			Type comType = Type.GetTypeFromCLSID(new Guid(CLSID_AsRequired));
-			var instance = Activator.CreateInstance(comType);
+            var instance = Activator.CreateInstance(comType);
 
             // Using an exception-generating cast on purpose (instead of " as ")
-			_parentProvider = (ICredentialProvider)instance;
+            _parentProvider = (ICredentialProvider)instance;
             _notakeyProvider = new NotakeyNETProvider_Impl(_parentProvider);
 
 			/**
@@ -183,7 +183,7 @@ namespace NotakeyNETProvider
 
         private void DetermineProvider(Action<ICredentialProvider> lambda)
         {
-            DetermineProvider(provider => lambda(provider));
+            DetermineProvider(provider => { lambda(provider); return null; });
         }
     }
 }
