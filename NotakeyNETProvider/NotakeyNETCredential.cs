@@ -42,6 +42,16 @@ namespace NotakeyNETProvider
         public string Username = "";
         public string Password = "";
 
+        /// <summary>
+        /// This is validated in the constructor.
+        /// </summary>
+        ICredentialProviderCredential2 _parentCredentialNeverNull;
+
+        public NotakeyNETCredential(ICredentialProviderCredential2 parentCredential)
+        {
+            _parentCredentialNeverNull = parentCredential ?? throw new ArgumentNullException(nameof(parentCredential));
+        }
+
         public void Advise(ICredentialProviderCredentialEvents pcpce)
         {
             this.Events = pcpce;
@@ -93,37 +103,37 @@ namespace NotakeyNETProvider
 
         public void GetFieldState(uint dwFieldID, out _CREDENTIAL_PROVIDER_FIELD_STATE pcpfs, out _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE pcpfis)
         {
-            if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.BITMAP)
+            if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.BITMAP)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_BOTH;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_NONE;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.TITLE)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.TITLE)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_DESELECTED_TILE;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_READONLY;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.USERNAME_INPUT)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_FOCUSED;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PASS_INPUT)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.PASS_INPUT)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_NONE;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.STATUS_LABEL)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_BOTH;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_READONLY;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.INSTRUCTION_LABEL)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_READONLY;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.SUBMIT_BUTTON)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.SUBMIT_BUTTON)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE;
                 pcpfis = _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE.CPFIS_READONLY;
@@ -136,16 +146,16 @@ namespace NotakeyNETProvider
 
         private void ConfigureUIForWaiting()
         {
-            Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, "Please wait ...");
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
+            Events.SetFieldString(this, (uint)NotakeyNETProvider_Impl.FIELDS.INSTRUCTION_LABEL, "Please wait ...");
+            Events.SetFieldState(this, (uint)NotakeyNETProvider_Impl.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider_Impl.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
         }
 
         private void ConfigureUIForEditing()
         {
-            Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, InstructionsText);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
+            Events.SetFieldString(this, (uint)NotakeyNETProvider_Impl.FIELDS.INSTRUCTION_LABEL, InstructionsText);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider_Impl.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider_Impl.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
         }
         
         public void GetSerialization(out _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE pcpgsr, 
@@ -153,16 +163,30 @@ namespace NotakeyNETProvider
             out string ppszOptionalStatusText, 
             out _CREDENTIAL_PROVIDER_STATUS_ICON pcpsiOptionalStatusIcon)
         {
+            _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE tempPcpgsr;
+            _parentCredentialNeverNull.GetSerialization(
+                out tempPcpgsr, 
+                out pcpcs, 
+                out ppszOptionalStatusText, 
+                out pcpsiOptionalStatusIcon);
+
+            if (tempPcpgsr != _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_RETURN_CREDENTIAL_FINISHED)
+            {
+                // Failure scenario
+                pcpgsr = tempPcpgsr;
+                return;
+            }
+
+            /* Now append Notakey authentication (only after the parent credential
+             * has succeeded */
+
 			Debug.WriteLine("Entering GetSerialization. Configuring UI...");
             ConfigureUIForWaiting();
 			Debug.WriteLine("... configured UI");
                 
             try
             {
-                // pcpcs must always be assigned, even if we do not return any valid information.
-                pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
-
-				var c = new NotakeyPipeClient();
+                var c = new NotakeyPipeClient();
 				Debug.WriteLine("... created client");
 
 				var statusCheck = c.StatusCheckMessage();
@@ -197,8 +221,11 @@ namespace NotakeyNETProvider
 
                 if (failed /* REQUEST_AUTH */)
                 {
+                    // Setting all values - even pcpcs - so that no information
+                    // can leak through from the successfull call.
+					pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
+					pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
                     ppszOptionalStatusText = "The specified username / password combination is not valid.";
-                    pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
                     pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_ERROR;
                     return;
                 }
@@ -220,40 +247,19 @@ namespace NotakeyNETProvider
                         }
                     }, "SYNC_REQUEST_STATUS", uuid);
 
-                if (!status)
+                if (!status /* SYNC_REQUEST_STATUS */)
                 {
-                    ppszOptionalStatusText = errorMessage ?? "The authorization request could not be processed.";
+					// Setting all values - even pcpcs - so that no information
+					// can leak through from the successfull call.
+					pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
                     pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
-                    pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_WARNING;
+					ppszOptionalStatusText = errorMessage ?? "The authorization request could not be processed.";
+					pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_WARNING;
                     return;
                 }
 
-                int inCredSize = 1024;
-                IntPtr inCredBuffer = Marshal.AllocCoTaskMem(inCredSize);
-
-                if (!LsaWrapper.CredPackAuthenticationBuffer(0, Username, Password,
-                    inCredBuffer, ref inCredSize))
-                {
-                    throw new Win32Exception(Marshal.GetLastWin32Error());
-                }
-
-                //------- FAILED ATTEMPT FOLLOWS:
-                uint abPackageId = RetrieveMSV10PackageId("NTLM");
-
-                // TODO: auth
-                //var package = new Ms10InteractiveLogon("DESKTOP-V9EBTFE", "notakey", "notakey");
-
-                pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_RETURN_CREDENTIAL_FINISHED;
-                pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION()
-                {
-                    ulAuthenticationPackage = abPackageId,
-                    cbSerialization = (uint)inCredSize,//(uint)package.Length,
-                    clsidCredentialProvider = new Guid("77E5F42E-B280-4219-B130-D48BB3932A04"),
-                    rgbSerialization = inCredBuffer
-                };
-
-                ppszOptionalStatusText = "Done";
-                pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_SUCCESS;
+                // Success. Return the pcpgsr from the parent-credential call.
+                pcpgsr = tempPcpgsr;
             }
             finally
             {
@@ -265,30 +271,30 @@ namespace NotakeyNETProvider
         {
             ppsz = "";
 
-            if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.TITLE)
+            if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.TITLE)
             {
                 ppsz = "Authorize with Notakey Authenticator";
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.INSTRUCTION_LABEL)
             {
                 ppsz = InstructionsText;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL ||
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.STATUS_LABEL ||
                 false//dwFieldID == (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL_DESELECTED
                 )
             {
                 ppsz = statusLabel;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PASS_INPUT)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.PASS_INPUT)
             {
                 ppsz = Password;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
+            else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.USERNAME_INPUT)
             {
                 ppsz = Username;
             }
             
-            if (dwFieldID >= (uint)NotakeyNETProvider.FIELDS.TOTAL_COUNT)
+            if (dwFieldID >= (uint)NotakeyNETProvider_Impl.FIELDS.TOTAL_COUNT)
             {
                 throw new ArgumentException();
             }
@@ -296,12 +302,12 @@ namespace NotakeyNETProvider
 
         public void GetSubmitButtonValue(uint dwFieldID, out uint pdwAdjacentTo)
         {
-            if (dwFieldID != (uint)NotakeyNETProvider.FIELDS.SUBMIT_BUTTON)
+            if (dwFieldID != (uint)NotakeyNETProvider_Impl.FIELDS.SUBMIT_BUTTON)
             {
                 throw new ArgumentException();
             }
 
-            pdwAdjacentTo = (uint)NotakeyNETProvider.FIELDS.PASS_INPUT;
+            pdwAdjacentTo = (uint)NotakeyNETProvider_Impl.FIELDS.PASS_INPUT;
         }
 
         public void ReportResult(int ntsStatus, 
@@ -349,10 +355,10 @@ namespace NotakeyNETProvider
 
         public void SetStringValue(uint dwFieldID, string psz)
         {
-            if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
+            if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.USERNAME_INPUT)
             {
                 Username = psz;
-            } else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PASS_INPUT)
+            } else if (dwFieldID == (uint)NotakeyNETProvider_Impl.FIELDS.PASS_INPUT)
             {
                 Password = psz;
             }
@@ -397,7 +403,7 @@ namespace NotakeyNETProvider
 
                     if (Events != null)
                     {
-                        Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL, statusLabel);
+                        Events.SetFieldString(this, (uint)NotakeyNETProvider_Impl.FIELDS.STATUS_LABEL, statusLabel);
                     }
 
                     await Task.Delay(5000, cancellationToken);
