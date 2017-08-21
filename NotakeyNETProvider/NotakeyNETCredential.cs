@@ -167,6 +167,13 @@ namespace NotakeyNETProvider
             out string ppszOptionalStatusText, 
             out _CREDENTIAL_PROVIDER_STATUS_ICON pcpsiOptionalStatusIcon)
         {
+            /* THESE ARE HARDCODED FOR THE DEFAULT PROVIDER */
+            /* Ideally, we should append the "Notakey" field as a known field,
+               and pass-through all other fields to the parent provider, so that
+               we do not have to know which values to set. */
+            _parentCredentialNeverNull.SetStringValue(1, Username);
+            _parentCredentialNeverNull.SetStringValue(2, Password);
+
             _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE tempPcpgsr;
             _parentCredentialNeverNull.GetSerialization(
                 out tempPcpgsr, 
