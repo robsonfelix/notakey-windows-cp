@@ -49,7 +49,11 @@ namespace NotakeyNETProvider
 
         public NotakeyNETCredential(ICredentialProviderCredential2 parentCredential)
         {
-            _parentCredentialNeverNull = parentCredential ?? throw new ArgumentNullException(nameof(parentCredential));
+            _parentCredentialNeverNull = parentCredential;
+            if (_parentCredentialNeverNull == null)
+            {
+                throw new ArgumentNullException(nameof(parentCredential));
+            }
         }
 
         public void Advise(ICredentialProviderCredentialEvents pcpce)

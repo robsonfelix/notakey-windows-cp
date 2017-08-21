@@ -61,7 +61,11 @@ namespace NotakeyNETProvider
 
 		public NotakeyNETProvider_Impl(ICredentialProvider parentProvider)
         {
-            _parentProviderNeverNull = parentProvider ?? throw new ArgumentNullException(nameof(parentProvider));
+            _parentProviderNeverNull = parentProvider;
+            if (_parentProviderNeverNull == null)
+            {
+                throw new ArgumentNullException(nameof(parentProvider));
+            }
         }
 
 		public void Advise(ICredentialProviderEvents pcpe, ulong upAdviseContext)
