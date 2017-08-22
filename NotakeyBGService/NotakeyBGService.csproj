@@ -75,6 +75,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Notakey.SDK, Version=1.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Notakey.SDK.1.1.44\lib\net45\Notakey.SDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
@@ -104,9 +112,6 @@
     </Reference>
     <Reference Include="System.Reactive.Windows.Threading">
       <HintPath>..\packages\System.Reactive.Windows.Threading.3.0.0\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="Notakey.SDK">
-      <HintPath>..\packages\Notakey.SDK.1.1.41\lib\net45\Notakey.SDK.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

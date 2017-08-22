@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Pipes;
+using System.Security;
 
 namespace NotakeyNETProvider
 {
@@ -40,30 +41,100 @@ namespace NotakeyNETProvider
         private CancellationTokenSource statusCheckTokenSource = null;
 
         public string Username = "";
-        public string Password = "";
+        
+        /// <summary>
+        /// Use SecureString, so that secrets are not kept around in memory.
+        /// 
+        /// Before instantiating with a new value, call DisposePasswordIfNecessary().
+        /// 
+        /// This is set in the constructor, and should be guaranteed not null afterwards.
+        /// </summary>
+        public SecureString Password = null;
+
+        /// <summary>
+        /// This is validated in the constructor.
+        /// </summary>
+        ICredentialProviderCredential2 parentCredentialNeverNull;
+
+        /// <summary>
+        /// If true, delegate all calls to the parent credential. Otherwise, only
+        /// delegate username/password verification.
+        /// </summary>
+        bool delegateAllToParent;
+
+        public NotakeyNETCredential(ICredentialProviderCredential2 parentCredential, bool delegateAllToParent)
+        {
+            parentCredentialNeverNull = parentCredential;
+            if (parentCredentialNeverNull == null)
+            {
+                throw new ArgumentNullException(nameof(parentCredential));
+            }
+
+            this.delegateAllToParent = delegateAllToParent;
+
+            SafeResetPasswordMemory();
+        }
 
         public void Advise(ICredentialProviderCredentialEvents pcpce)
         {
-            this.Events = pcpce;
-            BeginStatusPolling();
+            if (this.delegateAllToParent)
+            {
+                try
+                {
+                    parentCredentialNeverNull.Advise(pcpce);
+                } catch (NotImplementedException)
+                {
+                    // valid scenario
+                }
+            }
+            else
+            {
+                this.Events = pcpce;
+                BeginStatusPolling();
+            }
         }
 
         public void UnAdvise()
         {
-            StopStatusPolling();
+            if (this.delegateAllToParent)
+            {
+                try
+                {
+                    parentCredentialNeverNull.UnAdvise();
+                }
+                catch (NotImplementedException)
+                {
+                    // valid scenario
+                }
+            } else
+            {
+                StopStatusPolling();
 
-            // Do not set Events to null before stopping status polling,
-            // as status poll callbacks might want to use it.
-            this.Events = null;
+                // Do not set Events to null before stopping status polling,
+                // as status poll callbacks might want to use it.
+                this.Events = null;
+            }
         }
 
         public void CommandLinkClicked(uint dwFieldID)
         {
-            throw new NotImplementedException();
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.CommandLinkClicked(dwFieldID);
+            } else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void GetBitmapValue(uint dwFieldID, IntPtr phbmp)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetBitmapValue(dwFieldID, phbmp);
+                return;
+            }
+
             if (dwFieldID != 0)
             {
                 throw new ArgumentException();
@@ -78,21 +149,45 @@ namespace NotakeyNETProvider
 
         public void GetCheckboxValue(uint dwFieldID, out int pbChecked, out string ppszLabel)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetCheckboxValue(dwFieldID, out pbChecked, out ppszLabel);
+                return;
+            }
+
             throw new NotImplementedException();
         }
 
         public void GetComboBoxValueAt(uint dwFieldID, uint dwItem, out string ppszItem)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetComboBoxValueAt(dwFieldID, dwItem, out ppszItem);
+                return;
+            }
+
             throw new NotImplementedException();
         }
 
         public void GetComboBoxValueCount(uint dwFieldID, out uint pcItems, out uint pdwSelectedItem)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetComboBoxValueCount(dwFieldID, out pcItems, out pdwSelectedItem);
+                return;
+            }
+
             throw new NotImplementedException();
         }
 
         public void GetFieldState(uint dwFieldID, out _CREDENTIAL_PROVIDER_FIELD_STATE pcpfs, out _CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE pcpfis)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetFieldState(dwFieldID, out pcpfs, out pcpfis);
+                return;
+            }
+
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.BITMAP)
             {
                 pcpfs = _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_BOTH;
@@ -134,35 +229,51 @@ namespace NotakeyNETProvider
             }
         }
 
-        private void ConfigureUIForWaiting()
-        {
-            Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, "Please wait ...");
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
-        }
-
-        private void ConfigureUIForEditing()
-        {
-            Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, InstructionsText);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
-            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
-        }
-        
         public void GetSerialization(out _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE pcpgsr, 
             out _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION pcpcs,
             out string ppszOptionalStatusText, 
             out _CREDENTIAL_PROVIDER_STATUS_ICON pcpsiOptionalStatusIcon)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetSerialization(
+                    out pcpgsr,
+                    out pcpcs,
+                    out ppszOptionalStatusText,
+                    out pcpsiOptionalStatusIcon);
+                return;
+            }
+
+            /* NOTE: string values for Username and Password are forwarded to the parent credential
+             * in the SetStringValue methods (with hardcoded field index values). */
+            
+            _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE tempPcpgsr;
+            parentCredentialNeverNull.GetSerialization(
+                out tempPcpgsr, 
+                out pcpcs, 
+                out ppszOptionalStatusText, 
+                out pcpsiOptionalStatusIcon);
+
+            if (tempPcpgsr != _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_RETURN_CREDENTIAL_FINISHED)
+            {
+                // This does NOT indicate the username/password combination was incorrect. Only that
+                // no serialization was returned.
+                pcpgsr = tempPcpgsr;
+                return;
+            }
+
+            // TODO: we should somehow verify if the provided information was valid. Maybe with a call to LsaLogonUser.
+
+            /* Now append Notakey authentication (only after the parent credential
+             * has succeeded */
+
 			Debug.WriteLine("Entering GetSerialization. Configuring UI...");
             ConfigureUIForWaiting();
 			Debug.WriteLine("... configured UI");
                 
             try
             {
-                // pcpcs must always be assigned, even if we do not return any valid information.
-                pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
-
-				var c = new NotakeyPipeClient();
+                var c = new NotakeyPipeClient();
 				Debug.WriteLine("... created client");
 
 				var statusCheck = c.StatusCheckMessage();
@@ -197,8 +308,11 @@ namespace NotakeyNETProvider
 
                 if (failed /* REQUEST_AUTH */)
                 {
+                    // Setting all values - even pcpcs - so that no information
+                    // can leak through from the successfull call.
+					pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
+					pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
                     ppszOptionalStatusText = "The specified username / password combination is not valid.";
-                    pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
                     pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_ERROR;
                     return;
                 }
@@ -220,40 +334,19 @@ namespace NotakeyNETProvider
                         }
                     }, "SYNC_REQUEST_STATUS", uuid);
 
-                if (!status)
+                if (!status /* SYNC_REQUEST_STATUS */)
                 {
-                    ppszOptionalStatusText = errorMessage ?? "The authorization request could not be processed.";
+					// Setting all values - even pcpcs - so that no information
+					// can leak through from the successfull call.
+					pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION();
                     pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_NO_CREDENTIAL_NOT_FINISHED;
-                    pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_WARNING;
+					ppszOptionalStatusText = errorMessage ?? "The authorization request could not be processed.";
+					pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_WARNING;
                     return;
                 }
 
-                int inCredSize = 1024;
-                IntPtr inCredBuffer = Marshal.AllocCoTaskMem(inCredSize);
-
-                if (!LsaWrapper.CredPackAuthenticationBuffer(0, Username, Password,
-                    inCredBuffer, ref inCredSize))
-                {
-                    throw new Win32Exception(Marshal.GetLastWin32Error());
-                }
-
-                //------- FAILED ATTEMPT FOLLOWS:
-                uint abPackageId = RetrieveMSV10PackageId("NTLM");
-
-                // TODO: auth
-                //var package = new Ms10InteractiveLogon("DESKTOP-V9EBTFE", "notakey", "notakey");
-
-                pcpgsr = _CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE.CPGSR_RETURN_CREDENTIAL_FINISHED;
-                pcpcs = new _CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION()
-                {
-                    ulAuthenticationPackage = abPackageId,
-                    cbSerialization = (uint)inCredSize,//(uint)package.Length,
-                    clsidCredentialProvider = new Guid("77E5F42E-B280-4219-B130-D48BB3932A04"),
-                    rgbSerialization = inCredBuffer
-                };
-
-                ppszOptionalStatusText = "Done";
-                pcpsiOptionalStatusIcon = _CREDENTIAL_PROVIDER_STATUS_ICON.CPSI_SUCCESS;
+                // Success. Return the pcpgsr from the parent-credential call.
+                pcpgsr = tempPcpgsr;
             }
             finally
             {
@@ -263,6 +356,12 @@ namespace NotakeyNETProvider
 
         public void GetStringValue(uint dwFieldID, out string ppsz)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetStringValue(dwFieldID, out ppsz);
+                return;
+            }
+
             ppsz = "";
 
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.TITLE)
@@ -273,15 +372,13 @@ namespace NotakeyNETProvider
             {
                 ppsz = InstructionsText;
             }
-            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL ||
-                false//dwFieldID == (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL_DESELECTED
-                )
+            else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.STATUS_LABEL)
             {
                 ppsz = statusLabel;
             }
             else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PASS_INPUT)
             {
-                ppsz = Password;
+                ppsz = new System.Net.NetworkCredential(string.Empty, Password).Password;
             }
             else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
             {
@@ -296,6 +393,12 @@ namespace NotakeyNETProvider
 
         public void GetSubmitButtonValue(uint dwFieldID, out uint pdwAdjacentTo)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.GetSubmitButtonValue(dwFieldID, out pdwAdjacentTo);
+                return;
+            }
+
             if (dwFieldID != (uint)NotakeyNETProvider.FIELDS.SUBMIT_BUTTON)
             {
                 throw new ArgumentException();
@@ -309,6 +412,12 @@ namespace NotakeyNETProvider
             out string ppszOptionalStatusText, 
             out _CREDENTIAL_PROVIDER_STATUS_ICON pcpsiOptionalStatusIcon)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.ReportResult(ntsStatus, ntsSubstatus, out ppszOptionalStatusText, out pcpsiOptionalStatusIcon);
+                return;
+            }
+
             int winError = LsaWrapper.LsaNtStatusToWinError(ntsStatus);
             string errorMessage = new Win32Exception(winError).Message;
 
@@ -325,36 +434,72 @@ namespace NotakeyNETProvider
 
         public void SetCheckboxValue(uint dwFieldID, int bChecked)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.SetCheckboxValue(dwFieldID, bChecked);
+                return;
+            }
+
             throw new NotImplementedException();
         }
 
         public void SetComboBoxSelectedValue(uint dwFieldID, uint dwSelectedItem)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.SetComboBoxSelectedValue(dwFieldID, dwSelectedItem);
+                return;
+            }
+
             throw new NotImplementedException();
         }
 
         public void SetDeselected()
         {
-           // throw new NotImplementedException();
-            // TODO: remove
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.SetDeselected();
+                return;
+            }
+
             StopStatusPolling();
             
         }
 
         public void SetSelected(out int pbAutoLogon)
         {
-            pbAutoLogon = 0;
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.SetSelected(out pbAutoLogon);
+                return;
+            }
 
+            pbAutoLogon = 0;
         }
 
         public void SetStringValue(uint dwFieldID, string psz)
         {
+            if (delegateAllToParent)
+            {
+                parentCredentialNeverNull.SetStringValue(dwFieldID, psz);
+                return;
+            }
+
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT)
             {
                 Username = psz;
+                parentCredentialNeverNull.SetStringValue(1, psz);   // HARDCODED for PasswordProvider
             } else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.PASS_INPUT)
             {
-                Password = psz;
+                // Having a string reference defeats the purpose of having a SecureString I guess. Maybe
+                // in the future this can be refactored with unsafe code, to not 
+                // instantiate C# strings (and instead pass in a char*)
+                //
+                // Consider the SecureString implementation a first-step towards a better solution,
+                // not a complete solution.
+
+                SafeResetPasswordMemory(psz);
+                parentCredentialNeverNull.SetStringValue(2, psz);   // HARDCODED for PasswordProvider
             }
             else
             {
@@ -364,7 +509,7 @@ namespace NotakeyNETProvider
 
         public void GetUserSid(out string ppsz)
         {
-            ppsz = "ThisIsTempUserSID";
+            parentCredentialNeverNull.GetUserSid(out ppsz);
         }
 
         private void BeginStatusPolling()
@@ -418,28 +563,36 @@ namespace NotakeyNETProvider
             }
         }
 
-        private uint RetrieveMSV10PackageId(string name = "MICROSOFT_AUTHENTICATION_PACKAGE_V1_0")
+        /// <summary>
+        /// If set - dispose the Password value, and set the reference to a new instance of SecurePassword.
+        /// 
+        /// Avoid setting the variable to null, or we will have to check for null everywhere a string value is needed.
+        /// </summary>
+        private void SafeResetPasswordMemory(string newValue = "")
         {
-            IntPtr lsaHandle;
-            int ntcode;
+            Password?.Dispose();
 
-            ntcode = LsaWrapper.LsaConnectUntrusted(out lsaHandle);
-            if (ntcode != 0)
-                throw new Win32Exception(LsaWrapper.LsaNtStatusToWinError(ntcode));
-
-            var packageName = new LsaWrapper.LsaStringWrapper(name);
-            uint packageId;
-            ntcode = LsaWrapper.LsaLookupAuthenticationPackage(lsaHandle, ref packageName._string, out packageId);
-            if (ntcode != 0) 
-                throw new Win32Exception(LsaWrapper.LsaNtStatusToWinError(ntcode));
-
-            ntcode = LsaWrapper.LsaDeregisterLogonProcess(lsaHandle);
-            if (ntcode != 0)
+            unsafe
             {
-                throw new Win32Exception(LsaWrapper.LsaNtStatusToWinError(ntcode));
+                fixed (char* c_str = newValue)
+                {
+                    Password = new SecureString(c_str, newValue.Length);
+                }
             }
+        }
 
-            return packageId;
+        private void ConfigureUIForWaiting()
+        {
+            Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, "Please wait ...");
+            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_HIDDEN);
+        }
+
+        private void ConfigureUIForEditing()
+        {
+            Events.SetFieldString(this, (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL, InstructionsText);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.PASS_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
+            Events.SetFieldState(this, (uint)NotakeyNETProvider.FIELDS.USERNAME_INPUT, _CREDENTIAL_PROVIDER_FIELD_STATE.CPFS_DISPLAY_IN_SELECTED_TILE);
         }
     }
 }
