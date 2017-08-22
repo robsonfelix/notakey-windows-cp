@@ -211,13 +211,13 @@ This file will contain informational output without errors.
 The logon UI will provide a status message, which reflects the status of the
 background service.
 
-The status will be re-checked every 10 seconds. Upon failure, the status check interval
-will become progressively larger (exponential backoff).
+The status will be re-checked every 10 seconds. Upon failure, the status check interval will become progressively larger (exponential backoff).
+
+If no status message is displayed, it can be assumed that everything is working as intended (i.e. it is the same as "Service Status: OK").
 
 ## Service Status: OK
 
-This message means that the background service is operational, and accessible,
-and that the specified API endpoint is valid and reachable.
+This message means that the background service is operational, and accessible, and that the specified API endpoint is valid and reachable.
 
 ## Service Status: health-check request timed out. Is the background service running?
 

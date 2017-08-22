@@ -37,7 +37,7 @@ namespace NotakeyNETProvider
         /// <summary>
         /// Placeholder for lazy-loaded service status text
         /// </summary>
-        static string statusLabel = "Determining Status…";
+        static string statusLabel = "Loading…";
         private CancellationTokenSource statusCheckTokenSource = null;
 
         public string Username = "";
@@ -366,7 +366,7 @@ namespace NotakeyNETProvider
 
             if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.TITLE)
             {
-                ppsz = "Authorize with Notakey Authenticator";
+                ppsz = "Notakey Access";
             }
             else if (dwFieldID == (uint)NotakeyNETProvider.FIELDS.INSTRUCTION_LABEL)
             {
@@ -529,7 +529,13 @@ namespace NotakeyNETProvider
 						Debug.WriteLine($"BeginStatusPolling - creating client");
                         c = new NotakeyPipeClient();
 						Debug.WriteLine($"BeginStatusPolling - created client. Verifying status ...");
+                        
                         statusLabel = string.Format("Service Status: {0}", c.StatusCheckMessage());
+                        
+                        if (statusLabel == "Service Status: OK")
+                        {
+                            statusLabel = "";
+                        }
                     }
                     catch (TimeoutException)
                     {
