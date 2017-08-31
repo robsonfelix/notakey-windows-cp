@@ -68,8 +68,8 @@ fi
 echo $NEWVERSION > VERSION
 GIT_MESSAGE="Version bump from $OLDVERSION to $NEWVERSION"
 
-# git tag -a "$NEWVERSION" -m "$GIT_MESSAGE"
-# git push --tags
+git tag -a "$NEWVERSION" -m "$GIT_MESSAGE"
+git push --tags
 
 echo "=> DONE"
 echo ""
