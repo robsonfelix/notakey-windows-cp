@@ -49,6 +49,8 @@ install:
       $gitCommitTag = ConvertFrom-StringData (git describe --exact-match $env:APPVEYOR_REPO_COMMIT | out-string)
       Add-AppveyorMessage -Message "Git tag for commit $gitCommitTag"
 
+      $buildnr = $env:APPVEYOR_REPO_TAG_NAME
+
       if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
         if ($env:APPVEYOR_REPO_TAG_NAME -eq $gitCommitTag)
@@ -64,8 +66,13 @@ install:
       }
       else
       {
-        Add-AppveyorMessage -Message "Build is not initiated by git tag."
-        return;
+        Add-AppveyorMessage -Message "Build is not initiated by git tag. Checking out latest tag"
+        $latesttag=$(git describe --tags)
+        Add-AppveyorMessage -Message "Checking out $latesttag"
+        git checkout $latesttag
+
+        $buildnr = $latesttag
+        
       }
       
       $globalAssemblyFile = "GlobalAssemblyInfo.cs"
