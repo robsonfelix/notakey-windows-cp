@@ -1,8 +1,42 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+
 # AnyCPU will produce x64 for NotakeyNETProvider,
 # which is the only project that has a bit-dependency
 # (due to the version of credentialprovider_*.dll reference)
 platform: Any CPU
 configuration: Debug
+
+# version format
+version: 1.0.{build}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    #- master
+
+# Do not build on tags (GitHub and BitBucket)
+skip_tags: false
+
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: true
+
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf true
@@ -11,6 +45,28 @@ install:
   - set "PATH=C:\Program Files\wkhtmltopdf\bin;%PATH%"
   # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
   - ps: >-
+      $gitCommitTag = ConvertFrom-StringData (git describe --exact-match $env:APPVEYOR_REPO_COMMIT | out-string)
+      Add-AppveyorMessage -Message "Git tag for commit $gitCommitTag"
+
+      if ($env:APPVEYOR_REPO_TAG -eq "true")
+      {
+        if ($env:APPVEYOR_REPO_TAG_NAME -eq $gitCommitTag)
+        {
+          #Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
+          continue;
+        }
+        else
+        {
+          Add-AppveyorMessage -Message "Tag name missmatch $env:APPVEYOR_REPO_TAG_NAME and $gitCommitTag)"
+          return;
+        }
+      }
+      else
+      {
+        Add-AppveyorMessage -Message "Build is not initiated by git tag."
+        return;
+      }
+      
       $globalAssemblyFile = "GlobalAssemblyInfo.cs"
 
       $globalAssemblyVersion = Get-Content .\$globalAssemblyFile
@@ -46,7 +102,8 @@ install:
 
       Add-AppveyorMessage -Message "Global Assembly Version: $AssemblyVersion ."
 
-      $AssemblyFileVersion = "$major.$minor.$env:APPVEYOR_BUILD_NUMBER"
+      #$AssemblyFileVersion = "$major.$minor.$env:APPVEYOR_BUILD_NUMBER"
+      $AssemblyFileVersion = $env:APPVEYOR_REPO_TAG_NAME
 
       $AssemblyInformationalVersion = "$AssemblyFileVersion-$env:APPVEYOR_REPO_SCM" + ($env:APPVEYOR_REPO_COMMIT).Substring(0, 8)
 
