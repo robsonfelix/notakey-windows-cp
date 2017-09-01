@@ -46,35 +46,44 @@ install:
   - set "PATH=C:\Program Files\wkhtmltopdf\bin;%PATH%"
   # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
   - ps: >-
-      $gitCommitTag = ConvertFrom-StringData (git describe --exact-match $env:APPVEYOR_REPO_COMMIT | out-string)
-      Add-AppveyorMessage -Message "Git tag for commit $gitCommitTag"
-
-      $buildnr = $env:APPVEYOR_REPO_TAG_NAME
+      $latestTag = $env:APPVEYOR_REPO_TAG_NAME
 
       if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
+        $gitCommitTag = $(git describe --exact-match $env:APPVEYOR_REPO_COMMIT)
+        Add-AppveyorMessage -Message "Git tag for commit $gitCommitTag"
+
         if ($env:APPVEYOR_REPO_TAG_NAME -eq $gitCommitTag)
         {
-          #Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
           continue;
         }
         else
         {
-          Add-AppveyorMessage -Message "Tag name missmatch $env:APPVEYOR_REPO_TAG_NAME and $gitCommitTag)"
-          return;
+          Add-AppveyorMessage -Message "Tag name missmatch $env:APPVEYOR_REPO_TAG_NAME and $gitCommitTag"
+          throw;
         }
       }
       else
       {
         Add-AppveyorMessage -Message "Build is not initiated by git tag. Checking out latest tag"
-        $latesttag=$(git describe --tags)
-        Add-AppveyorMessage -Message "Checking out $latesttag"
-        git checkout $latesttag
+        $latesttag=$(git describe)
 
-        $buildnr = $latesttag
-        
+        $out = (git checkout $latesttag 2>&1 | % { $_.ToString() })
+        Add-AppveyorMessage -Message "Checkout output: $out"
+        $latestTag = $latesttag
+
       }
-      
+      Add-AppveyorMessage -Message "Final Build Number from TAG: $latestTag"
+
+      $hasBuildNumber = $latestTag -match '[0-9]+(\.([0-9]+|\*)){1,3}'
+      $latestTagBuildNumberFormattedCorrectly = $matches[0] -eq $latestTag
+
+      if (!$latestTagBuildNumberFormattedCorrectly)
+      {
+        Add-AppveyorMessage -Message "Latest tag not formated correctly."
+        return;
+      }
+
       $globalAssemblyFile = "GlobalAssemblyInfo.cs"
 
       $globalAssemblyVersion = Get-Content .\$globalAssemblyFile
@@ -100,6 +109,13 @@ install:
           return;
         }
 
+        $assemblyVersionMatchesTag = $matches[0] -like $latestTag+'*'
+        if (!$assemblyVersionMatchesTag)
+        {
+          Add-AppveyorMessage -Message "The Global Assembly Version does not matches checked out tag."
+          return;
+        }
+
         $major=$matches['major'] -as [int]
         $minor=$matches['minor'] -as [int]
         $build=$matches['build'] -as [int]
@@ -110,8 +126,7 @@ install:
 
       Add-AppveyorMessage -Message "Global Assembly Version: $AssemblyVersion ."
 
-      #$AssemblyFileVersion = "$major.$minor.$env:APPVEYOR_BUILD_NUMBER"
-      $AssemblyFileVersion = $env:APPVEYOR_REPO_TAG_NAME
+      $AssemblyFileVersion = "$major.$minor.$build.$env:APPVEYOR_BUILD_NUMBER"
 
       $AssemblyInformationalVersion = "$AssemblyFileVersion-$env:APPVEYOR_REPO_SCM" + ($env:APPVEYOR_REPO_COMMIT).Substring(0, 8)
 
@@ -155,7 +170,7 @@ install:
             $fileRevision=$matches['revision'] -as [int]
 
 
-            $env:afv = "$fileMajor.$fileMinor.$env:APPVEYOR_BUILD_NUMBER"
+            $env:afv = "$fileMajor.$fileMinor.$fileBuild.$env:APPVEYOR_BUILD_NUMBER"
             $env:aiv = "$env:afv-$env:APPVEYOR_REPO_SCM" + ($env:APPVEYOR_REPO_COMMIT).Substring(0, 8)
 
             Add-AppveyorMessage -Message "• Specific AssemblyVersion found, using that instead: $fileMajor.$fileMinor.$fileBuild.$fileRevision ."
