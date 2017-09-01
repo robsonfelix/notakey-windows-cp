@@ -76,6 +76,7 @@ install:
       Add-AppveyorMessage -Message "Final Build Number from TAG: $latestTag"
 
       $hasBuildNumber = $latestTag -match '[0-9]+(\.([0-9]+|\*)){1,3}'
+
       $latestTagBuildNumberFormattedCorrectly = $matches[0] -eq $latestTag
 
       if (!$latestTagBuildNumberFormattedCorrectly)
