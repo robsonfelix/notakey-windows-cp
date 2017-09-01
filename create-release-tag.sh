@@ -40,17 +40,6 @@ fi
 echo "Old version: $OLDVERSION"
 echo "New version: $NEWVERSION"
 
-EXPECTED_CHANGELOG="changelogs/$NEWVERSION.md"
-if [ ! -f "$EXPECTED_CHANGELOG" ]; then
-  echo "ERROR: changelog not found (expected file $EXPECTED_CHANGELOG)"
-  echo ""
-  read -p "Press any key to view commits between $OLDVERSION and HEAD ... "
-  ./changelog.sh $OLDVERSION
-  echo ""
-  echo "Please use this information to write a changelog, and place it in ./$EXPECTED_CHANGELOG"
-  echo "(use './changelog.sh $OLDVERSION' to see the commits since the previous version)"
-  exit 1
-fi
 
 echo "=> Validating release hierarchy"
 if [ -z "$(git describe | grep $OLDVERSION)" ]; then
@@ -68,7 +57,7 @@ fi
 ASSEMBLYVERSION="$NEWVERSION.0"
 
 # appveyor build will take build version from assembly version and check it against tag
-sed -i -E "s/\(Version(\"\)\([0-9].\)\([0-9].\)*)/Version(\"$ASSEMBLYVERSION\")/" GlobalAssemblyInfo.cs
+sed -i -E "s/\(Version(\"\)\([0-9].\)\([0-9].\)*)/Version(\"$ASSEMBLYVERSION\")/g" GlobalAssemblyInfo.cs
 
 echo $NEWVERSION > VERSION
 GIT_MESSAGE="Version bump from $OLDVERSION to $NEWVERSION"
