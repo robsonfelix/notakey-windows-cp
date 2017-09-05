@@ -57,16 +57,17 @@ fi
 ASSEMBLYVERSION="$NEWVERSION.0"
 
 # appveyor build will take build version from assembly version and check it against tag
-sed -i -E "s/\(Version(\"\)\([0-9].\)\([0-9].\)*)/Version(\"$ASSEMBLYVERSION\")/g" GlobalAssemblyInfo.cs
+sed -i -E "s/\(Version(\"\)\([0-9]*\.\)\{1,\}\([0-9]*\)\")/Version(\"$ASSEMBLYVERSION\")/g" GlobalAssemblyInfo.cs 
+rm GlobalAssemblyInfo.cs-E
 
 echo $NEWVERSION > VERSION
 GIT_MESSAGE="Version bump from $OLDVERSION to $NEWVERSION"
 
- git commit VERSION GlobalAssemblyInfo.cs -m "$GIT_MESSAGE"
- git push
+git commit VERSION GlobalAssemblyInfo.cs -m "$GIT_MESSAGE"
+git push
 
- git tag -a "$NEWVERSION" -m "$GIT_MESSAGE"
- git push --tags
+git tag -a "$NEWVERSION" -m "$GIT_MESSAGE"
+git push --tags
 
 echo "=> DONE"
 echo ""
