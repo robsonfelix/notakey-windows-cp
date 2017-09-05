@@ -102,7 +102,7 @@ install:
       }
       else
       {
-        $assemblyVersionFormattedCorrectly = $matches[0] -match "(?<major>[0-9]+)\.(?<minor>[0-9])+(\.(?<build>([0-9])))?(\.(?<revision>([0-9])))?"
+        $assemblyVersionFormattedCorrectly = $matches[0] -match "(?<major>[0-9]+)\.(?<minor>[0-9])+(\.(?<build>([0-9]+)))?(\.(?<revision>([0-9])))?"
 
         if (!$assemblyVersionFormattedCorrectly)
         {
