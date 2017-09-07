@@ -12,8 +12,8 @@
 # AnyCPU will produce x64 for NotakeyNETProvider,
 # which is the only project that has a bit-dependency
 # (due to the version of credentialprovider_*.dll reference)
-platform: Any CPU
-configuration: Debug
+platform: x64
+configuration: Release
 
 # version format
 version: 1.0.{build}
@@ -22,8 +22,9 @@ version: 1.0.{build}
 branches:
   # whitelist
   only:
-    #- master
-    - /\d\.\d\.\d/
+    # - master
+    - appveyor-tags-tst 
+    # - /\d\.\d\.\d/
 
 # Do not build on tags (GitHub and BitBucket)
 skip_tags: false
