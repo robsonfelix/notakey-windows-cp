@@ -198,7 +198,7 @@ build:
 after_build:
  - ps: 7z a -r test.zip register*.bat
  - ps: 7z a -r test.zip unregister*.bat
- - ps: 7z a -r test.zip NotakeyNETProvider\bin\x64\$configuration\*
+ - ps: 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
 artifacts:
   - path: 'test.zip'
   - path: 'register*.bat'
