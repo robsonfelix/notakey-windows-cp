@@ -199,8 +199,8 @@ after_build:
  - ps: |
     {
       Add-AppveyorMessage -Message "Starting after_build"
-      $dir = "wcp-demo-64bit $env:afv"
-      Add-AppveyorMessage -Message "BOOOOOM 1111 $env:afv"
+      $dir = "wcp-demo-64bit"
+      #Add-AppveyorMessage -Message "BOOOOOM 1111 $env:afv"
 
       mkdir "$dir"
       mkdir "$dir\NotakeyNETProvider"
@@ -209,7 +209,7 @@ after_build:
       cp **\*.reg "$dir"
       cp **\*.pdf "$dir" -EA SilentlyContinue
       cp **\*.reg "$dir\NotakeyNETProvider\"
-      Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3 $dir 4 $env:afv"
+      Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3"
       cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"
     
       7z a -r "$dir.zip" "$dir\*"
