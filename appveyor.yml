@@ -195,7 +195,12 @@ before_build:
   - nuget restore
 build:
   project: NotakeyNETProvider.sln
+after_build:
+ - 7z test.zip a -r register*.bat
+ - 7z test.zip a -r unregister*.bat
+ - 7z test.zip a -r NotakeyNETProvider\bin\x64\$(configuration)
 artifacts:
+  - path: 'test.zip'
   - path: 'register*.bat'
   - path: 'unregister*.bat'
   - path: '**\*.reg'
