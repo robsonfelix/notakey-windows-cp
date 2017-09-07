@@ -207,12 +207,13 @@ after_build:
     # cp NotakeyNETProvider\bin\x64\$(configuration)\* temp_artifact\NotakeyNETProvider -EA SilentlyContinue
     
     7z a -r test.zip temp_artifact
-    rm temp_artifact
+    Remove-Item –path temp_artifact –recurse
     # 7z a -r test.zip register*.bat
     # 7z a -r test.zip unregister*.bat
     # 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
 artifacts:
   - path: 'test.zip'
+    name: 'wcp-demo-64bit $(afv)'
   - path: 'register*.bat'
   - path: 'unregister*.bat'
   - path: '**\*.reg'
