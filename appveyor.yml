@@ -197,22 +197,25 @@ build:
   project: NotakeyNETProvider.sln
 after_build:
  - ps: |
-    mkdir temp_artifact
-    mkdir temp_artifact\NotakeyNETProvider
-    cp register*.bat temp_artifact
-    cp unregister*.bat temp_artifact
-    cp **\*.reg temp_artifact
-    cp **\*.pdf temp_artifact -EA SilentlyContinue
-    cp **\*.reg temp_artifact\NotakeyNETProvider\
-    Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3 "
-    # cp NotakeyNETProvider\bin\x64\$(configuration)\* temp_artifact\NotakeyNETProvider -EA SilentlyContinue
+    {
+      $dir = "wcp-demo-64bit $(afv)"
+      mkdir "$dir"
+      mkdir "$dir\NotakeyNETProvider"
+      cp register*.bat "$dir"
+      cp unregister*.bat "$dir"
+      cp **\*.reg "$dir"
+      cp **\*.pdf "$dir" -EA SilentlyContinue
+      cp **\*.reg "$dir\NotakeyNETProvider\"
+      Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3 "
+      cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"
     
-    7z a -r test.zip temp_artifact\*
-    Remove-Item –path temp_artifact –recurse
+      7z a -r "$dir.zip" "$dir\*"
+      Remove-Item –path "$dir" –recurse
 
     # 7z a -r test.zip register*.bat
     # 7z a -r test.zip unregister*.bat
     # 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
+    }
 artifacts:
   - path: 'test.zip'
     name: 'wcp-demo-64bit $(afv)'
