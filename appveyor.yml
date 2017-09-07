@@ -206,7 +206,7 @@ after_build:
       cp **\*.reg "$dir"
       cp **\*.pdf "$dir" -EA SilentlyContinue
       cp **\*.reg "$dir\NotakeyNETProvider\"
-      Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3 "
+      Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3 $dir"
       cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"
     
       7z a -r "$dir.zip" "$dir\*"
