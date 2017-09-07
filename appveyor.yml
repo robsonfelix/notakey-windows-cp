@@ -202,7 +202,10 @@ after_build:
     #Add-AppveyorMessage -Message "BOOOOOM 1111 $env:afv"
 
     mkdir "$dir"
-    mkdir "$dir\NotakeyNETProvider"  
+    mkdir "$dir\NotakeyNETProvider"
+    mkdir "$dir\NotakeyBGService"  
+    mkdir "$dir\CredUIInvokerNET"  
+  
     cp register*.bat "$dir"
     cp unregister*.bat "$dir"
     cp **\*.reg "$dir"
