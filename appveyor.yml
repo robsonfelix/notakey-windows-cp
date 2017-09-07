@@ -207,9 +207,14 @@ after_build:
     cp unregister*.bat "$dir"
     cp **\*.reg "$dir"
     cp **\*.pdf "$dir" -EA SilentlyContinue
-    cp **\*.reg "$dir\NotakeyNETProvider\"
-    Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3"
-    cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"    
+    cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"
+    cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService"
+    cp "CredUIInvokerNET\bin\$env:configuration\*" "$dir\CredUIInvokerNET"
+   
+    if ($env:configuration == "Release")
+    {
+      Remove-Item –path "$dir\**\*.pdb" –recurse
+    }    
     7z a -r "$dir.zip" "$dir\*"
     dir
     Remove-Item –path "$dir" –recurse
