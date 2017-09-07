@@ -199,6 +199,8 @@ after_build:
  - ps: |
     {
       $dir = "wcp-demo-64bit $env:afv"
+      Add-AppveyorMessage -Message "BOOOOOM 1111 $env:afv"
+
       mkdir "$dir"
       mkdir "$dir\NotakeyNETProvider"
       cp register*.bat "$dir"
