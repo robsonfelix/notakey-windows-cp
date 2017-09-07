@@ -212,7 +212,7 @@ after_build:
     cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"    
     7z a -r "$dir.zip" "$dir\*"
     Remove-Item –path "$dir" –recurse
-
+    Add-AppveyorMessage -Message "ENV AFV $env:afv"
     # 7z a -r test.zip register*.bat
     # 7z a -r test.zip unregister*.bat
     # 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
