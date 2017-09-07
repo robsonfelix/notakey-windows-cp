@@ -12,7 +12,7 @@
 # AnyCPU will produce x64 for NotakeyNETProvider,
 # which is the only project that has a bit-dependency
 # (due to the version of credentialprovider_*.dll reference)
-platform: x64
+platform: AnyCPU
 configuration: Release
 
 # version format
