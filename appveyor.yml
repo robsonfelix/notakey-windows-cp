@@ -198,6 +198,7 @@ build:
 after_build:
  - ps: |
     {
+      Add-AppveyorMessage -Message "Starting after_build"
       $dir = "wcp-demo-64bit $env:afv"
       Add-AppveyorMessage -Message "BOOOOOM 1111 $env:afv"
 
