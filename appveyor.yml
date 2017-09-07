@@ -204,9 +204,10 @@ after_build:
     cp **\*.reg temp_artifact
     cp **\*.pdf temp_artifact -EA SilentlyContinue
     cp **\*.reg temp_artifact\NotakeyNETProvider
+    Add-AppveyorMessage -Message "BOOOOOM $(configuration) $configuration"
     # cp NotakeyNETProvider\bin\x64\$(configuration)\* temp_artifact\NotakeyNETProvider -EA SilentlyContinue
     
-    7z a -r test.zip temp_artifact
+    7z a -r test.zip temp_artifact\*
     Remove-Item –path temp_artifact –recurse
     # 7z a -r test.zip register*.bat
     # 7z a -r test.zip unregister*.bat
