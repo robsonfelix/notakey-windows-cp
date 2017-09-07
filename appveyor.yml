@@ -194,7 +194,7 @@ install:
 before_build:
   - nuget restore
 build:
-  project: NotakeyNETProvider.sln
+  project: NotakeyNETProvider.sln /unsafe
 artifacts:
   - path: 'register*.bat'
   - path: 'unregister*.bat'
