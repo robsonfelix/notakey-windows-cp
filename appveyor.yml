@@ -211,6 +211,7 @@ after_build:
     Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3"
     cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"    
     7z a -r "$dir.zip" "$dir\*"
+    dir
     Remove-Item –path "$dir" –recurse
     Add-AppveyorMessage -Message "ENV AFV $env:afv"
     # 7z a -r test.zip register*.bat
