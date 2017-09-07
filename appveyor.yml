@@ -219,7 +219,8 @@ after_build:
     # 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
     
 artifacts:
-  - path: 'wcp-demo-64bit $env:afv.zip'
+  - ps: dir
+  - path: "wcp-demo-64bit $env:afv.zip"
     name: 'wcp-demo-64bit $(afv)'
   - path: 'register*.bat'
   - path: 'unregister*.bat'
