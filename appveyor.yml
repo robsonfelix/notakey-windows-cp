@@ -210,7 +210,7 @@ after_build:
     7z a -r test.zip temp_artifact\*
     Remove-Item –path temp_artifact –recurse
 
-    config = $(configuration)
+    config = $env:configuration
     Add-AppveyorMessage -Message "BOOOOOM  2222 $config"
     # 7z a -r test.zip register*.bat
     # 7z a -r test.zip unregister*.bat
