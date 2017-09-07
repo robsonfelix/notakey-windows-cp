@@ -196,9 +196,21 @@ before_build:
 build:
   project: NotakeyNETProvider.sln
 after_build:
- - ps: 7z a -r test.zip register*.bat
- - ps: 7z a -r test.zip unregister*.bat
- - ps: 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
+ - ps: |
+    mkdir temp_artifact
+    mkdir temp_artifact\NotakeyNETProvider
+    cp register*.bat temp_artifact
+    cp unregister*.bat temp_artifact
+    cp **\*.reg temp_artifact
+    cp **\*.pdf temp_artifact -EA SilentlyContinue
+    cp **\*.reg temp_artifact\NotakeyNETProvider
+    cp NotakeyNETProvider\bin\x64\$(configuration)\* temp_artifact\NotakeyNETProvider
+    
+    7z a -r test.zip temp_artifact
+    rm temp_artifact
+    # 7z a -r test.zip register*.bat
+    # 7z a -r test.zip unregister*.bat
+    # 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
 artifacts:
   - path: 'test.zip'
   - path: 'register*.bat'
