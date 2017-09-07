@@ -161,7 +161,7 @@ install:
 
         if ($hasFileAssemblyVersion)
         {
-          $assemblyVersionFormattedCorrectly = $matches[0] -match "(?<major>[0-9]+)\.(?<minor>[0-9])+(\.(?<build>([0-9])))?(\.(?<revision>([0-9])))?"
+          $assemblyVersionFormattedCorrectly = $matches[0] -match "(?<major>[0-9]+)\.(?<minor>[0-9])+(\.(?<build>([0-9]+)))?(\.(?<revision>([0-9])))?"
 
           if ($assemblyVersionFormattedCorrectly)
           {
@@ -198,7 +198,7 @@ build:
 after_build:
  - ps: |
     {
-      $dir = "wcp-demo-64bit $(afv)"
+      $dir = "wcp-demo-64bit $env:afv"
       mkdir "$dir"
       mkdir "$dir\NotakeyNETProvider"
       cp register*.bat "$dir"
@@ -206,7 +206,7 @@ after_build:
       cp **\*.reg "$dir"
       cp **\*.pdf "$dir" -EA SilentlyContinue
       cp **\*.reg "$dir\NotakeyNETProvider\"
-      Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3 $dir"
+      Add-AppveyorMessage -Message "BOOOOOM $configuration 2 $env:configuration 3 $dir 4 $env:afv"
       cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"
     
       7z a -r "$dir.zip" "$dir\*"
