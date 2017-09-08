@@ -200,6 +200,8 @@ after_build:
  - ps: |
     $dir = "notakey-wcp-64bit $env:afv"
 
+    dir
+
     $env:wcpartifact = $dir
     $env:changelogContent = (Get-Content chagelogs\$env:buildtag.md) -join [Environment]::NewLine
      
