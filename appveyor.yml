@@ -203,7 +203,7 @@ after_build:
     dir
 
     $env:wcpartifact = $dir
-    $env:changelogContent = (Get-Content chagelogs\$env:buildtag.md) -join [Environment]::NewLine
+    $env:changelogContent = (Get-Content changelogs\$env:buildtag.md) -join [Environment]::NewLine
      
 
     mkdir "$dir"
