@@ -28,7 +28,7 @@ function ensure_git_clean {
   fi
 }
 
-# ensure_git_clean
+ensure_git_clean
 
 OLDVERSION=$(cat VERSION)
 if [ -z "$1" ]; then
