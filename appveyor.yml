@@ -216,7 +216,7 @@ after_build:
    
     if ($env:configuration == "Release")
     {
-      Remove-Item –path "$dir\**\*.pdb" –recurse
+      Remove-Item –path "$dir\*" -include *.pdb –recurse
     }    
     7z a -r "$dir.zip" "$dir\*"
     dir
