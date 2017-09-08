@@ -214,7 +214,7 @@ after_build:
     cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService"
     cp "CredUIInvokerNET\bin\$env:configuration\*" "$dir\CredUIInvokerNET"
    
-    if ($env:configuration == "Release")
+    if ($env:configuration -eq "Release")
     {
       Remove-Item –path "$dir\*" -include *.pdb –recurse
     }    
