@@ -151,6 +151,8 @@ install:
         }
         $content = Get-Content "$file"
 
+        write-host ($content) -foreground green
+
         Add-AppveyorMessage -Message "Patching $file"
         Add-AppveyorMessage -Message "Patching $file and content $content"
 
