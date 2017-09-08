@@ -149,10 +149,10 @@ install:
           #Don't patch the global info.
           continue;
         }
-
         $content = Get-Content "$file"
 
         Add-AppveyorMessage -Message "Patching $file"
+        Add-AppveyorMessage -Message "Patching $file and content $content"
 
         $env:afv = $fileVersion
         $env:aiv = $informationalVersion
@@ -161,10 +161,14 @@ install:
 
         if ($hasFileAssemblyVersion)
         {
+          Add-AppveyorMessage -Message "File $file hasfileassemblyversion"
+
           $assemblyVersionFormattedCorrectly = $matches[0] -match "(?<major>[0-9]+)\.(?<minor>[0-9])+(\.(?<build>([0-9]+)))?(\.(?<revision>([0-9])))?"
 
           if ($assemblyVersionFormattedCorrectly)
           {
+          Add-AppveyorMessage -Message "File $file assemblyversionformattedcorrectly"
+
             $fileMajor=$matches['major'] -as [int]
             $fileMinor=$matches['minor'] -as [int]
             $fileBuild=$matches['build'] -as [int]
@@ -204,13 +208,12 @@ after_build:
     mkdir "$dir\NotakeyBGService\bin\$env:configuration"  
     mkdir "$dir\CredUIInvokerNET\bin\$env:configuration\"  
   
-    cp register*.bat "$dir"
-    cp unregister*.bat "$dir"
-    Get-ChildItem ".\" *.reg -Recurse | ?{-not ($_.PSIsContainer -or (Test-Path "$dir\$_"))} | Copy-Item -Destination "$dir"
-    cp **\*.pdf "$dir" -EA SilentlyContinue
     cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
     cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService\bin\$env:configuration\"
     cp "CredUIInvokerNET\bin\$env:configuration\*" "$dir\CredUIInvokerNET\bin\$env:configuration\"
+
+    Get-ChildItem ".\" -include *.reg, *.pdf, register*.bat, unregister*.bat -Recurse | ?{-not ($_.PSIsContainer -or (Test-Path "$dir\$_"))} | Copy-Item -Destination "$dir"
+
     mv "$dir\NotakeyBGService\bin\$env:configuration\winsw.*" "$dir\NotakeyBGService\"
 
     $oldConfig = "Release"
@@ -232,12 +235,7 @@ after_build:
     }
 
     7z a -r "$dir.zip" "$dir\*"
-    dir
     Remove-Item –path "$dir" –recurse
-    Add-AppveyorMessage -Message "ENV AFV $env:afv"
-    # 7z a -r test.zip register*.bat
-    # 7z a -r test.zip unregister*.bat
-    # 7z a -r test.zip NotakeyNETProvider\bin\x64\$(configuration)\*
     
 artifacts:
   - path: "wcp-demo-64bit $(afv).zip"
