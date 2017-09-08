@@ -47,6 +47,8 @@ install:
   - ps: |
       $latestTag = $env:APPVEYOR_REPO_TAG_NAME
 
+
+
       if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
         $gitCommitTag = $(git describe --exact-match $env:APPVEYOR_REPO_COMMIT)
@@ -82,6 +84,8 @@ install:
         Add-AppveyorMessage -Message "Latest tag not formated correctly."
         return;
       }
+
+      $env:buildtag = $latestTag
 
       $globalAssemblyFile = "GlobalAssemblyInfo.cs"
 
@@ -197,6 +201,8 @@ after_build:
     $dir = "notakey-wcp-64bit $env:afv"
 
     $env:wcpartifact = $dir
+    $env:changelogContent = (Get-Content chagelogs\$env:buildtag.md) -join [Environment]::NewLine
+     
 
     mkdir "$dir"
     mkdir "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
@@ -253,7 +259,7 @@ assembly_info:
   assembly_informational_version: $(aiv)
 deploy:
   release: 'Notakey Windows Credential Provider $(afv)'
-  description: 'Notakey Windows Credential Provider $(afv)'
+  description: '$(changelogContent)'
   provider: GitHub
   auth_token:
     secure: 6NEgRf+G3hcuxZrZtkykH/vQu6e4f2Xp6BPCna7z8ElnSR6zca0AIZ/WjG2hoLsk
