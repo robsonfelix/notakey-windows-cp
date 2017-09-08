@@ -202,17 +202,17 @@ after_build:
     #Add-AppveyorMessage -Message "BOOOOOM 1111 $env:afv"
 
     mkdir "$dir"
-    mkdir "$dir\NotakeyNETProvider"
-    mkdir "$dir\NotakeyBGService"  
-    mkdir "$dir\CredUIInvokerNET"  
+    mkdir "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
+    mkdir "$dir\NotakeyBGService\bin\$env:configuration"  
+    mkdir "$dir\CredUIInvokerNET\bin\$env:configuration\"  
   
     cp register*.bat "$dir"
     cp unregister*.bat "$dir"
     cp **\*.reg "$dir"
     cp **\*.pdf "$dir" -EA SilentlyContinue
-    cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider"
-    cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService"
-    cp "CredUIInvokerNET\bin\$env:configuration\*" "$dir\CredUIInvokerNET"
+    cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
+    cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService\bin\$env:configuration"
+    cp "CredUIInvokerNET\bin\$env:configuration\*" "$dir\CredUIInvokerNET\bin\$env:configuration\"
    
     if ($env:configuration -eq "Release")
     {
