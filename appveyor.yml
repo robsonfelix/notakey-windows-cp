@@ -73,7 +73,9 @@ install:
 
       $hasBuildNumber = $latestTag -match '[0-9]+(\.([0-9]+|\*)){1,3}'
 
+
       $latestTagBuildNumberFormattedCorrectly = $matches[0] -eq $latestTag
+
 
       if (!$latestTagBuildNumberFormattedCorrectly)
       {
@@ -192,7 +194,9 @@ build:
   project: NotakeyNETProvider.sln
 after_build:
  - ps: |
-    $dir = "wcp-demo-64bit $env:afv"
+    $dir = "notakey-wcp-64bit $env:afv"
+
+    $env:wcpartifact = $dir
 
     mkdir "$dir"
     mkdir "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
@@ -229,8 +233,8 @@ after_build:
     Remove-Item –path "$dir" –recurse
     
 artifacts:
-  - path: "wcp-demo-64bit $(afv).zip"
-    name: 'wcp-demo-64bit $(afv)'
+  - path: "$(wcpartifact).zip"
+    name: '$(wcpartifact)'
   - path: 'register*.bat'
   - path: 'unregister*.bat'
   - path: '**\*.reg'
@@ -248,12 +252,20 @@ assembly_info:
   assembly_file_version: $(afv)
   assembly_informational_version: $(aiv)
 deploy:
-  release: 'wcp-demo-64bit $(afv)'
-  description: 'Notakey Windows Credential Provider'
+  release: 'Notakey Windows Credential Provider $(afv)'
+  description: 'Notakey Windows Credential Provider $(afv)'
   provider: GitHub
   auth_token:
     secure: 6NEgRf+G3hcuxZrZtkykH/vQu6e4f2Xp6BPCna7z8ElnSR6zca0AIZ/WjG2hoLsk
-  artifact: 'wcp-demo-64bit $(afv)'
+  artifact: '$(wcpartifact)'
   draft: false
   prerelease: false
 
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
+notifications:
+  provider: Slack
+    auth_token:
+      secure: Tw2kLnjsD3x7En1bjF0ubvbnuIRGoQu3F1q4eMrApJk=
+    channel: '#dev'
