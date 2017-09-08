@@ -197,9 +197,7 @@ build:
   project: NotakeyNETProvider.sln
 after_build:
  - ps: |
-    Add-AppveyorMessage -Message "Starting after_build"
     $dir = "wcp-demo-64bit $env:afv"
-    #Add-AppveyorMessage -Message "BOOOOOM 1111 $env:afv"
 
     mkdir "$dir"
     mkdir "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
@@ -211,13 +209,28 @@ after_build:
     cp **\*.reg "$dir"
     cp **\*.pdf "$dir" -EA SilentlyContinue
     cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
-    cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService\bin\$env:configuration"
+    cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService\bin\$env:configuration\"
     cp "CredUIInvokerNET\bin\$env:configuration\*" "$dir\CredUIInvokerNET\bin\$env:configuration\"
+    mv "$dir\NotakeyBGService\bin\$env:configuration\winsw.*" "$dir\NotakeyBGService\"
+
+    $oldConfig = "Release"
+    $newConfig = "Debug"
+    $files = (Get-ChildItem -path .\* -include register*.bat, winsw.xml -recurse)
    
     if ($env:configuration -eq "Release")
     {
       Remove-Item –path "$dir\*" -include *.pdb –recurse
-    }    
+      $oldConfig = "Debug"
+      $newConfig = "Release"
+    }
+
+    foreach ($file in $files)
+    {
+      (Get-Content $file.PSPath) |
+      Foreach-Object { $_ -replace $oldConfig, $newConfig } |
+      Set-Content $file.PSPath
+    }
+
     7z a -r "$dir.zip" "$dir\*"
     dir
     Remove-Item –path "$dir" –recurse
