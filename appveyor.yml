@@ -265,7 +265,7 @@ deploy:
 #         notifications           #
 #---------------------------------#
 notifications:
-  provider: Slack
+  - provider: Slack
     auth_token:
       secure: Tw2kLnjsD3x7En1bjF0ubvbnuIRGoQu3F1q4eMrApJk=
     channel: '#dev'
