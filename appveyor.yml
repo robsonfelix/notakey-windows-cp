@@ -256,7 +256,4 @@ deploy:
   artifact: 'wcp-demo-64bit $(afv)'
   draft: false
   prerelease: false
-  on:
-    branch: appveyor-tags-tst
-    appveyor_repo_tag: true
 
