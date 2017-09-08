@@ -160,7 +160,7 @@ install:
         $env:aiv = $informationalVersion
 
         $hasFileAssemblyVersion = "'"+$content+"'" -match 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
-        $hasDefaultAssemblyVersion "'"+$content+"'" -match 'AssemblyVersion\("(1.0.0)(.0)*"\)'
+        $hasDefaultAssemblyVersion = "'"+$content+"'" -match 'AssemblyVersion\("(1.0.0)(.0)*"\)'
 
         if ($hasFileAssemblyVersion -and !$hasDefaultAssemblyVersion)
         {
