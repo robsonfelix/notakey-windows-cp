@@ -206,7 +206,7 @@ after_build:
   
     cp register*.bat "$dir"
     cp unregister*.bat "$dir"
-    cp **\*.reg "$dir"
+    Get-ChildItem ".\" *.reg -Recurse | ?{-not ($_.PSIsContainer -or (Test-Path "$dir\$_"))} | Copy-Item -Destination "$dir"
     cp **\*.pdf "$dir" -EA SilentlyContinue
     cp "NotakeyNETProvider\bin\x64\$env:configuration\*" "$dir\NotakeyNETProvider\bin\x64\$env:configuration\"
     cp "NotakeyBGService\bin\$env:configuration\*" "$dir\NotakeyBGService\bin\$env:configuration\"
