@@ -34,6 +34,8 @@ If the user approves the logon attempt, then the provided username and password 
 they would normally. If the entered password is incorrect, then the logon attempt will
 fail with a message.
 
+The CLSID for the credential provider is `77E5F42E-B280-4219-B130-D48BB3932A04`.
+
 # System Requirements
 
 The credential provider requires .NET v4.5, and
@@ -146,7 +148,7 @@ Right click on a credential provider's CLSID (which should be disabled), and add
 
 This provider will be excluded from future login screens.
 
-## Determining CLSID
+# Determining Provider CLSID
 
 One way to determine the CLSID of a credential provider, is to authenticate
 yourself using it.
@@ -158,15 +160,20 @@ value of the provider in question.
 
 You may then use this CLSID to disable this specific provider.
 
-## Credential Provider CLSID List for Windows 10
+## Known Provider CLSIDs (Windows 10)
 
 This is a non-exhaustive reference of credential providers and their
 respective CLSID values on Windows 10.
 
 Some of these values may be the same on other Windows versions.
 
+<aside class="notice">
+The CLSID for NtkCp is {77E5F42E-B280-4219-B130-D48BB3932A04}.
+</aside>
+
 | Name   |  CLSID |
 |--------|--------|
+|NtkCp   | {77E5F42E-B280-4219-B130-D48BB3932A04} | 
 |Smartcard Reader Selection Provider|  {1b283861-754f-4022-ad47-a5eaaa618894}|
 |Smartcard WinRT Provider | {1ee7337f-85ac-45e2-a23c-37c753209769}|
 |PicturePasswordLogonProvider | {2135f72a-90b5-4ed3-a7f1-8bb705ac276a}|
