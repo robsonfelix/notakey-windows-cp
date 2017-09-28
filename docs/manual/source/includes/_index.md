@@ -246,6 +246,17 @@ This is a generic error message for unexpected issues.
 
 # FAQ
 
+## NtkCp can not be registered anymore (but it used to work)
+
+NtkCp sometimes can not be registered, but Windows does not report any errors. One example situation is when a working NtkCp instance
+is unregistered, and re-registered (possibly after moving files to a different location).
+
+If registering gives no indication of errors, but the credential provider does not become available, try the following steps:
+
+- remove the registry entry `HKEY_CLASSES_ROOT\CLSID\{77E5F42E-B280-4219-B130-D48BB3932A04}`
+- register NtkCp
+- reboot the system
+
 ## Does NtkCp send the locally entered password to a remote server?
 
 No, only the username is sent to the Notakey API.
