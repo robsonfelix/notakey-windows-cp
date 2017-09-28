@@ -86,4 +86,7 @@ echo ""
 echo "New git tag pushed: $NEWVERSION with message \"$GIT_MESSAGE\""
 echo ""
 
+echo "=> Publishing the latest documentation"
+docs/manual/publish.sh
+
 
