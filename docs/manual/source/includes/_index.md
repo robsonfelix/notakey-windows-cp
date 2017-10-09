@@ -297,6 +297,70 @@ will fallback to the default system credential providers.
 
 NtkCp can be used together with Remote Desktop Protocol (RDP).
 
+## I have an issue, when Network Level Access (NLA) is enabled
+
+See:
+
+- [When accessing a remote server, the Notakey login option fails](#when-accessing-a-remote-server-the-notakey-login-option-fails)
+- [Why is the Notakey logon option missing, when accessing a remote server via RDP?](#why-is-the-notakey-logon-option-missing-when-accessing-a-remote-server-via-rdp)
+- [Why am I prompted to authenticate twice (over Remote Desktop Protocol)](#why-am-i-prompted-to-authenticate-twice-over-remote-desktop-protocol)
+- [How can I turn off Network Level Access for Remote Desktop connections?](#how-can-i-turn-off-network-level-access-for-remote-desktop-connections)
+
+## Why am I prompted to authenticate twice (over Remote Desktop Protocol)
+
+This can happen, if Network Level Authentication (NLA) is enabled.
+
+This behavior is by Microsoft's design, and custom credential providers can
+not circumvent it. For the rationale, see [RDC and Custom Credential Providers](https://blogs.msdn.microsoft.com/winsdk/2009/07/14/rdc-and-custom-credential-providers) on the Windows SDK Team blog.
+
+A workaround is to disable NLA on the client connection, and allow clients without NLA on the server.
+
+For instructions on how to disable NLA, see: [How can I turn off Network Level Access for Remote Desktop connections?](#how-can-i-turn-off-network-level-access-for-remote-desktop-connections).
+
+## How can I turn off Network Level Access for Remote Desktop connections?
+
+### For Hosts
+
+For RD Session Hosts, see this Microsoft Technet article: [Configure Network Level Authentication for Remote Desktop Services Connections](https://technet.microsoft.com/en-us/library/cc732713%28v=ws.11%29.aspx?f=255&MSPPError=-2147217396).
+
+The entry **Allow connections only from computers running Remote Desktop with Network Level Authentication** must **NOT** be checked.
+
+![Example of the required RDP server settings](images/allow-without-nla.png)
+
+### For Clients
+
+On Remote Desktop Clients, you need to modify the Remote Desktop connection
+file (with extension `.rdp`).
+
+Open this file, and add the following setting:
+
+`enablecredsspsupport:i:0`
+
+<aside class="notice">
+If you want to apply this setting to all connections, without creating multiple .rdp files, you can apply this setting to the master file in your user's documents folder.
+
+Add this setting to Default.rdp in e.g. <code>C:\Users\&lt;User&gt;\Documents\Default.rdp</code>
+</aside>
+  
+## When accessing a remote server, the Notakey login option fails
+
+If Network Level Authentication (NLA) is enabled, then the Remote Desktop Client
+will present a client-side pre-authentication dialog.
+
+This dialog might display the Notakey option, if:
+
+- the Notakey Credential Provider is used to log in to the client computer.
+
+If Notakey is not used to access the client computer, the Notakey credential provider **should not** be present in the NLA pre-authentication dialog box.
+
+NLA prevents client-side credential providers (including Notakey) to comply with NLA - only the built-in password and smartcard credential providers will work.
+
+To enforce Notakey multi-factor authentication in these situations, you have 2 options:
+
+- disable NLA
+  - see: [How can I turn off Network Level Access for Remote Desktop connections?](#how-can-i-turn-off-network-level-access-for-remote-desktop-connections)
+- use standard username and password authentication to satisfy the NLA requirements, but disable the built-in credential providers on the RD Session Host. This will force NtkCp to be used. **However, this will require your users to perform authentication twice.**
+
 ## Why is the Notakey logon option missing, when accessing a remote server via RDP?
 
 If Network Level Authentication (NLA) is enabled, users will be prompted locally
