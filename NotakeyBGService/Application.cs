@@ -202,6 +202,9 @@ namespace NotakeyBGService
                     ApiConfiguration.AuthWaitTimeoutSecs = ttl;
                 }
 
+
+                // TODO 
+                // Enforce this setting, move config from IPC client to service. 
                  ttl = (int)registryNode.GetValue("HealthTimeoutSecs");
 
                 if (ttl > 0)
