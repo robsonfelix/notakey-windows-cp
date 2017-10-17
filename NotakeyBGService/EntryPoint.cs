@@ -23,14 +23,14 @@ namespace NotakeyBGService
         /// </summary>
         static void Main(string[] args)
         {
-            if (args.Length < 2)
-            { 
-                Console.WriteLine("Need at least 2 arguments - 1. ApiEndpoint and 2. AccessId");
-                return;
-            }
+            if (args.Length >= 2)
+            {
+                //Console.WriteLine("Need at least 2 arguments - 1. ApiEndpoint and 2. AccessId");
+                // return;
 
-            ApiConfiguration.ApiEndpoint = args[0];
-            ApiConfiguration.AccessId = args[1];
+                ApiConfiguration.ApiEndpoint = args[0];
+                ApiConfiguration.AccessId = args[1];
+            }
 
             var app = new Application(terminationEvent, args.Contains("/unattended"));
             app.Run();
