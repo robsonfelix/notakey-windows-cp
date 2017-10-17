@@ -12,7 +12,7 @@ using Notakey.Utility;
 using System.Windows.Threading;
 using System.IO;
 using System.Diagnostics;
-using Microsoft.Win32;
+
 
 namespace NotakeyBGService
 {
@@ -67,8 +67,7 @@ namespace NotakeyBGService
         PipeServerFactory factory;
         ManualResetEvent terminationEvent;
         
-        private static string BaseRegistryKey = "Software\\Notakey\\WindowsCP"; 
-
+        
         List<IDisposable> disposableSubscriptions = new List<IDisposable>();
 
         public Application(ManualResetEvent terminationEvent, bool unattended)
@@ -84,10 +83,10 @@ namespace NotakeyBGService
                  logger = new UnattendedLogger();
             }
 
+            
+
             this.terminationEvent = terminationEvent;
             this.factory = new PipeServerFactory(logger);
-
-            LoadRegistryConfigOverrrides();
 
             logger.WriteMessage($"Using API endpoint: {ApiConfiguration.ApiEndpoint}");
             logger.WriteMessage($"Using API access id: {ApiConfiguration.AccessId}");
@@ -123,7 +122,7 @@ namespace NotakeyBGService
                 // e.g. network is down but the Credential Provider still needs
                 // to query for status (e.g. is service running even if API down?)
                 api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId)
-                    .Timeout(TimeSpan.FromSeconds(1))
+                    .Timeout(TimeSpan.FromSeconds(2))
                     .RetryWithBackoffStrategy(
                         retryCount: 0,
                         retryOnError: e => { logger.ErrorLine("Bind attempt failed", e); return true; },
@@ -138,88 +137,7 @@ namespace NotakeyBGService
         }
 
 
-        void LoadRegistryConfigOverrrides()
-        {
-
-            RegistryKey registryNode;
-
-            try
-            {
-                // Open a subKey as read-only
-                registryNode = Registry.LocalMachine.OpenSubKey(BaseRegistryKey);
-                // If the RegistrySubKey doesn't exist -> (null)
-                if (registryNode == null)
-                {
-                    logger.WriteMessage($"No API overrides from Win registry");
-                    return;
-                }
-
-                string ServiceURL = (string)registryNode.GetValue("ServiceURL");
-
-                if (!String.IsNullOrEmpty(ServiceURL))
-                {
-                    ApiConfiguration.ApiEndpoint = ServiceURL;
-                }
-
-                string ServiceID = (string)registryNode.GetValue("ServiceID");
-
-                if (!String.IsNullOrEmpty(ServiceID))
-                {
-                    ApiConfiguration.AccessId = ServiceID;
-                }
-            
-
-                var ttl = (int)registryNode.GetValue("MessageTtlSeconds");
-
-                if (ttl > 0)
-                {
-                    ApiConfiguration.MessageTtlSeconds = ttl;
-                }
-
-                var mt = (string)registryNode.GetValue("MessageActionTitle");
-                if (!String.IsNullOrEmpty(mt))
-                {
-                    ApiConfiguration.MessageActionTitle = mt;
-                }
-
-                var md = (string)registryNode.GetValue("MessageDescription");
-                if (!String.IsNullOrEmpty(md))
-                {
-                    ApiConfiguration.MessageDescription = md;
-                }
-
-                 ttl = (int)registryNode.GetValue("AuthCreateTimeoutSecs");
-
-                if (ttl > 0)
-                {
-                    ApiConfiguration.AuthCreateTimeoutSecs = ttl;
-                }
-
-                 ttl = (int)registryNode.GetValue("AuthWaitTimeoutSecs");
-
-                if (ttl > 0)
-                {
-                    ApiConfiguration.AuthWaitTimeoutSecs = ttl;
-                }
-
-
-                // TODO 
-                // Enforce this setting, move config from IPC client to service. 
-                 ttl = (int)registryNode.GetValue("HealthTimeoutSecs");
-
-                if (ttl > 0)
-                {
-                    ApiConfiguration.HealthTimeoutSecs = ttl;
-                }
-            }
-            catch (Exception e)
-            {
-                logger.ErrorLine("Could not open registry key " + BaseRegistryKey, e);
-                return;
-            }
-            registryNode.Close();
-            registryNode.Dispose();
-        }
+        
 
         void SpawnServer()
         {

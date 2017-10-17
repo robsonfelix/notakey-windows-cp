@@ -11,12 +11,16 @@ using System.Reactive.Linq;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace NotakeyBGService
 {
     static class EntryPoint
     {
         static ManualResetEvent terminationEvent = new ManualResetEvent(false);
+        
+        private static string BaseRegistryKey = "Software\\Notakey\\WindowsCP";
+
 
         /// <summary>
         /// The main entry point for the application.
@@ -25,11 +29,18 @@ namespace NotakeyBGService
         {
             if (args.Length >= 2)
             {
-                //Console.WriteLine("Need at least 2 arguments - 1. ApiEndpoint and 2. AccessId");
-                // return;
+                //
 
                 ApiConfiguration.ApiEndpoint = args[0];
                 ApiConfiguration.AccessId = args[1];
+            }
+
+            LoadRegistryConfigOverrrides();
+
+            if(String.IsNullOrEmpty(ApiConfiguration.ApiEndpoint) || String.IsNullOrEmpty(ApiConfiguration.AccessId))
+            {
+                Console.WriteLine("Missing configuration for: 1. ApiEndpoint and/or 2. AccessId");
+                return;
             }
 
             var app = new Application(terminationEvent, args.Contains("/unattended"));
@@ -38,6 +49,96 @@ namespace NotakeyBGService
             terminationEvent.WaitOne();
             Console.WriteLine("Received termination event. Quitting ...");
             app.Cleanup();
+        }
+
+        static void LoadRegistryConfigOverrrides()
+        {
+
+            RegistryKey registryNode;
+
+            try
+            {
+                // Open a subKey as read-only
+                registryNode = Registry.LocalMachine.OpenSubKey(BaseRegistryKey);
+                // If the RegistrySubKey doesn't exist -> (null)
+                if (registryNode == null)
+                {
+                    Console.WriteLine("No registry configuration overrides provided...");
+                    return;
+                }
+
+                string ServiceURL = (string)registryNode.GetValue("ServiceURL");
+
+                if (!String.IsNullOrEmpty(ServiceURL))
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.ApiEndpoint: " + ServiceURL + " from registry");
+                    ApiConfiguration.ApiEndpoint = ServiceURL;
+                }
+
+                string ServiceID = (string)registryNode.GetValue("ServiceID");
+
+                if (!String.IsNullOrEmpty(ServiceID))
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.AccessId: " + ServiceID + " from registry");
+                    ApiConfiguration.AccessId = ServiceID;
+                }
+
+                var ttl = registryNode.GetValue("MessageTtlSeconds");
+
+                if (ttl != null && (int)ttl > 0)
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.MessageTtlSeconds: " + ttl.ToString() + " from registry");
+                    ApiConfiguration.MessageTtlSeconds = (int)ttl;
+                }
+
+                var mt = (string)registryNode.GetValue("MessageActionTitle");
+                if (!String.IsNullOrEmpty(mt))
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.MessageActionTitle: " + mt + " from registry");
+                    ApiConfiguration.MessageActionTitle = mt;
+                }
+
+                var md = (string)registryNode.GetValue("MessageDescription");
+                if (!String.IsNullOrEmpty(md))
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.MessageDescription: " + md + " from registry");
+                    ApiConfiguration.MessageDescription = md;
+                }
+
+                ttl = (int)registryNode.GetValue("AuthCreateTimeoutSecs");
+
+                if (ttl != null && (int)ttl > 0)
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.AuthCreateTimeoutSecs: " + ttl.ToString() + " from registry");
+                    ApiConfiguration.AuthCreateTimeoutSecs = (int)ttl;
+                }
+
+                ttl = (int)registryNode.GetValue("AuthWaitTimeoutSecs");
+
+                if (ttl != null && (int)ttl > 0)
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.AuthWaitTimeoutSecs: " + ttl.ToString() + " from registry");
+                    ApiConfiguration.AuthWaitTimeoutSecs = (int)ttl;
+                }
+
+
+                // TODO 
+                // Enforce this setting, move config from IPC client to service. 
+                ttl = registryNode.GetValue("HealthTimeoutSecs");
+
+                if (ttl != null && (int)ttl > 0)
+                {
+                    Console.WriteLine("Loaded ApiConfiguration.HealthTimeoutSecs: " + ttl.ToString() + " from registry");
+                    ApiConfiguration.HealthTimeoutSecs = (int)ttl;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error loading registry: " + e.Message );
+                return;
+            }
+            registryNode.Close();
+            registryNode.Dispose();
         }
     }
 }
