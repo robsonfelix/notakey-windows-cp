@@ -12,6 +12,7 @@ using Notakey.Utility;
 using System.Windows.Threading;
 using System.IO;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace NotakeyBGService
 {
@@ -25,6 +26,12 @@ namespace NotakeyBGService
     {
         public static string AccessId = "<UNSET: pass as 2nd cli parameter>";
         public static string ApiEndpoint = "<UNSET: pass as 1st cli parameter>";
+        public static int MessageTtlSeconds = 30;
+        public static string MessageActionTitle = "Windows Login";
+        public static string MessageDescription = "Do you wish to authenticate user '{0}' on computer '{1}'?";
+        public static int AuthWaitTimeoutSecs = 30;
+        public static int AuthCreateTimeoutSecs = 10;
+        public static int HealthTimeoutSecs = 7;
     }
 
     public class UnattendedLogger : Logger
@@ -59,6 +66,8 @@ namespace NotakeyBGService
 
         PipeServerFactory factory;
         ManualResetEvent terminationEvent;
+        
+        private static string BaseRegistryKey = "Software\\Notakey\\WindowsCP"; 
 
         List<IDisposable> disposableSubscriptions = new List<IDisposable>();
 
@@ -75,12 +84,16 @@ namespace NotakeyBGService
                  logger = new UnattendedLogger();
             }
 
-            logger.WriteMessage($"Using API endpoint: {ApiConfiguration.ApiEndpoint}");
-            logger.WriteMessage($"Using API access id: {ApiConfiguration.AccessId}");
-
             this.terminationEvent = terminationEvent;
             this.factory = new PipeServerFactory(logger);
+
+            LoadRegistryConfigOverrrides();
+
+            logger.WriteMessage($"Using API endpoint: {ApiConfiguration.ApiEndpoint}");
+            logger.WriteMessage($"Using API access id: {ApiConfiguration.AccessId}");
         }
+
+        
 
         internal void Cleanup()
         {
@@ -122,6 +135,87 @@ namespace NotakeyBGService
                     );
             });
             SpawnServer();
+        }
+
+
+        void LoadRegistryConfigOverrrides()
+        {
+
+            RegistryKey registryNode;
+
+            try
+            {
+                // Open a subKey as read-only
+                registryNode = Registry.LocalMachine.OpenSubKey(BaseRegistryKey);
+                // If the RegistrySubKey doesn't exist -> (null)
+                if (registryNode == null)
+                {
+                    logger.WriteMessage($"No API overrides from Win registry");
+                    return;
+                }
+
+                string ServiceURL = (string)registryNode.GetValue("ServiceURL");
+
+                if (!String.IsNullOrEmpty(ServiceURL))
+                {
+                    ApiConfiguration.ApiEndpoint = ServiceURL;
+                }
+
+                string ServiceID = (string)registryNode.GetValue("ServiceID");
+
+                if (!String.IsNullOrEmpty(ServiceID))
+                {
+                    ApiConfiguration.AccessId = ServiceID;
+                }
+            
+
+                var ttl = (int)registryNode.GetValue("MessageTtlSeconds");
+
+                if (ttl > 0)
+                {
+                    ApiConfiguration.MessageTtlSeconds = ttl;
+                }
+
+                var mt = (string)registryNode.GetValue("MessageActionTitle");
+                if (!String.IsNullOrEmpty(mt))
+                {
+                    ApiConfiguration.MessageActionTitle = mt;
+                }
+
+                var md = (string)registryNode.GetValue("MessageDescription");
+                if (!String.IsNullOrEmpty(md))
+                {
+                    ApiConfiguration.MessageDescription = md;
+                }
+
+                 ttl = (int)registryNode.GetValue("AuthCreateTimeoutSecs");
+
+                if (ttl > 0)
+                {
+                    ApiConfiguration.AuthCreateTimeoutSecs = ttl;
+                }
+
+                 ttl = (int)registryNode.GetValue("AuthWaitTimeoutSecs");
+
+                if (ttl > 0)
+                {
+                    ApiConfiguration.AuthWaitTimeoutSecs = ttl;
+                }
+
+                 ttl = (int)registryNode.GetValue("HealthTimeoutSecs");
+
+                if (ttl > 0)
+                {
+                    ApiConfiguration.HealthTimeoutSecs = ttl;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.ErrorLine("Could not open registry key " + BaseRegistryKey, e);
+                return;
+            }
+            registryNode.Close();
+            registryNode.Dispose();
         }
 
         void SpawnServer()
@@ -291,7 +385,7 @@ namespace NotakeyBGService
                                 authCheckTerminationEvent.Set();
                             })
                             
-                            .Timeout(TimeSpan.FromSeconds(30))
+                            .Timeout(TimeSpan.FromSeconds(ApiConfiguration.AuthWaitTimeoutSecs))
                             
                             .Subscribe(
                                 response => authCheckResponse = response,
@@ -317,18 +411,14 @@ namespace NotakeyBGService
                         string username = obj.Reader.ReadLine();
                         logger.LineWithEmphasis("Requested username", username, ConsoleColor.White);
                         
-                        string action= obj.Reader.ReadLine();
-                        logger.LineWithEmphasis("Requested action", action, ConsoleColor.White);
-                        
-                        string description = obj.Reader.ReadLine();
-                        logger.LineWithEmphasis("Requested description", description, ConsoleColor.White);
-
                         var authReqTerminationEvent = new ManualResetEvent(false);
                         string authReqUuid = null;
                         Exception authReqException = null;
-
+                     
+                        string description = string.Format(ApiConfiguration.MessageDescription, username, Environment.MachineName);
+               
                         api
-                            .CreateAuthRequest(username, action, description)
+                            .CreateAuthRequest(username, ApiConfiguration.MessageActionTitle, description, ApiConfiguration.MessageTtlSeconds)
                             .SubscribeOn(NewThreadScheduler.Default)
                             .ObserveOn(Scheduler.Immediate)
 
@@ -337,7 +427,7 @@ namespace NotakeyBGService
                                 authReqTerminationEvent.Set();
                             })
                             
-                            .Timeout(TimeSpan.FromSeconds(10))
+                            .Timeout(TimeSpan.FromSeconds(ApiConfiguration.AuthCreateTimeoutSecs))
                             
                             .Subscribe(
                                 uuid => authReqUuid = uuid,
