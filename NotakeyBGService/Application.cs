@@ -13,18 +13,20 @@ using System.Windows.Threading;
 using System.IO;
 using System.Diagnostics;
 
+
 namespace NotakeyBGService
 {
-    // TODO: read config from args
-    public static class BGServiceConfiguration
-    {
-        public static readonly TimeSpan AsyncTimeout = TimeSpan.FromSeconds(30);
-    }
 
     public static class ApiConfiguration
     {
         public static string AccessId = "<UNSET: pass as 2nd cli parameter>";
         public static string ApiEndpoint = "<UNSET: pass as 1st cli parameter>";
+        public static int MessageTtlSeconds = 30;
+        public static string MessageActionTitle = "Windows Login";
+        public static string MessageDescription = "Do you wish to authenticate user '{0}' on computer '{1}'?";
+        public static int AuthWaitTimeoutSecs = 30;
+        public static int AuthCreateTimeoutSecs = 10;
+        public static int HealthTimeoutSecs = 7;
     }
 
     public class UnattendedLogger : Logger
@@ -59,7 +61,8 @@ namespace NotakeyBGService
 
         PipeServerFactory factory;
         ManualResetEvent terminationEvent;
-
+        
+        
         List<IDisposable> disposableSubscriptions = new List<IDisposable>();
 
         public Application(ManualResetEvent terminationEvent, bool unattended)
@@ -75,12 +78,16 @@ namespace NotakeyBGService
                  logger = new UnattendedLogger();
             }
 
-            logger.WriteMessage($"Using API endpoint: {ApiConfiguration.ApiEndpoint}");
-            logger.WriteMessage($"Using API access id: {ApiConfiguration.AccessId}");
+            
 
             this.terminationEvent = terminationEvent;
             this.factory = new PipeServerFactory(logger);
+
+            logger.WriteMessage($"Using API endpoint: {ApiConfiguration.ApiEndpoint}");
+            logger.WriteMessage($"Using API access id: {ApiConfiguration.AccessId}");
         }
+
+        
 
         internal void Cleanup()
         {
@@ -110,7 +117,7 @@ namespace NotakeyBGService
                 // e.g. network is down but the Credential Provider still needs
                 // to query for status (e.g. is service running even if API down?)
                 api.Bind(ApiConfiguration.ApiEndpoint, ApiConfiguration.AccessId)
-                    .Timeout(TimeSpan.FromSeconds(1))
+                    .Timeout(TimeSpan.FromSeconds(2))
                     .RetryWithBackoffStrategy(
                         retryCount: 0,
                         retryOnError: e => { logger.ErrorLine("Bind attempt failed", e); return true; },
@@ -121,8 +128,14 @@ namespace NotakeyBGService
                         error => logger.ErrorLine("Could not bind to the Notakey API", error)
                     );
             });
+
+            EventLog.WriteEntry(EntryPoint.LogApplication, "Service started successfully", EventLogEntryType.Information, 94);
+
             SpawnServer();
         }
+
+
+        
 
         void SpawnServer()
         {
@@ -291,7 +304,7 @@ namespace NotakeyBGService
                                 authCheckTerminationEvent.Set();
                             })
                             
-                            .Timeout(TimeSpan.FromSeconds(30))
+                            .Timeout(TimeSpan.FromSeconds(ApiConfiguration.AuthWaitTimeoutSecs))
                             
                             .Subscribe(
                                 response => authCheckResponse = response,
@@ -317,18 +330,14 @@ namespace NotakeyBGService
                         string username = obj.Reader.ReadLine();
                         logger.LineWithEmphasis("Requested username", username, ConsoleColor.White);
                         
-                        string action= obj.Reader.ReadLine();
-                        logger.LineWithEmphasis("Requested action", action, ConsoleColor.White);
-                        
-                        string description = obj.Reader.ReadLine();
-                        logger.LineWithEmphasis("Requested description", description, ConsoleColor.White);
-
                         var authReqTerminationEvent = new ManualResetEvent(false);
                         string authReqUuid = null;
                         Exception authReqException = null;
-
+                     
+                        string description = string.Format(ApiConfiguration.MessageDescription, username, Environment.MachineName);
+               
                         api
-                            .CreateAuthRequest(username, action, description)
+                            .CreateAuthRequest(username, ApiConfiguration.MessageActionTitle, description, ApiConfiguration.MessageTtlSeconds)
                             .SubscribeOn(NewThreadScheduler.Default)
                             .ObserveOn(Scheduler.Immediate)
 
@@ -337,7 +346,7 @@ namespace NotakeyBGService
                                 authReqTerminationEvent.Set();
                             })
                             
-                            .Timeout(TimeSpan.FromSeconds(10))
+                            .Timeout(TimeSpan.FromSeconds(ApiConfiguration.AuthCreateTimeoutSecs))
                             
                             .Subscribe(
                                 uuid => authReqUuid = uuid,

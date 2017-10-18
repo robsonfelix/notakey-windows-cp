@@ -288,9 +288,8 @@ namespace NotakeyNETProvider
 
 				Debug.WriteLine("... status check OK");
 
-                string computerName = System.Environment.MachineName;
-                string description = string.Format("Do you wish to authenticate user '{0}' on computer '{1}'?", Username, computerName);
-
+                
+                
                 string uuid = null;
                 bool failed = false;
                 c.Execute((StreamReader sr) =>
@@ -304,7 +303,7 @@ namespace NotakeyNETProvider
                     {
                         failed = true;
                     }
-                }, "REQUEST_AUTH", Username, "Windows Login", description);
+                }, "REQUEST_AUTH", Username);
 
                 if (failed /* REQUEST_AUTH */)
                 {
