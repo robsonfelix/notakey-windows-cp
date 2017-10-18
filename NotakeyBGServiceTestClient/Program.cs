@@ -59,7 +59,7 @@ namespace NotakeyBGServiceTestClient
                         }
                         Console.WriteLine("Requested auth. Success: {0}. Message: {1}", status, msg);
                     },
-                    "REQUEST_AUTH", "gints", "Test action", "Test description");
+                    "REQUEST_AUTH", "iasmanis");
 
                 string uuid = goodUuid ?? "7f098073-afc2-45e2-8fef-9e33bfd81690";
 
