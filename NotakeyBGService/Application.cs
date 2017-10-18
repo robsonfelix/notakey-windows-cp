@@ -129,7 +129,7 @@ namespace NotakeyBGService
                     );
             });
 
-            EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: Service started successfully", EventLogEntryType.Information);
+            EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: Service started successfully", EventLogEntryType.Information, 94);
 
             SpawnServer();
         }

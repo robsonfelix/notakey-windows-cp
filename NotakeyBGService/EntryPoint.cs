@@ -65,7 +65,7 @@ namespace NotakeyBGService
                 if (registryNode == null)
                 {
                     Console.WriteLine("No registry configuration overrides provided...");
-                    EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: No registry information avaialble in key [" + BaseRegistryKey + "]", EventLogEntryType.Information);
+                    EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: No registry information avaialble in key [" + BaseRegistryKey + "]", EventLogEntryType.Information, 99);
                     return;
                 }
 
@@ -115,7 +115,7 @@ namespace NotakeyBGService
                     ApiConfiguration.AuthCreateTimeoutSecs = (int)ttl;
                     if(ApiConfiguration.AuthCreateTimeoutSecs > 100)
                     {
-                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: AuthCreateTimeoutSecs value of "+ ApiConfiguration.AuthCreateTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning);
+                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: AuthCreateTimeoutSecs value of "+ ApiConfiguration.AuthCreateTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning, 98);
                     }
                 }
 
@@ -127,7 +127,7 @@ namespace NotakeyBGService
                     ApiConfiguration.AuthWaitTimeoutSecs = (int)ttl;
                     if (ApiConfiguration.AuthWaitTimeoutSecs > 100)
                     {
-                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: AuthWaitTimeoutSecs value of " + ApiConfiguration.AuthWaitTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning);
+                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: AuthWaitTimeoutSecs value of " + ApiConfiguration.AuthWaitTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning, 97);
                     }
                 }
 
@@ -142,7 +142,7 @@ namespace NotakeyBGService
                     ApiConfiguration.HealthTimeoutSecs = (int)ttl;
                     if (ApiConfiguration.HealthTimeoutSecs > 100)
                     {
-                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: HealthTimeoutSecs value of " + ApiConfiguration.HealthTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning);
+                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: HealthTimeoutSecs value of " + ApiConfiguration.HealthTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning, 96);
                     }
                 }
             }
