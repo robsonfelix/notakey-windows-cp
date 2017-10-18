@@ -69,7 +69,7 @@ namespace NotakeyBGService
                 if (registryNode == null)
                 {
                     Console.WriteLine("No registry configuration overrides provided...");
-                    EventLog.WriteEntry(LogApplication, "No registry information avaialble in key [" + BaseRegistryKey + "]", EventLogEntryType.Information, 99);
+                    EventLog.WriteEntry(LogApplication, "No registry information available in key [" + BaseRegistryKey + "]", EventLogEntryType.Information, 99);
                     return;
                 }
 
