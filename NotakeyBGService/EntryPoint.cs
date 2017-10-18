@@ -29,8 +29,6 @@ namespace NotakeyBGService
         {
             if (args.Length >= 2)
             {
-                //
-
                 ApiConfiguration.ApiEndpoint = args[0];
                 ApiConfiguration.AccessId = args[1];
             }
@@ -40,6 +38,8 @@ namespace NotakeyBGService
             if(String.IsNullOrEmpty(ApiConfiguration.ApiEndpoint) || String.IsNullOrEmpty(ApiConfiguration.AccessId))
             {
                 Console.WriteLine("Missing configuration for: 1. ApiEndpoint and/or 2. AccessId");
+                EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: Missing configuration for ApiEndpoint and/or AccessId", EventLogEntryType.Error);
+
                 return;
             }
 
@@ -48,6 +48,7 @@ namespace NotakeyBGService
 
             terminationEvent.WaitOne();
             Console.WriteLine("Received termination event. Quitting ...");
+            EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: Service is stopping", EventLogEntryType.Information);
             app.Cleanup();
         }
 
@@ -64,6 +65,7 @@ namespace NotakeyBGService
                 if (registryNode == null)
                 {
                     Console.WriteLine("No registry configuration overrides provided...");
+                    EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: No registry information avaialble in key [" + BaseRegistryKey + "]", EventLogEntryType.Information);
                     return;
                 }
 
@@ -111,6 +113,10 @@ namespace NotakeyBGService
                 {
                     Console.WriteLine("Loaded ApiConfiguration.AuthCreateTimeoutSecs: " + ttl.ToString() + " from registry");
                     ApiConfiguration.AuthCreateTimeoutSecs = (int)ttl;
+                    if(ApiConfiguration.AuthCreateTimeoutSecs > 100)
+                    {
+                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: AuthCreateTimeoutSecs value of "+ ApiConfiguration.AuthCreateTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning);
+                    }
                 }
 
                 ttl = (int)registryNode.GetValue("AuthWaitTimeoutSecs");
@@ -119,6 +125,10 @@ namespace NotakeyBGService
                 {
                     Console.WriteLine("Loaded ApiConfiguration.AuthWaitTimeoutSecs: " + ttl.ToString() + " from registry");
                     ApiConfiguration.AuthWaitTimeoutSecs = (int)ttl;
+                    if (ApiConfiguration.AuthWaitTimeoutSecs > 100)
+                    {
+                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: AuthWaitTimeoutSecs value of " + ApiConfiguration.AuthWaitTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning);
+                    }
                 }
 
 
@@ -130,6 +140,10 @@ namespace NotakeyBGService
                 {
                     Console.WriteLine("Loaded ApiConfiguration.HealthTimeoutSecs: " + ttl.ToString() + " from registry");
                     ApiConfiguration.HealthTimeoutSecs = (int)ttl;
+                    if (ApiConfiguration.HealthTimeoutSecs > 100)
+                    {
+                        EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: HealthTimeoutSecs value of " + ApiConfiguration.HealthTimeoutSecs + " over enforced limit of 100 seconds", EventLogEntryType.Warning);
+                    }
                 }
             }
             catch (Exception e)

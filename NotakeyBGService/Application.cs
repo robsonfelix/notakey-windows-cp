@@ -16,11 +16,6 @@ using System.Diagnostics;
 
 namespace NotakeyBGService
 {
-    // TODO: read config from args
-    public static class BGServiceConfiguration
-    {
-        public static readonly TimeSpan AsyncTimeout = TimeSpan.FromSeconds(30);
-    }
 
     public static class ApiConfiguration
     {
@@ -133,6 +128,9 @@ namespace NotakeyBGService
                         error => logger.ErrorLine("Could not bind to the Notakey API", error)
                     );
             });
+
+            EventLog.WriteEntry("Application", "Notakey BG Service [com.notakey.cp.bgs]: Service started successfully", EventLogEntryType.Information);
+
             SpawnServer();
         }
 
