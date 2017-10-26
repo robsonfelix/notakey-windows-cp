@@ -1233,15 +1233,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Notakey WCP"
-        "ProductCode" = "8:{0367FC9B-1E4D-4134-934B-27F91A4169F7}"
-        "PackageCode" = "8:{6F05911E-CA47-437D-9DED-FD7A415EF4CB}"
+        "ProductCode" = "8:{2FD8B395-C96D-4834-86C4-ED535C989EF2}"
+        "PackageCode" = "8:{C98AAA24-EF83-43D2-81AC-465A53B68E0E}"
         "UpgradeCode" = "8:{4100E599-ED8E-4959-A2A2-FE056385F717}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.17"
+        "ProductVersion" = "8:1.1.20"
         "Manufacturer" = "8:Notakey Latvia"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1275,53 +1275,81 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_106F48517BEF41278B90E0FE0A55F3B8"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_0A75B3CD19434C2DBC536649DC44CDCA"
                             {
-                            "Name" = "8:SYSTEM"
+                            "Name" = "8:Microsoft"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:FALSE"
                             "DeleteAtUninstall" = "11:FALSE"
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_75EAD192B4E747A18C057EAE375F3DA8"
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_14CC86F487AB4EE591633661D72EA147"
                                     {
-                                    "Name" = "8:CurrentControlSet"
+                                    "Name" = "8:Windows"
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:FALSE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
-                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A870E953B137426EB581697D06E4E757"
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F849D8A7B819415E8D71BD9A39FCB730"
                                             {
-                                            "Name" = "8:Services"
+                                            "Name" = "8:CurrentVersion"
                                             "Condition" = "8:"
                                             "AlwaysCreate" = "11:FALSE"
                                             "DeleteAtUninstall" = "11:FALSE"
                                             "Transitive" = "11:FALSE"
                                                 "Keys"
                                                 {
-                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8E8FE7B05C3B49DAB28DB64FECA687D4"
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2BBECF96D9F04800B2915E26820B47FE"
                                                     {
-                                                    "Name" = "8:com.notakey.cp.bgs"
+                                                    "Name" = "8:Authentication"
                                                     "Condition" = "8:"
                                                     "AlwaysCreate" = "11:FALSE"
                                                     "DeleteAtUninstall" = "11:FALSE"
                                                     "Transitive" = "11:FALSE"
                                                         "Keys"
                                                         {
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_69365EFAE9E94675A87C36664E3F3B36"
+                                                            {
+                                                            "Name" = "8:Credential Providers"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5AC47A362CCE46638707D44C514ECF30"
+                                                                    {
+                                                                    "Name" = "8:{77E5F42E-B280-4219-B130-D48BB3932A04}"
+                                                                    "Condition" = "8:"
+                                                                    "AlwaysCreate" = "11:FALSE"
+                                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                                    "Transitive" = "11:FALSE"
+                                                                        "Keys"
+                                                                        {
+                                                                        }
+                                                                        "Values"
+                                                                        {
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_DB352897D3FA4F318A8305155236FC37"
+                                                                            {
+                                                                            "Name" = "8:"
+                                                                            "Condition" = "8:"
+                                                                            "Transitive" = "11:FALSE"
+                                                                            "ValueTypes" = "3:1"
+                                                                            "Value" = "8:NotakeyNETProvider.NotakeyNETProvider"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                }
+                                                            }
                                                         }
                                                         "Values"
                                                         {
-                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_ADD71D9FC4BC4C81AB1385839985446F"
-                                                            {
-                                                            "Name" = "8:FailureActions"
-                                                            "Condition" = "8:"
-                                                            "Transitive" = "11:FALSE"
-                                                            "ValueTypes" = "3:4"
-                                                            "Value" = "8:00000000000000000000000003000000140000000100000060EA00000100000060EA00000000000000000000"
-                                                            }
                                                         }
                                                     }
                                                 }
@@ -1339,16 +1367,16 @@
                                 {
                                 }
                             }
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_7099CE8E1F9948B8A4A6EFFC228B251D"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_7DDF7534EBE449B0B38FB61A391547E1"
                             {
                             "Name" = "8:Notakey"
-                            "Condition" = "8:"
+                            "Condition" = "8:NOT VersionNT64 > 0"
                             "AlwaysCreate" = "11:FALSE"
                             "DeleteAtUninstall" = "11:FALSE"
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A1D706A3516642ED904E6E28318DA56A"
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_FA4FA5002CD94538884C3E4353BBF3A5"
                                     {
                                     "Name" = "8:WindowsCP"
                                     "Condition" = "8:"
@@ -1360,15 +1388,15 @@
                                         }
                                         "Values"
                                         {
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2DC0C08EB4BA4A54855DB155DFD320A2"
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_148A5857D2D640D5BD59643921278C6B"
                                             {
-                                            "Name" = "8:Install"
+                                            "Name" = "8:DefaultServiceURL"
                                             "Condition" = "8:"
                                             "Transitive" = "11:FALSE"
-                                            "ValueTypes" = "3:3"
-                                            "Value" = "3:1"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:https://demo.notakey.com/api/"
                                             }
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_544C1CBFDA864F1F8A6C513E5C4977FA"
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_3A84829510174CC59A93C340548568A4"
                                             {
                                             "Name" = "8:ProductVersion"
                                             "Condition" = "8:"
@@ -1376,22 +1404,96 @@
                                             "ValueTypes" = "3:1"
                                             "Value" = "8:{VERSION}"
                                             }
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6346C58396DC4C70A4B04273852BFA6A"
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B12331F1C383402992B1DD327AF563CB"
                                             {
-                                            "Name" = "8:DefaultServiceURL"
-                                            "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                            "Name" = "8:Install"
+                                            "Condition" = "8:"
                                             "Transitive" = "11:FALSE"
-                                            "ValueTypes" = "3:1"
-                                            "Value" = "8:https://demo.notakey.com/api/"
+                                            "ValueTypes" = "3:3"
+                                            "Value" = "3:1"
                                             }
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F93AD49CF387425DAE27352471CDB45F"
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_BABC3AD29A55419B84499432E125ACDE"
                                             {
                                             "Name" = "8:DefaultServiceID"
-                                            "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                            "Condition" = "8:"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
                                             "Value" = "8:84c328f2-4ff2-4980-8db6-3ecabf55bff1"
                                             }
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_AE1C94BD4FBF4C479EF3D814166E6ACA"
+                            {
+                            "Name" = "8:WOW6432Node"
+                            "Condition" = "8:VersionNT64"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_888603CB22F944BD82BB6ADCB152D4AC"
+                                    {
+                                    "Name" = "8:Notakey"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A1D706A3516642ED904E6E28318DA56A"
+                                            {
+                                            "Name" = "8:WindowsCP"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                }
+                                                "Values"
+                                                {
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2DC0C08EB4BA4A54855DB155DFD320A2"
+                                                    {
+                                                    "Name" = "8:Install"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:3"
+                                                    "Value" = "3:1"
+                                                    }
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_544C1CBFDA864F1F8A6C513E5C4977FA"
+                                                    {
+                                                    "Name" = "8:ProductVersion"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:1"
+                                                    "Value" = "8:{VERSION}"
+                                                    }
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6346C58396DC4C70A4B04273852BFA6A"
+                                                    {
+                                                    "Name" = "8:DefaultServiceURL"
+                                                    "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:1"
+                                                    "Value" = "8:https://demo.notakey.com/api/"
+                                                    }
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F93AD49CF387425DAE27352471CDB45F"
+                                                    {
+                                                    "Name" = "8:DefaultServiceID"
+                                                    "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:1"
+                                                    "Value" = "8:84c328f2-4ff2-4980-8db6-3ecabf55bff1"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
                                         }
                                     }
                                 }
