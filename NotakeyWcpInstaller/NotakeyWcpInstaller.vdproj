@@ -21,12 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_206518B647E04DE388C68DEE059002DD"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_261F9B40589044A3BA5C06C1F905A995"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -40,12 +34,6 @@
         "Entry"
         {
         "MsmKey" = "8:_3B8C895369EF41FB919A27DC5126A5F3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3B9AB761CAEA4C6B8E18E4091F51F978"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -65,12 +53,6 @@
         {
         "MsmKey" = "8:_487FADA03D178793F2B80CB4B3CA9C82"
         "OwnerKey" = "8:_ABCEB8C524BB4E9FBED0652D6F11AA80"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4C4D4449055D4B1BAEFD600D4CA8E97A"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -136,12 +118,6 @@
         "Entry"
         {
         "MsmKey" = "8:_845E02B4249643FE81F9186F747F1622"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A2654D66F1CB4EC59077B48EA4BD1682"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -369,6 +345,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F59AF43D89154825A6008D2E434A9367"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_ABCEB8C524BB4E9FBED0652D6F11AA80"
         "MsmSig" = "8:_UNDEFINED"
@@ -547,6 +529,62 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_271E2DC73E7443C7B76DC8D5DD581E31"
+            {
+            "Name" = "8:Stop service"
+            "Condition" = "8:"
+            "Object" = "8:_799CF490C0074F40A3BF754A9FBB7653"
+            "FileType" = "3:2"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:stop"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_DB443C5C_8C0E_4CE8_B436_E0892745023A"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_2FF2CDAF3E284DF09CFC5F7B612483C4"
+            {
+            "Name" = "8:Start service"
+            "Condition" = "8:"
+            "Object" = "8:_799CF490C0074F40A3BF754A9FBB7653"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:start"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_FF65F150_540B_4771_8B44_19DBF4C42253"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_36BF77412B0B460F9C61D0EA3BDF7374"
+            {
+            "Name" = "8:Unistall service"
+            "Condition" = "8:"
+            "Object" = "8:_799CF490C0074F40A3BF754A9FBB7653"
+            "FileType" = "3:2"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:uninstall"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_3F9523FE_596D_4E67_9BAC_4C05C457168E"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3EFBC683D3BC479EA83C490FCBCD27F0"
+            {
+            "Name" = "8:Install service"
+            "Condition" = "8:"
+            "Object" = "8:_799CF490C0074F40A3BF754A9FBB7653"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:install"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_5A890E1A_5344_413C_A752_93E2C248DAF0"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -590,50 +628,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_206518B647E04DE388C68DEE059002DD"
-            {
-            "SourcePath" = "8:ServiceUninstall.ps1"
-            "TargetName" = "8:ServiceUninstall.ps1"
-            "Tag" = "8:"
-            "Folder" = "8:_BEDC9C44BFF349978DA896AEF9D383CB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_261F9B40589044A3BA5C06C1F905A995"
             {
             "SourcePath" = "8:banner.jpg"
             "TargetName" = "8:banner.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_BEDC9C44BFF349978DA896AEF9D383CB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3B9AB761CAEA4C6B8E18E4091F51F978"
-            {
-            "SourcePath" = "8:ServiceInstall.ps1"
-            "TargetName" = "8:ServiceInstall.ps1"
             "Tag" = "8:"
             "Folder" = "8:_BEDC9C44BFF349978DA896AEF9D383CB"
             "Condition" = "8:"
@@ -679,26 +677,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C4D4449055D4B1BAEFD600D4CA8E97A"
-            {
-            "SourcePath" = "8:RegistryUninstall.ps1"
-            "TargetName" = "8:RegistryUninstall.ps1"
-            "Tag" = "8:"
-            "Folder" = "8:_BEDC9C44BFF349978DA896AEF9D383CB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5240B0818380961787605B73822D9DCE"
@@ -854,26 +832,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A2654D66F1CB4EC59077B48EA4BD1682"
-            {
-            "SourcePath" = "8:RegistryInstall.ps1"
-            "TargetName" = "8:RegistryInstall.ps1"
-            "Tag" = "8:"
-            "Folder" = "8:_BEDC9C44BFF349978DA896AEF9D383CB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A87DB202E00D26677A60AEE768A6AB96"
@@ -1093,6 +1051,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F59AF43D89154825A6008D2E434A9367"
+            {
+            "SourcePath" = "8:InstallWrapper.vbs"
+            "TargetName" = "8:InstallWrapper.vbs"
+            "Tag" = "8:"
+            "Folder" = "8:_BEDC9C44BFF349978DA896AEF9D383CB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -1179,6 +1157,14 @@
         }
         "Locator"
         {
+            "{CF66B7F7-B7DA-4B08-A67A-233430638C9C}:_13D70A9C252E47548BD24CE28DC2EEC6"
+            {
+            "Name" = "8:Notakey WCP (any version)"
+            "Root" = "2:1"
+            "RegKey" = "8:SOFTWARE\\Notakey\\WindowsCP"
+            "Value" = "8:Install"
+            "Property" = "8:ISNTKWCPINSTALLED"
+            }
             "{CF66B7F7-B7DA-4B08-A67A-233430638C9C}:_F0FAB0CA086A44E4A45F4AA90AB3900D"
             {
             "Name" = "8:Power Shell (any version)"
@@ -1197,15 +1183,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Notakey WCP"
-        "ProductCode" = "8:{5567BB62-4282-4E71-BA8A-2EC06E2A16AC}"
-        "PackageCode" = "8:{AECD0019-2EA7-4811-ADF0-46170FD928C0}"
+        "ProductCode" = "8:{25D546F4-A39C-4A37-9D26-9E386BD8C4F2}"
+        "PackageCode" = "8:{2654979D-EBF6-42E0-B43A-A29A5A2DF80D}"
         "UpgradeCode" = "8:{4100E599-ED8E-4959-A2A2-FE056385F717}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.8"
+        "ProductVersion" = "8:1.1.13"
         "Manufacturer" = "8:Notakey Latvia"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1230,6 +1216,144 @@
             {
                 "Keys"
                 {
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5084D39FA1144486B4EDD8A02A1B9C41"
+                    {
+                    "Name" = "8:SOFTWARE"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:FALSE"
+                    "DeleteAtUninstall" = "11:FALSE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_106F48517BEF41278B90E0FE0A55F3B8"
+                            {
+                            "Name" = "8:SYSTEM"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_75EAD192B4E747A18C057EAE375F3DA8"
+                                    {
+                                    "Name" = "8:CurrentControlSet"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A870E953B137426EB581697D06E4E757"
+                                            {
+                                            "Name" = "8:Services"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8E8FE7B05C3B49DAB28DB64FECA687D4"
+                                                    {
+                                                    "Name" = "8:com.notakey.cp.bgs"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                        }
+                                                        "Values"
+                                                        {
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_ADD71D9FC4BC4C81AB1385839985446F"
+                                                            {
+                                                            "Name" = "8:FailureActions"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:4"
+                                                            "Value" = "8:00000000000000000000000003000000140000000100000060EA00000100000060EA00000000000000000000"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_7099CE8E1F9948B8A4A6EFFC228B251D"
+                            {
+                            "Name" = "8:Notakey"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A1D706A3516642ED904E6E28318DA56A"
+                                    {
+                                    "Name" = "8:WindowsCP"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2DC0C08EB4BA4A54855DB155DFD320A2"
+                                            {
+                                            "Name" = "8:Install"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:3"
+                                            "Value" = "3:1"
+                                            }
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_544C1CBFDA864F1F8A6C513E5C4977FA"
+                                            {
+                                            "Name" = "8:ProductVersion"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{VERSION}"
+                                            }
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6346C58396DC4C70A4B04273852BFA6A"
+                                            {
+                                            "Name" = "8:DefaultServiceURL"
+                                            "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:https://demo.notakey.com/api/"
+                                            }
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F93AD49CF387425DAE27352471CDB45F"
+                                            {
+                                            "Name" = "8:DefaultServiceID"
+                                            "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:84c328f2-4ff2-4980-8db6-3ecabf55bff1"
+                                            }
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                        }
+                    }
                 }
             }
             "HKCU"
