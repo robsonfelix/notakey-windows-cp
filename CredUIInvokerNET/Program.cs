@@ -56,8 +56,8 @@ namespace CredUIInvokerNET
             uint authPackage = 10;
 
             var credUiInfo = new CREDUI_INFO();
-            credUiInfo.pszCaptionText = "Decrypting folder Documents";
-            credUiInfo.pszMessageText = "Please enter authorization information";
+            credUiInfo.pszCaptionText = "Authentication screen invoker test";
+            credUiInfo.pszMessageText = "Please enter authentication information";
             credUiInfo.cbSize = Marshal.SizeOf(credUiInfo);
             credUiInfo.hbmBanner = IntPtr.Zero;
             credUiInfo.hwndParent = IntPtr.Zero;
