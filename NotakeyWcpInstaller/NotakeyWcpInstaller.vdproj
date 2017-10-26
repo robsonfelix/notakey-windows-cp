@@ -1189,24 +1189,9 @@
         }
         "LaunchCondition"
         {
-            "{836E08B8-0285-4809-BA42-01DB6754A45D}:_4C09AD3E0231435F8DC78594FC46F9AE"
-            {
-            "Name" = "8:Power Shell 2.0"
-            "Condition" = "8:ISPOWERSHELLINSTALLED"
-            "Message" = "8:No Windows PowerShell was not found on your system.  Press Yes to see details how to install Windows PowerShell on your computer.  "
-            "InstallUrl" = "8:https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell?view=powershell-5.1"
-            }
         }
         "Locator"
         {
-            "{CF66B7F7-B7DA-4B08-A67A-233430638C9C}:_13D70A9C252E47548BD24CE28DC2EEC6"
-            {
-            "Name" = "8:Notakey WCP (any version)"
-            "Root" = "2:1"
-            "RegKey" = "8:SOFTWARE\\Notakey\\WindowsCP"
-            "Value" = "8:Install"
-            "Property" = "8:ISNTKWCPINSTALLED"
-            }
             "{CF66B7F7-B7DA-4B08-A67A-233430638C9C}:_3F184A4F538B4E85A10635F3003ED658"
             {
             "Name" = "8:Notakey BG service present"
@@ -1234,7 +1219,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Notakey WCP"
         "ProductCode" = "8:{2FD8B395-C96D-4834-86C4-ED535C989EF2}"
-        "PackageCode" = "8:{C98AAA24-EF83-43D2-81AC-465A53B68E0E}"
+        "PackageCode" = "8:{4C640EEE-D4E5-4915-A189-2DD815FAA1A2}"
         "UpgradeCode" = "8:{4100E599-ED8E-4959-A2A2-FE056385F717}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1379,7 +1364,7 @@
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_FA4FA5002CD94538884C3E4353BBF3A5"
                                     {
                                     "Name" = "8:WindowsCP"
-                                    "Condition" = "8:"
+                                    "Condition" = "8:NOT VersionNT64 > 0"
                                     "AlwaysCreate" = "11:FALSE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
@@ -1391,7 +1376,7 @@
                                             "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_148A5857D2D640D5BD59643921278C6B"
                                             {
                                             "Name" = "8:DefaultServiceURL"
-                                            "Condition" = "8:"
+                                            "Condition" = "8:NOT VersionNT64 > 0"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
                                             "Value" = "8:https://demo.notakey.com/api/"
@@ -1399,7 +1384,7 @@
                                             "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_3A84829510174CC59A93C340548568A4"
                                             {
                                             "Name" = "8:ProductVersion"
-                                            "Condition" = "8:"
+                                            "Condition" = "8:NOT VersionNT64 > 0"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
                                             "Value" = "8:{VERSION}"
@@ -1407,7 +1392,7 @@
                                             "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B12331F1C383402992B1DD327AF563CB"
                                             {
                                             "Name" = "8:Install"
-                                            "Condition" = "8:"
+                                            "Condition" = "8:NOT VersionNT64 > 0"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:3"
                                             "Value" = "3:1"
@@ -1415,7 +1400,7 @@
                                             "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_BABC3AD29A55419B84499432E125ACDE"
                                             {
                                             "Name" = "8:DefaultServiceID"
-                                            "Condition" = "8:"
+                                            "Condition" = "8:NOT VersionNT64 > 0"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
                                             "Value" = "8:84c328f2-4ff2-4980-8db6-3ecabf55bff1"
