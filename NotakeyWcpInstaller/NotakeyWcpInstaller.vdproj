@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_02113378FB8F43E5AD1655C2B48FA796"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_261F9B40589044A3BA5C06C1F905A995"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -215,6 +209,12 @@
         {
         "MsmKey" = "8:_AD79C66B288B50163B8E8DF13C2AB6A6"
         "OwnerKey" = "8:_DB3105BF91BFD3AA71478B0544EF7418"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BABB07C9C6BC46BE98133C7E108EB48E"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -552,8 +552,22 @@
             "InstallAction" = "3:1"
             "Arguments" = "8:start"
             "EntryPoint" = "8:"
-            "Sequence" = "3:2"
+            "Sequence" = "3:4"
             "Identifier" = "8:_FF65F150_540B_4771_8B44_19DBF4C42253"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3352F58E87884A8D8C95C42F2952C5B0"
+            {
+            "Name" = "8:Remove old service"
+            "Condition" = "8:ISNTKSERVICEINSTALLED"
+            "Object" = "8:_799CF490C0074F40A3BF754A9FBB7653"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:uninstall"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_02CF8BD8_06BC_4D41_B7CD_628EDCFC8B48"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
@@ -580,8 +594,22 @@
             "InstallAction" = "3:1"
             "Arguments" = "8:install"
             "EntryPoint" = "8:"
-            "Sequence" = "3:1"
+            "Sequence" = "3:3"
             "Identifier" = "8:_5A890E1A_5344_413C_A752_93E2C248DAF0"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_46D015BC99FC465D80ECDD1148FEFC1C"
+            {
+            "Name" = "8:Stop old service"
+            "Condition" = "8:ISNTKSERVICEINSTALLED"
+            "Object" = "8:_799CF490C0074F40A3BF754A9FBB7653"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:stop"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_DBD4048B_D93E_4239_AAC4_99F635D8605D"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
@@ -608,26 +636,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_02113378FB8F43E5AD1655C2B48FA796"
-            {
-            "SourcePath" = "8:..\\NotakeyBGService\\winsw.xml"
-            "TargetName" = "8:winsw.xml"
-            "Tag" = "8:"
-            "Folder" = "8:_358DB071A4AE446B98E73297B46D7248"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_261F9B40589044A3BA5C06C1F905A995"
             {
             "SourcePath" = "8:banner.jpg"
@@ -927,6 +935,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BABB07C9C6BC46BE98133C7E108EB48E"
+            {
+            "SourcePath" = "8:winsw_installer_version.xml"
+            "TargetName" = "8:winsw.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_358DB071A4AE446B98E73297B46D7248"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C936D3BD873138A493597D92BC07EF10"
             {
             "AssemblyRegister" = "3:1"
@@ -1165,6 +1193,14 @@
             "Value" = "8:Install"
             "Property" = "8:ISNTKWCPINSTALLED"
             }
+            "{CF66B7F7-B7DA-4B08-A67A-233430638C9C}:_3F184A4F538B4E85A10635F3003ED658"
+            {
+            "Name" = "8:Notakey BG service present"
+            "Root" = "2:1"
+            "RegKey" = "8:SYSTEM\\CurrentControlSet\\Services\\com.notakey.cp.bgs"
+            "Value" = "8:ErrorControl"
+            "Property" = "8:ISNTKSERVICEINSTALLED"
+            }
             "{CF66B7F7-B7DA-4B08-A67A-233430638C9C}:_F0FAB0CA086A44E4A45F4AA90AB3900D"
             {
             "Name" = "8:Power Shell (any version)"
@@ -1183,15 +1219,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Notakey WCP"
-        "ProductCode" = "8:{FD3BD167-4B85-4AD0-B17A-9F76DE671122}"
-        "PackageCode" = "8:{0ED81B57-8111-4704-9504-6866C4A416CF}"
+        "ProductCode" = "8:{A4F6F2D1-E08C-462B-878F-94B8C9911D33}"
+        "PackageCode" = "8:{2C0E0977-2B87-431C-8AC9-2E625AF6A117}"
         "UpgradeCode" = "8:{4100E599-ED8E-4959-A2A2-FE056385F717}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.14"
+        "ProductVersion" = "8:1.1.15"
         "Manufacturer" = "8:Notakey Latvia"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
