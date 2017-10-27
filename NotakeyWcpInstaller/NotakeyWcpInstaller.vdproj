@@ -573,7 +573,7 @@
             }
             "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_36BF77412B0B460F9C61D0EA3BDF7374"
             {
-            "Name" = "8:Unistall service"
+            "Name" = "8:Uninstall service"
             "Condition" = "8:"
             "Object" = "8:_799CF490C0074F40A3BF754A9FBB7653"
             "FileType" = "3:2"
@@ -1218,15 +1218,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Notakey WCP"
-        "ProductCode" = "8:{2FD8B395-C96D-4834-86C4-ED535C989EF2}"
-        "PackageCode" = "8:{4C640EEE-D4E5-4915-A189-2DD815FAA1A2}"
+        "ProductCode" = "8:{B51D01EE-528B-429D-9702-C3304CC603A8}"
+        "PackageCode" = "8:{45ABF9A5-4667-4FE8-95B3-E9A7946EE731}"
         "UpgradeCode" = "8:{4100E599-ED8E-4959-A2A2-FE056385F717}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.20"
+        "ProductVersion" = "8:1.1.21"
         "Manufacturer" = "8:Notakey Latvia"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1415,7 +1415,7 @@
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_AE1C94BD4FBF4C479EF3D814166E6ACA"
                             {
                             "Name" = "8:WOW6432Node"
-                            "Condition" = "8:VersionNT64"
+                            "Condition" = "8:VersionNT64 > 0"
                             "AlwaysCreate" = "11:FALSE"
                             "DeleteAtUninstall" = "11:FALSE"
                             "Transitive" = "11:FALSE"
@@ -1424,7 +1424,7 @@
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_888603CB22F944BD82BB6ADCB152D4AC"
                                     {
                                     "Name" = "8:Notakey"
-                                    "Condition" = "8:"
+                                    "Condition" = "8:VersionNT64 > 0"
                                     "AlwaysCreate" = "11:FALSE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
@@ -1433,8 +1433,8 @@
                                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A1D706A3516642ED904E6E28318DA56A"
                                             {
                                             "Name" = "8:WindowsCP"
-                                            "Condition" = "8:"
-                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:VersionNT64 > 0"
+                                            "AlwaysCreate" = "11:TRUE"
                                             "DeleteAtUninstall" = "11:FALSE"
                                             "Transitive" = "11:FALSE"
                                                 "Keys"
@@ -1461,7 +1461,7 @@
                                                     "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6346C58396DC4C70A4B04273852BFA6A"
                                                     {
                                                     "Name" = "8:DefaultServiceURL"
-                                                    "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                                    "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
                                                     "Value" = "8:https://demo.notakey.com/api/"
@@ -1469,7 +1469,7 @@
                                                     "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F93AD49CF387425DAE27352471CDB45F"
                                                     {
                                                     "Name" = "8:DefaultServiceID"
-                                                    "Condition" = "8:NOT ISNTKWCPINSTALLED"
+                                                    "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
                                                     "Value" = "8:84c328f2-4ff2-4980-8db6-3ecabf55bff1"
