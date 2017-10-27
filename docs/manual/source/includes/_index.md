@@ -93,8 +93,69 @@ There are no other user-facing changes between 32-bit and 64-bit packages.
 
 # Configuring the API Endpoint
 
-After installation, the background service must be configured to connect
-to the desired Notakey API endpoint.
+After installation, the background service must be configured to connect to the desired Notakey API endpoint.
+
+This is done by provisioning defined registry keys. 
+
+Below is an example of configuration for 64-bit Windows machines. You can save the text to file with *.reg extension and
+provision the registry by importing the text file with regedit. 
+
+<aside class="notice">
+Please remember to adjust ServiceURL and ServiceID values 
+before import. 
+</aside>
+
+## 64-bit systems
+
+```shell
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Notakey]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Notakey\WindowsCP]
+"ServiceURL"="https://demo.notakey.com/api/"
+"ServiceID"="65af8d56-b7d9-49b9-86c6-595dc440d933"
+"MessageTtlSeconds"=dword:0000001e
+"MessageActionTitle"="Winlogin"
+"MessageDescription"="Proceed as {0} on server {1}?"
+"AuthCreateTimeoutSecs"=dword:00000014
+"AuthWaitTimeoutSecs"=dword:0000003c
+```
+
+## 32-bit systems
+
+```shell
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Notakey]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Notakey\WindowsCP]
+"ServiceURL"="https://demo.notakey.com/api/"
+"ServiceID"="65af8d56-b7d9-49b9-86c6-595dc440d933"
+"MessageTtlSeconds"=dword:0000001e
+"MessageActionTitle"="Winlogin"
+"MessageDescription"="Proceed as {0} on server {1}?"
+"AuthCreateTimeoutSecs"=dword:00000014
+"AuthWaitTimeoutSecs"=dword:0000003c
+```
+
+## Description of configuration options
+
+| Name   |  Default |  Description  |
+|--------|----------|---------------|
+|ServiceURL| \<none\> | API endpoint URL. Has to end with /api/ |
+|ServiceID| \<none\> | Service ID as displayed in NAS dashboard |
+|MessageTtlSeconds|30| The validity duration of auth request |
+|MessageActionTitle|Windows login| Title for auth request |
+|MessageDescription|Do you wish to authenticate user {0} on computer {1}?| The message body of auth request |
+|AuthCreateTimeoutSecs|10| The duration which WCP waits for response from NAS API endpoint for new auth request generation. This value cannot exceed 100 seconds | 
+|AuthWaitTimeoutSecs|30| The time during which auth request has to be processed. This value cannot exceed 100 seconds and has to be aligned with MessageTtlSeconds | 
+
+
+# Legacy configuration
+
+If no changes are imported to registry the service supports alternate configuration using
+xml file. 
 
 This is done by modifying the `NotakeyBGService\winsw.xml` file. This file should contain
 three argument tags:
