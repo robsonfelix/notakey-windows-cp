@@ -1226,7 +1226,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.22"
+        "ProductVersion" = "8:1.1.23"
         "Manufacturer" = "8:Notakey Latvia"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1387,7 +1387,7 @@
                                             "Condition" = "8:NOT VersionNT64 > 0"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
-                                            "Value" = "8:1.1.22"
+                                            "Value" = "8:1.1.23"
                                             }
                                             "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B12331F1C383402992B1DD327AF563CB"
                                             {
@@ -1456,7 +1456,7 @@
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:1.1.22"
+                                                    "Value" = "8:1.1.23"
                                                     }
                                                     "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6346C58396DC4C70A4B04273852BFA6A"
                                                     {
