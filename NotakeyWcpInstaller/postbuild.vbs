@@ -12,7 +12,7 @@ set o_database = o_Installer.OpenDatabase(oFile, 1)
 
 set FSO = CreateObject("Scripting.FileSystemObject")
 set objFileToRead = FSO.OpenTextFile(o_path & "..\VERSION",1)
-strVersion = Trim(objFileToRead.ReadAll())
+strVersion = Replace(Trim(objFileToRead.ReadAll()), vbCrLf, "")
 objFileToRead.Close
 set objFileToRead = Nothing
 

@@ -1218,15 +1218,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Notakey WCP"
-        "ProductCode" = "8:{B51D01EE-528B-429D-9702-C3304CC603A8}"
-        "PackageCode" = "8:{F6F51556-FF27-420E-9A54-F1CC64C8EA46}"
+        "ProductCode" = "8:{92C078A0-5E6C-4E85-AD60-9275F8D6A064}"
+        "PackageCode" = "8:{285CE22F-23E3-48D4-83C2-EB861CAC59EA}"
         "UpgradeCode" = "8:{4100E599-ED8E-4959-A2A2-FE056385F717}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.21"
+        "ProductVersion" = "8:1.1.22"
         "Manufacturer" = "8:Notakey Latvia"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1241,7 +1241,7 @@
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:1"
-        "PreBuildEvent" = "8:"
+        "PreBuildEvent" = "8:wscript.exe $(ProjectDir)/prebuild.vbs $(ProjectDir)"
         "PostBuildEvent" = "8:wscript.exe $(ProjectDir)/postbuild.vbs $(ProjectDir)"
         "RunPostBuildEvent" = "3:0"
         }
@@ -1387,7 +1387,7 @@
                                             "Condition" = "8:NOT VersionNT64 > 0"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
-                                            "Value" = "8:{VERSION}"
+                                            "Value" = "8:1.1.22"
                                             }
                                             "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B12331F1C383402992B1DD327AF563CB"
                                             {
@@ -1456,7 +1456,7 @@
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:{VERSION}"
+                                                    "Value" = "8:1.1.22"
                                                     }
                                                     "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6346C58396DC4C70A4B04273852BFA6A"
                                                     {
@@ -2159,3 +2159,4 @@
         }
     }
 }
+

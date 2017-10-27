@@ -193,6 +193,11 @@
     <Error Condition="!Exists('..\packages\StrongNamer.0.0.6\build\StrongNamer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StrongNamer.0.0.6\build\StrongNamer.targets'))" />
   </Target>
   <Import Project="..\packages\StrongNamer.0.0.6\build\StrongNamer.targets" Condition="Exists('..\packages\StrongNamer.0.0.6\build\StrongNamer.targets')" />
+  <!--
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PostBuildEvent>wscript.exe $(ProjectDir)\..\NotakeyWcpInstaller\prebuild.vbs $(ProjectDir)\..\NotakeyWcpInstaller</PostBuildEvent>
+  </PropertyGroup>
+  -->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
