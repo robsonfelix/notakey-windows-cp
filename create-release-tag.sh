@@ -52,13 +52,13 @@ if [ ! -f "$EXPECTED_CHANGELOG" ]; then
   exit 1
 fi
 
-echo "=> Validating release hierarchy"
-if [ -z "$(git describe | grep $OLDVERSION)" ]; then
-  echo "ERROR: Can not increment ('git describe' indicates state is not directly descendent from previous version or release candidate version)"
-  exit 1
-else
-  echo "Direct descendant from previous version"
-fi
+#echo "=> Validating release hierarchy"
+#if [ -z "$(git describe | grep $OLDVERSION)" ]; then
+#  echo "ERROR: Can not increment ('git describe' indicates state is not directly descendent from previous version or release candidate version)"
+#  exit 1
+#else
+#  echo "Direct descendant from previous version"
+#fi
 
 if git rev-parse $NEWVERSION >/dev/null 2>&1; then
   echo "ERROR: New version tag exists already"
