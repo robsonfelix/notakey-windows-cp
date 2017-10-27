@@ -1219,7 +1219,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Notakey WCP"
         "ProductCode" = "8:{B51D01EE-528B-429D-9702-C3304CC603A8}"
-        "PackageCode" = "8:{45ABF9A5-4667-4FE8-95B3-E9A7946EE731}"
+        "PackageCode" = "8:{F6F51556-FF27-420E-9A54-F1CC64C8EA46}"
         "UpgradeCode" = "8:{4100E599-ED8E-4959-A2A2-FE056385F717}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1415,7 +1415,7 @@
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_AE1C94BD4FBF4C479EF3D814166E6ACA"
                             {
                             "Name" = "8:WOW6432Node"
-                            "Condition" = "8:VersionNT64 > 0"
+                            "Condition" = "8:"
                             "AlwaysCreate" = "11:FALSE"
                             "DeleteAtUninstall" = "11:FALSE"
                             "Transitive" = "11:FALSE"
@@ -1578,7 +1578,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -1622,7 +1623,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1653,7 +1655,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -1701,7 +1704,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1723,7 +1727,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1754,7 +1759,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -1804,7 +1810,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -1848,7 +1855,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1919,7 +1927,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_261F9B40589044A3BA5C06C1F905A995"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
